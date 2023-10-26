@@ -1,12 +1,24 @@
 # Safe-PDF-Redaction-Tool
 
-about this project 
+'A safe PDF redaction tool' Thesis project in which I aim to create a tool which leaves no traces of the redacted text and keeps the other text intact .
 
-> **OVERLEAF LINK TO BE ADDED**
+## Important Links
+
+**[The Github Repo](https://github.com/Lemmont/Safe-PDF-Redaction-Tool)**
+
+**[The overleaf project of my Thesis](https://www.overleaf.com/1479247793gmrjdnkkrdrk#f9c645)**
+
+**[My CV](https://www.ludof.nl/)**
 
 ## Project Structure
 
-to be added...
+to be added later...
+
+### Latex
+In the [latex](https://github.com/Lemmont/Safe-PDF-Redaction-Tool/tree/main/latex) folder you can find the relevant files of the overleaf project of my Thesis.
+
+### Resources 
+Visit the [resources](https://github.com/Lemmont/Safe-PDF-Redaction-Tool/tree/main/resources) folder for relevant literature, more about this project and information about me
 
 ## Installation
 
