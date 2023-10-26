@@ -1,6 +1,8 @@
 # Safe-PDF-Redaction-Tool
 
-'A safe PDF redaction tool' Thesis project in which I aim to create a tool which leaves no traces of the redacted text and keeps the other text intact .
+'A safe PDF redaction tool' Thesis project in which I aim to create a tool which leaves no traces of the redacted text and keeps the other text intact.
+
+Thesis project by Lennaert Feijtes as part of the 'afstudeerproject' course in the 2023/2024 Academic year.
 
 ## Important Links
 
