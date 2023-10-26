@@ -17,7 +17,7 @@ Thesis project by Lennaert Feijtes as part of the 'afstudeerproject' course in t
 to be added later...
 
 ### Latex
-In the [latex](https://github.com/Lemmont/Safe-PDF-Redaction-Tool/tree/main/latex) folder you can find the relevant files of the overleaf project of my Thesis.
+In the [latex](https://github.com/Lemmont/Safe-PDF-Redaction-Tool/tree/main/latex) folder you can find the relevant files of the overleaf project of my Thesis. Visit the overleaf project of my thesis [here](https://www.overleaf.com/1479247793gmrjdnkkrdrk#f9c645) to view and leave feedback on my work.
 
 ### Resources 
 Visit the [resources](https://github.com/Lemmont/Safe-PDF-Redaction-Tool/tree/main/resources) folder for relevant literature, more about this project and information about me
