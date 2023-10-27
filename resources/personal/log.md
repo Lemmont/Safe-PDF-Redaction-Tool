@@ -2,7 +2,7 @@
 
 ### 27 Oct '23
 
-#### (11:00-13:00) Research on PDF file extension: 
+#### (11:00-13:30) Research on PDF file extension: 
 
 [Stackoverflow discussion on how to inspect the structure of PDF files](https://stackoverflow.com/questions/3549541/how-can-i-visually-inspect-the-structure-of-a-pdf-to-reverse-engineer-it)
 
