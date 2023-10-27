@@ -1,0 +1,67 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% setup.tex
+% Main tex file for setup and content collocation
+% For the use of University of Amsterdam
+% Information Systems and Data Science students
+% Adapted by Riccardo Fiorista (riccardo.fiorista@proton.me)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Options:
+%% `nolinenumbering` - If you want to remove line numbering on submission
+%% `draftmargins` - If you would like to give your reviewer more space for comments
+\documentclass[]{thesisdesign}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% DOCUMENT METADATA
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Thesis related entries
+\title{Safe-PDF-Redaction-Tool}
+\subtitle{Submitted on: \textbf{\today}}
+
+% Author data
+\authorname{Lennaert Feijtes}
+\authoremail{lennaert.feijtes@student.uva.nl}
+% ACM-sepecific entries
+\affiliation{
+    \institution{\thesisinstitution}
+    \city{\thesiscity}
+    \country{\thesiscountry}
+}
+
+% Supervisor data
+\authorname{Maarten Marx}
+\authoremail{maartenmarx@uva.nl}
+% ACM-sepecific entries
+\affiliation{
+    \institution{\thesisinstitution}
+    \city{\thesiscity}
+    \country{\thesiscountry}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CONTENT
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+\pagestyle{plain}
+\setcounter{page}{0}
+\fixemptypage
+
+\maketitle
+
+% Sections; Try to stick to this setup
+
+\input{latex/sections/0-projectplan/0-introduction}
+\input{latex/sections/0-projectplan/1-related-work}
+\input{latex/sections/0-projectplan/2-research-question}
+\input{latex/sections/0-projectplan/3-methodology}
+\input{latex/sections/0-projectplan/4-timetable}
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{bibliographies/references}
+
+\end{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
