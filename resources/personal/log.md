@@ -2,6 +2,14 @@
 
 ### 27 Oct '23
 
+#### (11:00-13:00) Research on PDF file extension: 
+
+[Stackoverflow discussion on how to inspect the structure of PDF files](https://stackoverflow.com/questions/3549541/how-can-i-visually-inspect-the-structure-of-a-pdf-to-reverse-engineer-it)
+
+[A high performance Python library for data extraction, analysis, conversion & manipulation of PDF (and other) documents.](https://pypi.org/project/PyMuPDF/)
+
+[PDF 1.4 specifications](https://opensource.adobe.com/dc-acrobat-sdk-docs/pdfstandards/pdfreference1.4.pdf)
+
 #### (8:30-11:00) *Bland_EdactRay_2022.pdf* notes:
 
 Security of PDF document depends on the specification. A **raster image** of the original document or a document type that contains text data for both the font and the layout of each character (**glyph**) on the page.
