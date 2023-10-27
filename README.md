@@ -10,6 +10,8 @@ Thesis project by Lennaert Feijtes as part of the 'afstudeerproject' course in t
 
 **[The overleaf project of my Thesis](https://www.overleaf.com/1479247793gmrjdnkkrdrk#f9c645)**
 
+**[My log where I report findings](https://github.com/Lemmont/Safe-PDF-Redaction-Tool/blob/main/resources/personal/log.md)**
+
 **[My CV](https://www.ludof.nl/)**
 
 ## Project Structure
