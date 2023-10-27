@@ -1,5 +1,74 @@
 # Logbook
 
+### 27 Oct '23
+
+#### (8:30-11:00) *Bland_EdactRay_2022.pdf* notes:
+
+Security of PDF document depends on the specification. A **raster image** of the original document or a document type that contains text data for both the font and the layout of each character (**glyph**) on the page.
+
+Text is rendered in numerous ways. An example is by use of a **text showing operator**. It takes as arguments a **(1)string of text** and a **(2)vector of positional adjustments** which displace the charachter with respect to a default position, usually **a fixed offset from the previous character equivalent to the advance width of the previous character defined elsewhere in the PDF document**
+
+Paper introduces a intermediate representation; **a set of advance widths and glyph shifts** which are the sum of all the individual positioning operations applied to a glyph.
+
+Positional adjustments in *text space units* between glyphs. These units express **glyph shifts** where 1000 units almost always equals the point size of the fint times 1/72 of an inch. 
+
+Glyph advance widths and glyph shifts create a security concern:
+1. The precise width of the redaction can be used to eliminate potential redacted texts
+2. Any non-redacted glyph shifts conditioned on redacted glyphs can be used to eliminate
+potential redacted texts 
+
+> The width of a PDF redaction depends on glyph shifts. Without accounting for glyph shifts, redacted text guesses are imprecise and must account for error, reducing the potential of finding a unique match for redacted content. *The width of a PDF redaction depends on glyph shifts. Without accounting for glyph shifts, redacted text guesses are imprecise and must account for error, reducing the potential of finding a unique match for redacted content*
+
+##### Glyph Shifts
+
+Glyph shifts in PDF document are dependent on the specific workflow from a *PDF producer* by the ISO 32000 PDF standard, and any software that may modify the PDF.
+
+**Independent glyph shifts** for a given character are not dependent on any other character, while **dependent glyph shifts** are dependent on some other charachter in the document in some way. These are called **glyph shifting schemes** that are created by a specific workflow. Independent schemes are *unadjusted* when there are no shifts on any character.
+
+*Equivalence Classes. Before discussing these schemes further, we introduce the idea of width and shift equivalence classes. A shift equivalence class is a set of lists of glyphs of the same length with identical shift values. A width equivalence class is a set of glyphs and associated shifts with the same width*
+
+> The PDF specification does not include any specific signifiers for redacted text. However, residual specification information after redaction, such as glyph positions, can be used to reasonably rule out large numbers of candidate width and shift equivalence classes for redacted text. None of the prior words in this paragraph are in the width equivalence class of the word cat.
+
+*In an independent glyph shifting scheme, the security of a redaction may be considered dependent on the size of the width equivalence class indiscated by the PDF document’s residual glyph positioning information. That is, the positions of glyphs prior to and succeeding the redaction may leak the width of redacted text. The scheme’s specific glyph shifts can make a given width equivalence class leak more or less redacted information by making width of individual glyphs more or less unique.*
+
+*Dependent Schemes.A dependent scheme is more dangerous to the security of redacted text than an independent scheme. In these schemes non-redacted glyph shifts can be dependent upon redacted glyph information, because the non-redacted glyph shifts can be determined before redaction*
+
+##### Protecting Redactions 
+
+> *"Edact-Ray protects vulnerable PDF redactions by first locating the nonexcising redactions and removing their underlying text from the PDF. We then adopt a userconfigurable level of information excisement by allowing users to optionally remove all non-redacted glyph shifts13 and optionally convert the font to a monospaced one, scaling the size to preserve readability. To protect excising redactions, Edact-Ray can round up the size of all spaces between two words to some width, 𝑛 × 𝑤, where 𝑛 is some number of characters and 𝑤 is width of a single character in the monospace font. Edact-Ray can also remove any rectangular draw commands from the PDF so that the width of the redaction cannot be recovered by examining the width of any graphical box drawn to represent the redaction."*
+
+(!) Monospace font?
+
+##### Recommended practices
+
+> Redaction practices must account for concerns about document integrity. All the above measures
+modify the redacted document beyond simply removing text. In some contexts, particularly due
+to legal or regulatory reasons, this may not be acceptable. One of the main reasons for releasing
+redacted documents is to demonstrate transparency while still protecting sensitive information.
+Altering parts of the document outside the redaction alters this promise of authenticity.
+
+> It is technically possible to fix a non-excising redaction by removing the redacted text. The effect would be the same as if the document were redacted by an excising redaction tool. However, this also raises the issue of authenticity of done by a third party (e.g. document repository operator), because this necessarily means modifying the original document without the author’s involvement. In cases where integrity requirements may be relaxed, the NSA-recommended practice of altering the original document to replace the redacted text with meaningless text, e.g. REDACTED, provides the highest level of security.
+
+> In cases where the underlying text may not be changed, we offer the following two suggestions.
+First, we note that redacting a name from a PDF is not secure. If a name occurs on a line of
+text, the entire line should be redacted, if possible, or care should be taken to ensure that enough of the surrounding words are redacted to make deredaction unlikely. Second, if redacting more text is not possible, the width of the redaction should be quantized to a fixed value, and any glyph shifts should be removed. While this may make the file less aesthetically pleasing, it is necessary for the security of redactions.
+
+##### Related work
+
+[Forrester and Irwin discuss trivial redactions and unscrubbed metadata such as the Producer field of PDF documents but do not mention glyph positioning based deredaction](https://www.researchgate.net/publication/229014289_An_Investigation_into_Unintentional_Information_Leakage_through_Electronic_Publication)
+
+[Hill et al., used hidden Markov models to recover text obscured either by mosaic pixelization or a related tactic, e.g. Gaussian Blur](https://cseweb.ucsd.edu/~saul/papers/pets16-redact.pdf)
+
+[While Müller et al. do not explicitly tackle redaction, they discuss hidden information present in PDF documents, specifically PDF document revision information and author name metadata.](https://www.ndss-symposium.org/wp-content/uploads/ndss2021_1B-2_23109_paper.pdf)
+
+[The Australian Cyber Security Center analyzed Adobe Acrobat 2017’s redaction security and considered several features including encryption, CMap leaks, redactions of text metadata, images, revision metadata, and form metadata](https://www.cyber.gov.au/sites/default/files/2023-03/PROTECT%20-%20An%20Examination%20of%20the%20Redaction%20Functionality%20of%20Adobe%20Acrobat%20Pro%20DC%202017%20%28October%202021%29.pdf)
+
+[The National Security Agency’s redaction guide does not mention glyph positioning information but notes any underlying redacted text should be removed from the document before producing a PDF.](https://sgp.fas.org/othergov/dod/nsa-redact.pdf)
+
+[The primary predecessor to our work is Lopresti and Spitz ](https://www.cse.lehigh.edu/~lopresti/Publications/2004/hdp04a.pdf) which presents a manual technique for matching glyphs to a redaction’s width in a raster image of text.
+
+
+
 ### 26 Oct '23
 
 https://www.rijksoverheid.nl/onderwerpen/wet-open-overheid-woo
@@ -7,7 +76,7 @@ https://link.springer.com/chapter/10.1007/978-3-031-43849-3_28
 https://books.google.nl/books?hl=en&lr=&id=HK7YEAAAQBAJ&oi=fnd&pg=PA310&dq=redacted+text+recognition+&ots=vAhoTFLm48&sig=hN3cESzDT3y9vU7uMV9j54SpAX4&redir_esc=y#v=onepage&q=redacted%20text%20recognition&f=false
 
 
-#### meeting met Maarten en Gensi
+#### Meeting met Maarten en Gensi
 
 
 popluar, xpdf
