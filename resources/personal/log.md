@@ -1,5 +1,48 @@
 # Logbook
 
+### 3 Nov
+
+- Laatste check projectplan
+- Projectplan inleveren
+- ...
+
+### 2 Nov
+
+- Ochtend: stuur projectplan naar Maarten
+- PDF specifications bekijken 2
+- Feedback verwerken
+- Nogmaals opsturen indien nodig?
+- ...
+
+
+### 1 Nov
+
+- Time schedeling + course of action coming weeks
+- Write out projectplan v1
+- Literature search + read
+- Review projectplan
+- Write out projectplan v2
+- Literature search + read
+- Final projectplan check
+
+### 31 Oct
+
+- Think about the problem. Compile it based on findings.
+- Think about the possible solutions based on my findings.
+- Think about what I think I can achieve and how.
+- Think about what I want to achieve.
+- Formulate a research question
+- Formulate possible solution(s) for this questions
+- Think about the methods.
+- Think about the course of action.
+- Think about time schedeling
+
+Search for relevant literature when needed.
+
+### 30 Oct
+
+- Search for relevant literature and read it. Does it add to my project's research question or not? What kind of value does it add and is it relevant?
+
 ### 27 Oct '23
 
 #### (11:00-13:30) Research on PDF file extension: 
