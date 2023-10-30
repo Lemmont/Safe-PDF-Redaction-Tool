@@ -14,7 +14,6 @@
 - Nogmaals opsturen indien nodig?
 - ...
 
-
 ### 1 Nov
 
 - Time schedeling + course of action coming weeks
@@ -43,9 +42,87 @@ Search for relevant literature when needed.
 
 - Search for relevant literature and read it. Does it add to my project's research question or not? What kind of value does it add and is it relevant?
 
+Relevant literature that I found up till this point:
+
+1. [PDF redaction is broken by Glyph Positions](https://arxiv.org/abs/2206.02285v3)
+
+- adad
+
+2. [Forrester and Irwin discuss trivial redactions and unscrubbed metadata such as the Producer field of PDF documents but do not mention glyph positioning based deredaction](https://www.researchgate.net/publication/229014289_An_Investigation_into_Unintentional_Information_Leakage_through_Electronic_Publication): 5 citations.
+
+   - Advanced features; such as group editing, version control and multi-user authoring; leave metadata that is used to enable the collaborative features.
+
+   - > _Abstract: "This paper outlines the types of data that can be extracted from documents through the use of freely available tools. It has also outlined potential uses for this information from the point of view of a digital forensic investigator and for possible exploitation."_
+
+   - Hidden data in advanced document editing applications: author's name for authoring documents effectively. Hidden data is crucial for offering an advanced editing application [Byers. S about Information Leakage Caused by Hidden Data in Published Documents](https://sci-hub.se/https://ieeexplore.ieee.org/abstract/document/1281241)
+
+   - Same paper states that Byers discovered that in word documents retrieved from the internet, 50% had 10 to 50 hidden words, one third revealed between 50 and 500 words, and 10% had more thant 500 words.
+
+   - What information can be found?
+
+     1. Versions
+     2. Track Changes (made to a document by the various authors that edit the document. Comments.),
+     3. Metadata (about the author, the document and organisation): author's full name, manager name, company name, document keywords, template used, computer username, previous authors, printer details, date printed, created, modified, accessed, last saved by, revision numbers, revision comments, full path to the documents location.
+     4. Fast saves?
+     5. Password hashes.
+
+   - How to view metadata? -> **PDF METHODS?**
+
+   - What can data be used for?
+
+     1. Coroporate espionage
+     2. Identity Theft
+     3. Selling of Data
+     4. Discovery and reconnaissance (networks)
+
+   - Relevant literature that I found new:
+
+   [What you see is not what you get in the PDF document; What you see is what you store](https://journals.sagepub.com/doi/full/10.1177/1460458210397851#bibr3-1460458210397851) (2011)
+
+   [Scanning electronice documents for personally identifiable information](https://dl.acm.org/doi/abs/10.1145/1179601.1179608) (2006)
+
+   - _"A content stream in a PDF file is handled in a sequential manner, and therefore the images will be placed onto the page before the rectangle that masks the eyes on one of the images."_
+
+   - _"The images on page 5 of the document are all defined as XObjects. This is because the images are of a certain nature and therefore will be treated as external objects to the file. XObjects are one of five possible types of graphical objects within a PDF file, the other four being path objects, text objects, inline images, and shading objects (8.2). The mask of one of the images on page 5 will be made into a path object and therefore is not a part of the XObject itself."_
+
+3. [On security and Privacy of The PDF](https://www.ndss-symposium.org/wp-content/uploads/ndss2021_1B-2_23109_paper.pdf) (2021) (cited by 6)
+
+   - also talks about PDF basics!
+
+   - (page 11): hidden data in pdf documents:
+   - Evitable Metadata
+   - Revision recovery:
+     - _"However, we determined potential security issues in Acrobat Pro and and four other PDF editors, whereby we deleted the content (text or image). The removed content is not displayed anymore, but it is still contained in the file and can be extracted."_
+     - _"The PDF standard allows editing applications to modify existing documents while only appending to the file and leaving the original data intact. Whenever new content is added to the document, it is not simply inserted into the existing body section. Instead, a new body section is appended at the end of the PDF file containing new objects.30 This feature is called “incremental updates”. It enables authors, for example, to undo changes. However, it also enables third parties to restore previous versions of the document, which may not be desired in the context of privacy and document security. Especially when sensitive content is explicitly redacted/blackened in a document to be published, this can be dangerous"_
+     - Different pdf applications and their security with metadata and revision recovery.
+
+4. [An Examination of the
+   Redaction Functionality of
+   Adobe Acrobat Pro DC 2017](https://www.cyber.gov.au/sites/default/files/2023-03/PROTECT%20-%20An%20Examination%20of%20the%20Redaction%20Functionality%20of%20Adobe%20Acrobat%20Pro%20DC%202017%20%28October%202021%29.pdf)
+
+   - _"If the PDF document was created with Adobe Acrobat, Adobe Acrobat Distiller or Microsoft Word, the PDF Producer field will contain ‘Adobe PDF Library’, ‘Acrobat Distiller’ or‘Microsoft Word’ respectively. If the PDF Producer field contains something else, there is a chance that redaction of sensitive or private information might fail. Note that if the PDF document had been previously sanitised, the metadata would have been deleted and the PDF Producer field will be empty. "_
+
+5. [The National Security Agency’s redaction guide does not mention glyph positioning information but notes any underlying redacted text should be removed from the document before producing a PDF.](https://sgp.fas.org/othergov/dod/nsa-redact.pdf) (2005)
+
+   - _"The most common mistake is covering text with black."_
+   - _"Covering up parts of an image with separate graphics such as black rectangles, or making images ‘unreadable’ by reducing their size, has also been used for redaction of hardcopy printed materials."_
+   - **_"The way to avoid exposure is to ensure that sensitive information is not just visually hidden or made illegible, but is actually removed from the original document."_ **
+
+6. [Hill et al., used hidden Markov models to recover text obscured either by mosaic pixelization or a related tactic, e.g. Gaussian Blur](https://cseweb.ucsd.edu/~saul/papers/pets16-redact.pdf) (2016)
+
+   - Redaction through _mosaicing/pixelation_ and _blurring_.
+   - Simple but powerful class of statisitcal models can be used to recover both short and indefinitely long instances of redacted text.
+   - Redaction through these methods are **not** viable options.
+   - _"Both mosaicing and blurring are lossy, so they cannot, in general, be reversed to recover the original image. But if the original image has predictable regularities— as occur in text— then enough information may remain after filtering to recover the redacted text, or at least to narrow down its space of possibilities."_
+   - _"While we have yet to witness a large-scale attack on redacted text, it is important to recognize the widespread potential for abuse. Simple online searches return scores of images for redacted names, phone numbers, email addresses, passwords, credit card numbers, personal checks, private conversations, and other sensitive information. Mosaicing and blurring have also been used for the redaction of high-profile government documents and celebrity social media. It is self-evident that an attacker could exploit such sensitive information for malicious purposes (e.g., identity theft, blackmail)."_
+
+7. [The In/Visibilities of Code and the Aesthetics of Redaction](https://researchbank.swinburne.edu.au/file/c52fe75d-3c0c-4275-98be-62f7f2b8763c/1/PDF%20%28Published%20version%29.pdf) (2013) (cited by 1)
+
+   - _"By drawing material attention to what is withheld, the absent text becomes a central focus of perception, a curious sort of visibility"_
+
 ### 27 Oct '23
 
-#### (11:00-13:30) Research on PDF file extension: 
+#### (11:00-13:30) Research on PDF file extension:
 
 [Stackoverflow discussion on how to inspect the structure of PDF files](https://stackoverflow.com/questions/3549541/how-can-i-visually-inspect-the-structure-of-a-pdf-to-reverse-engineer-it)
 
@@ -53,7 +130,7 @@ Search for relevant literature when needed.
 
 [PDF 1.4 specifications](https://opensource.adobe.com/dc-acrobat-sdk-docs/pdfstandards/pdfreference1.4.pdf)
 
-#### (8:30-11:00) *Bland_EdactRay_2022.pdf* notes:
+#### (8:30-11:00) _Bland_EdactRay_2022.pdf_ notes:
 
 Security of PDF document depends on the specification. A **raster image** of the original document or a document type that contains text data for both the font and the layout of each character (**glyph**) on the page.
 
@@ -61,48 +138,49 @@ Text is rendered in numerous ways. An example is by use of a **text showing oper
 
 Paper introduces a intermediate representation; **a set of advance widths and glyph shifts** which are the sum of all the individual positioning operations applied to a glyph.
 
-Positional adjustments in *text space units* between glyphs. These units express **glyph shifts** where 1000 units almost always equals the point size of the fint times 1/72 of an inch. 
+Positional adjustments in _text space units_ between glyphs. These units express **glyph shifts** where 1000 units almost always equals the point size of the fint times 1/72 of an inch.
 
 Glyph advance widths and glyph shifts create a security concern:
+
 1. The precise width of the redaction can be used to eliminate potential redacted texts
 2. Any non-redacted glyph shifts conditioned on redacted glyphs can be used to eliminate
-potential redacted texts 
+   potential redacted texts
 
-> The width of a PDF redaction depends on glyph shifts. Without accounting for glyph shifts, redacted text guesses are imprecise and must account for error, reducing the potential of finding a unique match for redacted content. *The width of a PDF redaction depends on glyph shifts. Without accounting for glyph shifts, redacted text guesses are imprecise and must account for error, reducing the potential of finding a unique match for redacted content*
+> The width of a PDF redaction depends on glyph shifts. Without accounting for glyph shifts, redacted text guesses are imprecise and must account for error, reducing the potential of finding a unique match for redacted content. _The width of a PDF redaction depends on glyph shifts. Without accounting for glyph shifts, redacted text guesses are imprecise and must account for error, reducing the potential of finding a unique match for redacted content_
 
 ##### Glyph Shifts
 
-Glyph shifts in PDF document are dependent on the specific workflow from a *PDF producer* by the ISO 32000 PDF standard, and any software that may modify the PDF.
+Glyph shifts in PDF document are dependent on the specific workflow from a _PDF producer_ by the ISO 32000 PDF standard, and any software that may modify the PDF.
 
-**Independent glyph shifts** for a given character are not dependent on any other character, while **dependent glyph shifts** are dependent on some other charachter in the document in some way. These are called **glyph shifting schemes** that are created by a specific workflow. Independent schemes are *unadjusted* when there are no shifts on any character.
+**Independent glyph shifts** for a given character are not dependent on any other character, while **dependent glyph shifts** are dependent on some other charachter in the document in some way. These are called **glyph shifting schemes** that are created by a specific workflow. Independent schemes are _unadjusted_ when there are no shifts on any character.
 
-*Equivalence Classes. Before discussing these schemes further, we introduce the idea of width and shift equivalence classes. A shift equivalence class is a set of lists of glyphs of the same length with identical shift values. A width equivalence class is a set of glyphs and associated shifts with the same width*
+_Equivalence Classes. Before discussing these schemes further, we introduce the idea of width and shift equivalence classes. A shift equivalence class is a set of lists of glyphs of the same length with identical shift values. A width equivalence class is a set of glyphs and associated shifts with the same width_
 
 > The PDF specification does not include any specific signifiers for redacted text. However, residual specification information after redaction, such as glyph positions, can be used to reasonably rule out large numbers of candidate width and shift equivalence classes for redacted text. None of the prior words in this paragraph are in the width equivalence class of the word cat.
 
-*In an independent glyph shifting scheme, the security of a redaction may be considered dependent on the size of the width equivalence class indiscated by the PDF document’s residual glyph positioning information. That is, the positions of glyphs prior to and succeeding the redaction may leak the width of redacted text. The scheme’s specific glyph shifts can make a given width equivalence class leak more or less redacted information by making width of individual glyphs more or less unique.*
+_In an independent glyph shifting scheme, the security of a redaction may be considered dependent on the size of the width equivalence class indiscated by the PDF document’s residual glyph positioning information. That is, the positions of glyphs prior to and succeeding the redaction may leak the width of redacted text. The scheme’s specific glyph shifts can make a given width equivalence class leak more or less redacted information by making width of individual glyphs more or less unique._
 
-*Dependent Schemes.A dependent scheme is more dangerous to the security of redacted text than an independent scheme. In these schemes non-redacted glyph shifts can be dependent upon redacted glyph information, because the non-redacted glyph shifts can be determined before redaction*
+_Dependent Schemes.A dependent scheme is more dangerous to the security of redacted text than an independent scheme. In these schemes non-redacted glyph shifts can be dependent upon redacted glyph information, because the non-redacted glyph shifts can be determined before redaction_
 
-##### Protecting Redactions 
+##### Protecting Redactions
 
-> *"Edact-Ray protects vulnerable PDF redactions by first locating the nonexcising redactions and removing their underlying text from the PDF. We then adopt a userconfigurable level of information excisement by allowing users to optionally remove all non-redacted glyph shifts13 and optionally convert the font to a monospaced one, scaling the size to preserve readability. To protect excising redactions, Edact-Ray can round up the size of all spaces between two words to some width, 𝑛 × 𝑤, where 𝑛 is some number of characters and 𝑤 is width of a single character in the monospace font. Edact-Ray can also remove any rectangular draw commands from the PDF so that the width of the redaction cannot be recovered by examining the width of any graphical box drawn to represent the redaction."*
+> _"Edact-Ray protects vulnerable PDF redactions by first locating the nonexcising redactions and removing their underlying text from the PDF. We then adopt a userconfigurable level of information excisement by allowing users to optionally remove all non-redacted glyph shifts13 and optionally convert the font to a monospaced one, scaling the size to preserve readability. To protect excising redactions, Edact-Ray can round up the size of all spaces between two words to some width, 𝑛 × 𝑤, where 𝑛 is some number of characters and 𝑤 is width of a single character in the monospace font. Edact-Ray can also remove any rectangular draw commands from the PDF so that the width of the redaction cannot be recovered by examining the width of any graphical box drawn to represent the redaction."_
 
 (!) Monospace font?
 
 ##### Recommended practices
 
 > Redaction practices must account for concerns about document integrity. All the above measures
-modify the redacted document beyond simply removing text. In some contexts, particularly due
-to legal or regulatory reasons, this may not be acceptable. One of the main reasons for releasing
-redacted documents is to demonstrate transparency while still protecting sensitive information.
-Altering parts of the document outside the redaction alters this promise of authenticity.
+> modify the redacted document beyond simply removing text. In some contexts, particularly due
+> to legal or regulatory reasons, this may not be acceptable. One of the main reasons for releasing
+> redacted documents is to demonstrate transparency while still protecting sensitive information.
+> Altering parts of the document outside the redaction alters this promise of authenticity.
 
 > It is technically possible to fix a non-excising redaction by removing the redacted text. The effect would be the same as if the document were redacted by an excising redaction tool. However, this also raises the issue of authenticity of done by a third party (e.g. document repository operator), because this necessarily means modifying the original document without the author’s involvement. In cases where integrity requirements may be relaxed, the NSA-recommended practice of altering the original document to replace the redacted text with meaningless text, e.g. REDACTED, provides the highest level of security.
 
 > In cases where the underlying text may not be changed, we offer the following two suggestions.
-First, we note that redacting a name from a PDF is not secure. If a name occurs on a line of
-text, the entire line should be redacted, if possible, or care should be taken to ensure that enough of the surrounding words are redacted to make deredaction unlikely. Second, if redacting more text is not possible, the width of the redaction should be quantized to a fixed value, and any glyph shifts should be removed. While this may make the file less aesthetically pleasing, it is necessary for the security of redactions.
+> First, we note that redacting a name from a PDF is not secure. If a name occurs on a line of
+> text, the entire line should be redacted, if possible, or care should be taken to ensure that enough of the surrounding words are redacted to make deredaction unlikely. Second, if redacting more text is not possible, the width of the redaction should be quantized to a fixed value, and any glyph shifts should be removed. While this may make the file less aesthetically pleasing, it is necessary for the security of redactions.
 
 ##### Related work
 
@@ -118,17 +196,13 @@ text, the entire line should be redacted, if possible, or care should be taken t
 
 [The primary predecessor to our work is Lopresti and Spitz ](https://www.cse.lehigh.edu/~lopresti/Publications/2004/hdp04a.pdf) which presents a manual technique for matching glyphs to a redaction’s width in a raster image of text.
 
-
-
 ### 26 Oct '23
 
 https://www.rijksoverheid.nl/onderwerpen/wet-open-overheid-woo
 https://link.springer.com/chapter/10.1007/978-3-031-43849-3_28
 https://books.google.nl/books?hl=en&lr=&id=HK7YEAAAQBAJ&oi=fnd&pg=PA310&dq=redacted+text+recognition+&ots=vAhoTFLm48&sig=hN3cESzDT3y9vU7uMV9j54SpAX4&redir_esc=y#v=onepage&q=redacted%20text%20recognition&f=false
 
-
 #### Meeting met Maarten en Gensi
-
 
 popluar, xpdf
 donderdag planning inleveren.
