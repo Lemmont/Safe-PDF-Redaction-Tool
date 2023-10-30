@@ -120,6 +120,12 @@ Relevant literature that I found up till this point:
 
    - _"By drawing material attention to what is withheld, the absent text becomes a central focus of perception, a curious sort of visibility"_
 
+8. [Quantifying Information Leakage in Document Redaction](https://www.cse.lehigh.edu/~lopresti/Publications/2004/hdp04a.pdf) (2004) (cited by 13)
+
+9. [Toward an Extensible Framework for Redaction](https://seclab.illinois.edu/wp-content/uploads/2018/06/demetriou2018toward.pdf) (2018) (cited by 0) (2023) (cited by 0)
+
+10. [Towards Quantifying the Privacy of Redacted Text](https://link.springer.com/chapter/10.1007/978-3-031-28238-6_32)
+
 ### 27 Oct '23
 
 #### (11:00-13:30) Research on PDF file extension:
