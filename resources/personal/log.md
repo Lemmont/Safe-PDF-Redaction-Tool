@@ -27,14 +27,68 @@
 ### 31 Oct
 
 - Think about the problem. Compile it based on findings.
+	
+> Safe and reliable text redaction that does:
+	1. not just cover text with a black box
+	2. not leave relevant information in metadata (or any other part of the document)
+	3. not preserve the length of the redacted text, especially in cases where the redacted text represents a name, date, organisation or any other PII. 
+	4. not change or damage non-redacted text
+	5. keep in mind the glyph shifts and widths.
+	6. find a relevant replacement for the redacted text? 
+
 - Think about the possible solutions based on my findings.
+
+	1. Remove text, replace it with a relevant replacement text (standarize width, font etc.)
+	2. Remove metadata references
+	3. Remove information about glyph shifts: either change PDF font and shifts for non-redacted glyphs or remove them altogheter. 
+	4. Do not preserver original length, but make every redaction of PII of same length (or set of lengths) 
+	
+
 - Think about what I think I can achieve and how.
-- Think about what I want to achieve.
+
+	1. Create a super secure text redaction standard/method which prioritizes safety above maintaining.
+	2. Python (Pymupdf), Web based application?
+	3. Way to check/text my own method (X-ray etc.) 
+
 - Formulate a research question
+
+	*How can we design and develop a PDF text redaction tool (/method?) that effectively addresses security concerns, including the prevention of information leakage through glyph shifts and width equivalence classes, while preserving non-redacted text.*
+	
 - Formulate possible solution(s) for this questions
 - Think about the methods.
+
+	- Literture study: security concerns, security issues, possible solutions to these problems and relevant tool/research on checking and validating redaction safety/quality.
+	- Learn about the PDF extensions and the internals. Get to know the relevant and 'state-of-the-art' python libraries etc.
+	- Design my method based on findings
+	- Start creating and implementing my method. Make if useable
+	- Collect/create test documents for redaction and use them with my program. Test them using found 'safety checkers' and possible techniques produced by my me.
+	- Do something based on my findings.
+		
 - Think about the course of action.
+
+	(1) (mediocre)
+	- Literature study and PDF internals
+	- Practical implementation and testing of py libraries etc. and the manipuation of pdf files with these libraries and other means. 
+	- Write Thesis Part: context, safety concerns, problems, relevant literature etc.
+	
+	(2) (a lot of time)
+	- Design my own method based on findings
+	- Practical implementaion and testing 
+	
+	(3) (a lot of time)
+	- Practical implementation of design
+	- Testing While Implementing (TWI)
+	
+	(4) (few)
+	- Getting example documents
+	- Using example documents
+	- Checking safety of documents.
+	
+	(5) (few)
+	- Finalizing
+	
 - Think about time schedeling
+	~ 10 weeks
 
 Search for relevant literature when needed.
 
