@@ -2,14 +2,14 @@
 \label{sec:related_work}
 % what is the relevant literature associated with the research question? This often takes the form of a description of the “state-of-the-art”: a summary of results previously achieved by others and on which the research question builds.
 
-This research will build upon a great amount of existing relevant literature within the field of computer science, specifically in the domain of text redaction techniques, safety concerns and automation. 
+This research will build upon a great amount of existing literature within the field of computer science, specifically in the domain of text redaction techniques, safety concerns and automation. 
 
-A lot of work has previously been done on identifying security concerns related to PDF documents and instances where the security and redaction of Personal Identifiable Information (PII) has been compromised. Hidden information found in the document's version history, track changes, metadata and revision recovery are potential security compromises which can leak confidential information [ref, ref].
+\textbf{Hidden information}. A lot of work has previously been done on identifying security concerns related to PDF documents and instances where the security and redaction of Personal Identifiable Information (PII) has been compromised. Hidden information found in the document's version history, track changes, metadata and revision recovery are potential security compromises which can leak confidential information \cite{muller2021processing} \cite{forrester2005investigation} \cite{govAu2017}.
 
-Redaction through mosaicing and blurring, where text is significantly distorted and transformed such that it is unrecognizable for the eye, have been proven to not be viable techniques for text redaction. Due to predictable regularities in text enough information may remain to narrow down the possibilities or even to recover the redacted text [ref]. 
+\textbf{Mosaicing and blurring}.
+Redaction through mosaicing and blurring, where text is significantly distorted and transformed such that it is unrecognizable for the eye, have been proven to not be viable techniques for text redaction. Due to predictable regularities in text enough information may remain to narrow down the possibilities or even to recover the redacted text \cite{hill2016effectiveness}. 
 
-Redaction by masking text with a so called 'black box' has been proven to also have confidentiality issues related to both the correct implementation as to the remaining information after redaction. Many examples show that the black-box-redaction is prone to mistakes. Often text is only visually hidden or made illegible, but is not actually removed from the original document [ref, ref]. Furthermore, recent research has proven that redaction is broken by subpixel-sized horizontal shifts that can be recovered from both the redacted and non-redacted characters which can be used to effectively deredact first and last names [ref]. These findings affect also redactions where the text underneath the black box is removed from the document. 
-
-something about replacement options in text sanitization?
+\textbf{Masking}.
+Redaction by masking text with a so called 'black box' has been proven to also have confidentiality issues related to both the correct implementation as to the remaining information after redaction. Many examples show that the black-box-redaction is prone to mistakes. Often text is only visually hidden or made illegible, but is not actually removed from the original document \cite{national2005redacting} \cite{bland2022story}. Furthermore, recent research has proven that redaction is broken by subpixel-sized horizontal shifts that can be recovered from both the redacted and non-redacted characters which can be used to effectively deredact first and last names \cite{bland2022story}. These findings affect also redactions where the text underneath the black box is removed from the document. 
 
 
