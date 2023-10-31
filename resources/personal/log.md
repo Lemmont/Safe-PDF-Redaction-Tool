@@ -38,6 +38,19 @@
 
 Search for relevant literature when needed.
 
+[Generation of Replacement Options in Text Sanitization](https://aclanthology.org/2023.nodalida-1.30.pdf) (2023) (cited by 2) -> veel related work
+
+#### Some on automatic redaction/de-identification
+[Automatic de-identification of textual documents in the electronic health record: a review of recent research](https://pubmed.ncbi.nlm.nih.gov/20678228/)
+
+[C-sanitized: A privacy model for document redaction and sanitization](https://asistdl.onlinelibrary.wiley.com/doi/abs/10.1002/asi.23363) (cited by 87)
+
+[De-identification of patient notes with recurrent neural networks](https://academic.oup.com/jamia/article-abstract/24/3/596/2769353?redirectedFrom=fulltext)
+
+#### Case study
+
+[Anonymisation Models for Text Data: State of the Art, Challenges and Future Directions](https://aclanthology.org/2021.acl-long.323.pdf) (2021) (cited by 45)
+
 ### 30 Oct
 
 - Search for relevant literature and read it. Does it add to my project's research question or not? What kind of value does it add and is it relevant?
