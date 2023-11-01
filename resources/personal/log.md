@@ -16,6 +16,14 @@
 
 ### 1 Nov
 
+#### New literature found:
+
+https://arxiv.org/abs/2005.11687
+
+https://dl.acm.org/doi/abs/10.1145/3011141.3011217?casa_token=ZCptE4ZjDIcAAAAA:PpXSTSJLQctThzFji1x39w7aZDXo2H3xC-Sq2uM5PEQLueT4u-QRu4EdknJaXMAQakytOECB1YM
+
+https://dl.acm.org/doi/abs/10.1145/3558100.3563849?casa_token=eE5CQzUuBIYAAAAA:bCj423iY3fsr-uF8fMCSkwQG_NNJy6HCVZkNfQ_GQcgG47JrjvG0Zvf8DR7lZf_b7Fv8Rvfnd2M
+
 - Time schedeling + course of action coming weeks
 - Write out projectplan v1
 - Literature search + read
