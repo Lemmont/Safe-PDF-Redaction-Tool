@@ -16,6 +16,10 @@
 
     adresses subpixel-sized horizontal shifts (Glyph Positions).
 
+[The primary predecessor to our work is Lopresti and Spitz ](https://www.cse.lehigh.edu/~lopresti/Publications/2004/hdp04a.pdf)
+
+    to be added...
+
 [Forrester and Irwin discuss trivial redactions and unscrubbed metadata such as the Producer field of PDF documents but do not mention glyph positioning based deredaction](https://www.researchgate.net/publication/229014289_An_Investigation_into_Unintentional_Information_Leakage_through_Electronic_Publication) (5 cites/2005)
 
     adresses unscrubbed metadata and trivial redactions (just a black box masking text).
@@ -31,3 +35,15 @@
 [Hill et al., used hidden Markov models to recover text obscured either by mosaic pixelization or a related tactic, e.g. Gaussian Blur](https://cseweb.ucsd.edu/~saul/papers/pets16-redact.pdf) (2016)
 
     adresses that redaction through mosaicing/pixelation and blurring is broken by hidden Markov Models. Not a viable option.
+
+[What you see is not what you get in the PDF document; What you see is what you store](https://journals.sagepub.com/doi/full/10.1177/1460458210397851#bibr3-1460458210397851)
+
+    adresses redacted text often not being deleted but just a black box masking it.
+
+### For possible solution
+
+[Toward an Extensible Framework for Redaction](https://seclab.illinois.edu/wp-content/uploads/2018/06/demetriou2018toward.pdf) (2018) (cited by 0) (2023) (cited by 0)
+
+    to be added...
+
+### For possible testing
