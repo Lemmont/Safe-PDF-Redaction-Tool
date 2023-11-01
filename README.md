@@ -8,7 +8,9 @@ Thesis project by Lennaert Feijtes as part of the 'afstudeerproject' course in t
 
 **[The Github Repo](https://github.com/Lemmont/Safe-PDF-Redaction-Tool)**
 
-**[The overleaf project of my Thesis](https://www.overleaf.com/1479247793gmrjdnkkrdrk#f9c645)**
+**[The Overleaf Project of my Thesis](https://www.overleaf.com/1479247793gmrjdnkkrdrk#f9c645)**
+
+**[Projectplan van dit onderzoek](https://github.com/Lemmont/Safe-PDF-Redaction-Tool/blob/main/latex/projectplan_first_draft_lennaert_feijtes.pdf)**
 
 **[My log where I report findings](https://github.com/Lemmont/Safe-PDF-Redaction-Tool/blob/main/resources/personal/log.md)**
 
