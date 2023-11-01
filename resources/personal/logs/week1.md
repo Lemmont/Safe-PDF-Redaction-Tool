@@ -8,6 +8,20 @@
 
 4. Finish _projectplan_.
 
+## Code stuff
+
+https://pypi.org/project/fpdf2/
+
+    Simple & fast PDF generation for Python
+
+https://pypi.org/project/PyMuPDF/
+
+    A high performance Python library for data extraction, analysis, conversion & manipulation of PDF (and other) documents.
+
+https://pypdf.readthedocs.io/en/latest/
+
+    pypdf is a free and open source pure-python PDF library capable of splitting, merging, cropping, and transforming the pages of PDF files. It can also add custom data, viewing options, and passwords to PDF files. pypdf can retrieve text and metadata from PDFs as well.
+
 ## Literature
 
 ### Security Concerns
