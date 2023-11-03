@@ -25,6 +25,10 @@ https://pypdf.readthedocs.io/en/latest/
 
     pypdf is a free and open source pure-python PDF library capable of splitting, merging, cropping, and transforming the pages of PDF files. It can also add custom data, viewing options, and passwords to PDF files. pypdf can retrieve text and metadata from PDFs as well.
 
+https://en.wikipedia.org/wiki/PDF/A
+
+    pdf ISO specialize for use in archiving and long-term preservation. Good foor accesibility.
+
 ## Literature
 
 ### Security Concerns
@@ -57,15 +61,23 @@ https://pypdf.readthedocs.io/en/latest/
 
     adresses redacted text often not being deleted but just a black box masking it.
 
+### More on Woo and legality
+
+[Enticing Local Governments to Produce FAIR Freedom of Information Act Dossiers](https://link.springer.com/chapter/10.1007/978-3-031-28241-6_25)
+
 [Wooverheid](https://wooverheid.nl/2023/09/22/niet-zo-toegankelijke-besluiten/)
 
 [Openbaarheid van bestuur kan vrijwel kosteloos beter](https://esb.nu/openbaarheid-van-bestuur-kan-vrijwel-kosteloos-beter/)
 
 [Stukken vrijgegeven onder de Woo Niet goed toegankelijk](https://magazines.od-online.nl/od-28-2023/niet-goed-toegankelijk)
 
-### More on Woo and legality
+[Detection of Redacted Text in Legal Documents](https://link.springer.com/chapter/10.1007/978-3-031-43849-3_28)
 
-[Enticing Local Governments to Produce FAIR Freedom of Information Act Dossiers](https://link.springer.com/chapter/10.1007/978-3-031-28241-6_25)
+[Overheid woo](https://www.rijksoverheid.nl/onderwerpen/wet-open-overheid-woo/vraag-en-antwoord/hoofdlijnen-woo)
+
+[Woo artikel 2.4 zorgplicht en openbaaring](https://nkoo.nl/woo/artikel-2-4-zorgplicht-en-openbaarmaking/)
+
+[autoriteitpersoonsgegevens](https://autoriteitpersoonsgegevens.nl/)
 
 ### For possible solution
 
