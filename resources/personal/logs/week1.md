@@ -5,8 +5,11 @@
 1. Formulate problem for Thesis.
 2. Formulate first version of _related work_ section for Thesis.
 3. Research possible solutions? Just look at literature and re-read already found stuff
-
 4. Finish _projectplan_.
+
+## Findings
+
+Focus on one specific field of text redaction in PDF files: Wet openbare overheid field?
 
 ## Code stuff
 
@@ -54,6 +57,17 @@ https://pypdf.readthedocs.io/en/latest/
 
     adresses redacted text often not being deleted but just a black box masking it.
 
+[Wooverheid](https://wooverheid.nl/2023/09/22/niet-zo-toegankelijke-besluiten/)
+
+[Openbaarheid van bestuur kan vrijwel kosteloos beter](https://esb.nu/openbaarheid-van-bestuur-kan-vrijwel-kosteloos-beter/)
+
+[Stukken vrijgegeven onder de Woo Niet goed toegankelijk](https://magazines.od-online.nl/od-28-2023/niet-goed-toegankelijk)
+
+
+### More on Woo and legality
+
+[Enticing Local Governments to Produce FAIR Freedom of Information Act Dossiers](https://link.springer.com/chapter/10.1007/978-3-031-28241-6_25)
+
 ### For possible solution
 
 [Toward an Extensible Framework for Redaction](https://seclab.illinois.edu/wp-content/uploads/2018/06/demetriou2018toward.pdf) (2018) (cited by 0) (2023) (cited by 0)
@@ -70,4 +84,4 @@ https://pypdf.readthedocs.io/en/latest/
 
     finds bad redactions in PDF. Both non-excising and excising redactions. Need to ask for code.
 
-> *If you are a scholart, email me and I can give you the full code and datasets on valid scientific request, for reproduction purposes and to make your research easier!There are also lots of small easter eggs buried around this repository that may help future research.*
+> _If you are a scholart, email me and I can give you the full code and datasets on valid scientific request, for reproduction purposes and to make your research easier!There are also lots of small easter eggs buried around this repository that may help future research._
