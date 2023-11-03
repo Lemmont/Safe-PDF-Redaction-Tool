@@ -1,19 +1,5 @@
 # Logbook
 
-### 3 Nov
-
-- Laatste check projectplan
-- Projectplan inleveren
-- ...
-
-### 2 Nov
-
-- Ochtend: stuur projectplan naar Maarten
-- PDF specifications bekijken 2
-- Feedback verwerken
-- Nogmaals opsturen indien nodig?
-- ...
-
 ### 1 Nov
 
 #### New literature found:
