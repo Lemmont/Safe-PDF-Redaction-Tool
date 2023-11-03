@@ -61,3 +61,13 @@ https://pypdf.readthedocs.io/en/latest/
     to be added...
 
 ### For possible testing
+
+[X-Ray Bad Redaction Detector](https://github.com/freelawproject/x-ray)
+
+    finds bad redactions in PDF. Non-excising redactions!
+
+[Edact-Ray Tool Suite](https://github.com/maxwell-bland/deredaction)
+
+    finds bad redactions in PDF. Both non-excising and excising redactions. Need to ask for code.
+
+> *If you are a scholart, email me and I can give you the full code and datasets on valid scientific request, for reproduction purposes and to make your research easier!There are also lots of small easter eggs buried around this repository that may help future research.*
