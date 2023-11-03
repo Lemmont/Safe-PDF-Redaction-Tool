@@ -2,10 +2,10 @@
 
 ## Tasks
 
-1. Formulate problem for Thesis.
-2. Formulate first version of _related work_ section for Thesis.
-3. Research possible solutions? Just look at literature and re-read already found stuff
-4. Finish _projectplan_.
+1. ~~Formulate problem for Thesis.~~
+2. ~~Formulate first version of _introduction_ section for Thesis.~~
+3. ~~Research possible solutions? Just look at literature and re-read already found stuff~~
+4. ~~Finish _projectplan_.~~
 
 ## Findings
 
@@ -62,7 +62,6 @@ https://pypdf.readthedocs.io/en/latest/
 [Openbaarheid van bestuur kan vrijwel kosteloos beter](https://esb.nu/openbaarheid-van-bestuur-kan-vrijwel-kosteloos-beter/)
 
 [Stukken vrijgegeven onder de Woo Niet goed toegankelijk](https://magazines.od-online.nl/od-28-2023/niet-goed-toegankelijk)
-
 
 ### More on Woo and legality
 
