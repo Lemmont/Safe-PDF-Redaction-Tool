@@ -17,6 +17,17 @@
 
 ## Findings
 
+#### Maandag 6-11
+
+PDF specifications 9.5 & 9.6; simple fonts. (p.253)
+Font types: distinguished by the **SubType** entry in the font dictonary.
+
+Type 0, Type 1 (Type1 and MMType1), Type3, TrueType, CIDFon(CIDFontType0, CIDFontType2)
+
+Different fonts, different internals.
+
+page 111, 8 graphics
+
 ## Literature
 
 ## Possible solutions
