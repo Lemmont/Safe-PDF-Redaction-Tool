@@ -1,0 +1,25 @@
+\chapter{Design}
+
+\section{Portable Document Format}
+In the digital age, Portable Document Format (PDF) have become an integral part of our information ecosystem. These versatile file formats play a pivotal role in the dissemination, preservation and exchange of textual and visual information. In the context of text redaction, it is essential to consider the specific challenges and opportunities presented by the technical structure and components that make up a PDF and highlight the relevant aspects for our text redaction tool design.
+\subsection{Reading a PDF}
+A PDF document can be split into 4 distinct parts: 
+\\\\
+\textbf{Header}. The header of a PDF document serves as its starting point. It contains the critical information about the file which is essential for identifying the PDF format and ensuring compatibility with PDF readers. \\
+\textbf{Trailer}. The trailer is found at the end of the document and provides essential information for reading and processing the document. It includes the number of entries in the cross-reference table. It references to the root object of the document's catelog, which contains information about the document's structure, outlines and elements. A reference to the document's information dictonary, which may include metadata about the document. Finally it may include additional information about encryption and digital signatures if present. \\
+\textbf{Cross-Reference Table(Xref)}. The Cross-Reference Table maintains a record of the location and structure of all objects within the PDF. The Xref table enables efficient random access and editing of the document. It lists the objects, their byte offsets within the file and information about whether an object is in use of has been deleted. 
+\\\\
+\textbf{Body}. The body is where the actual content resides. It includes everything that is visible within the document. This includes text, images, graphical elements, forms and more. The content of a PDF is organized into objects which reference each other to make the document. 
+\\\\
+\textbf{TODO: image displaying an example object for reference}
+\\\\
+Every object is enclosed by the delimiters \textit{obj} and \textit{endobj}, has a specific type which is used to store and manage a specific type of content or resource, and has a unique identifier which is used to reference to it. Content can be provided as a string or as a stream. A stream is enclosed by \textit{stream} and \textit{endstream} and are used for more efficient storage and retrieval of objects i.e. multiple small objects are grouped together in one single stream. A stream can be prefaced with additional information which tells something about the stream, such as the length (in bytes) or the encoding used. Furthermore, streams can optionally be compressed \textbf{to be added...}
+\\\\
+There are two types of objects. Indirect objects have their content seperated from their reference in the PDF, making the content easy to update or replace without changing the reference to the object. Direct objects have their content directly embedded within the document stream. Most objects are stored as indirect objects. 
+\\\\
+Objects often have hierarchical relationships which define the structure and layout of the document. 
+
+\subsection{Interpreting a PDF}
+\subsection{Manipulating a PDF}
+
+\section{A new redaction method?}

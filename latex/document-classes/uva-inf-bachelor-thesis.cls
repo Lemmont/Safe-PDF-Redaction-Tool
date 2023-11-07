@@ -21,7 +21,7 @@
 \RequirePackage[sf]{titlesec}
 \RequirePackage{url}
 \RequirePackage[pdfusetitle]{hyperref}
-\RequirePackage[scale={0.7,0.8}]{geometry}
+\RequirePackage[a4paper, left=1.2in, right=1.2in, top=0.4in, bottom=1in]{geometry}
 
 \def\supervisors#1{\gdef\@supervisors{#1}}
 \def\signedby#1{\gdef\@signedby{#1}}
