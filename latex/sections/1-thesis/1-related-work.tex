@@ -1,11 +1,13 @@
 \chapter{Related work}
 
-\cite{bland2022story} presents a method for breaking PDF text redaction using glyph positions; non-redacted character positioning information. In particular, subpixel-sized horizontal shifts in both the redacted and non-redacted characters can be recovered and used to effectively deredact sensitive information such as names. Breaking text-redaction schemes relies on knowing the position of characters on the page, something that is important when redacting directly in a PDF instead of scanning and then OCR-ing documents. 
+\cite{bland2022story} presents a method for breaking PDF text redaction using glyph positions; non-redacted character positioning information. In particular, subpixel-sized horizontal shifts in both the redacted and non-redacted characters can be recovered and used to effectively deredact sensitive information such as names. Breaking text-redaction schemes relies on knowing the position of characters on the page, something that is important when redacting directly in a PDF instead of scanning and then OCR-ing documents. \textbf{to be added/edited...}
 \\\\
 Redaction through mosaicing and blurring where text is significantly distorted and transformed such that it is unrecognizable for the eye are popular, especially for images shared through social media. Mosaicing (pixelization) and blurring have been proven to not be viable techniques for text redaction. Due to particular regularities in text, enough information may remain to narrow down the possibilities or even to recover the redacted text \cite{hill2016effectiveness}. A simple but powerful class of statistical models, Hidden Markov Models, can be used to recover both short and indefinitely long instances of redacted text. HMMs are used to reover sequences of characters from images of redacted text. 
 \\\\
-\textbf{example of how blurring and mosaicing is compromised in image}
+\textbf{TODO: example of how blurring and mosaicing is compromised in image}
 \\\\
 Trivial redactions \cite{forrester2005investigation}, where text is obscured visually by the use of black boxes but the underlying content remains intact, often become the subject of ridicule and mockery. There are many examples of embarrassing redaction failures \cite{failures2019} that compromise the confidentiality of  sensitive information. Various tools have been developed to detect improper text redaction, such as the X-Ray Tool \cite{Xray2021}.
 \\\\
 Besides trivial redactions, other sensitive information may still be hidden in a document after processing or redaction \cite{muller2021processing}. Advanced features such as group editing, version control and multi-user authoring leave hidden information \cite{forrester2005investigation}; versions, track changes and metadata. \textbf{to be added more...}
+\\\\
+\textbf{to be added...}
