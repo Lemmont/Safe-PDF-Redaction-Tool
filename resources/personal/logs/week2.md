@@ -17,6 +17,22 @@
 
 ## Findings
 
+#### Woensdag 8-11
+
+User space -> device space : current transformation matrix
+
+Length of a unit along both the x and y axes are set by the **userunit** entry in the page dictionary. If not present or supported, the default value of 1/72 inch is used (**default user space**). A point.
+
+Text space => text space -> user spae : text matrix
+Character glpyhs in a font => glyph space -> text space : font matrix (for most type of fonts, this matrix shall be predefind to map 1000 units of glyph space to 1 unit of text space; for type 3 fonts, the font matrix shall be given in the font dictionary).
+
+Images => image space -> user space : predefined and cannot change.
+
+![Relationships among coordinate systems](image-1.png)
+
+Transformation matrix has six number [a, b, c, d, e, f]
+(p. 118) has some standard matrices.
+
 #### Dinsdag 7-11
 
 I need to write a PDF stream command interpreter to display the PDF visually in a, for example, html/css format.
