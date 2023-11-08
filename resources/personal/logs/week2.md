@@ -33,6 +33,8 @@ Images => image space -> user space : predefined and cannot change.
 Transformation matrix has six number [a, b, c, d, e, f]
 (p. 118) has some standard matrices.
 
+Nog veel meer over PDF specification gerelateerd aan de verschillende operators die je kan tegenkomen. Meeste staat in mijn **main.py** notebook.
+
 #### Dinsdag 7-11
 
 I need to write a PDF stream command interpreter to display the PDF visually in a, for example, html/css format.
