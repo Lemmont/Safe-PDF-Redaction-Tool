@@ -17,6 +17,18 @@
 
 ## Findings
 
+#### Vrijdag 10-11
+
+##### Notes: Story Beyond the Eye: Glyph Positions Break PDF Text Redaction
+
+- _It is well known that the width of the characters in a proportional-width font can leak information about redacted text However, we find PDF files include sub-pixel sized character position shifts, which can leak more information about redacted text than width alone_
+
+- _We discovered methods for breaking redactions occurring on documents processed by optical character recognition (OCR) software and find that rasterizing a document (converting the PDF to an image) increases the security of redactions but does not remove information leaks_
+
+- *We also find a typical PDF document authored in Microsoft Word leaks about 13 bits of information about a redacted surname. This
+is enough for attacker to consistently identify a single individual among 8,000 candidates (say, employees at a company or potential confidential informants in a gang), or ≈500 potential first initial, surname pairs from the 3.9 million possible given US census and Social Security Administration
+data.*
+
 #### Woensdag 8-11
 
 User space -> device space : current transformation matrix
