@@ -25,9 +25,31 @@
 
 - _We discovered methods for breaking redactions occurring on documents processed by optical character recognition (OCR) software and find that rasterizing a document (converting the PDF to an image) increases the security of redactions but does not remove information leaks_
 
-- *We also find a typical PDF document authored in Microsoft Word leaks about 13 bits of information about a redacted surname. This
-is enough for attacker to consistently identify a single individual among 8,000 candidates (say, employees at a company or potential confidential informants in a gang), or ≈500 potential first initial, surname pairs from the 3.9 million possible given US census and Social Security Administration
-data.*
+- _We also find a typical PDF document authored in Microsoft Word leaks about 13 bits of information about a redacted surname. This
+  is enough for attacker to consistently identify a single individual among 8,000 candidates (say, employees at a company or potential confidential informants in a gang), or ≈500 potential first initial, surname pairs from the 3.9 million possible given US census and Social Security Administration
+  data._
+
+- _PDF redactions where the set of candidates may be reasonably constrained, e.g. a redaction of a
+  politician’s name, are not secure. Redactions of individuals’ names where no other adjacent
+  words are redacted are not secure._
+
+raster image vs document with text data for both the font and the layout of each character (glyph) on the page. (effect of rasterization on redaction information leaks 7.1)
+
+- TJ operator (as I have already read about).
+
+- positional adjustments: displace character with respect to a default position; a fixed offset from the previous charachter equivalent to the advance width of the previous charachter defined elsewhere in the PDF document. PA == glyph shift expressed in text space units
+
+- _most PDF redaction tools replace text selected for redaction with a single large shift of the same width as the redacted text showing operator_; The precise width of the redaction can be used to eliminate potential redacted texts (1) and Any non-redacted glyph shifts conditioned on redacted glyphs can be used to eliminate
+  potential redacted texts (2)
+
+- _However, residual
+  specification information after redaction, such as glyph positions, can be used to reasonably rule
+  out large numbers of candidate width and shift equivalence classes for redacted text._
+
+- Independent scheme: scurity of a redaction dependent on the size of the width equivalence class indicated by the PDF docuement's residual glyph positioning information.
+
+> We have also been informed that in some contexts there are (legal) restrictions on changing
+> the glyphs or glyph positioning of a redacted document. **??**
 
 #### Woensdag 8-11
 
