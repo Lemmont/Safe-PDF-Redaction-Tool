@@ -3,8 +3,8 @@
 ## Tasks
 
 1. Reformulate research question (incorporate feedback Maarten)
-2. Work out concept **_introduction_ and _related work_** for Thesis
-3. Play around with PDF manipulation
+2. ~~Work out concept **_introduction_ and _related work_** for Thesis~~
+3. ~~Play around with PDF manipulation~~
 4. Search for more literature. Explore!
 
    - Problem: more on OCR and scanning for better description of contextual problem
