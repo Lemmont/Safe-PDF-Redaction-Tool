@@ -16,7 +16,15 @@
 
 ### 13-11:
 
-a
+PyMuPDF redaction method does NOT update the cmap; old charachters which may no longer be present in the PDF are not removed!
+
+NEW IDEA: focus on TrueType fonts (apple, microsoft fonts), that are also frequently used in Word, since that is the main text editor used by bureacrats in the Netherlands (according to Maarten Marx).
+
+Handeling other font types, especially font types which have cmaps is very difficult to handle right now. Requires a lot of work.
+
+UPDATE: seems to be working with truetype fonts (calibri) where mapping (widths) of charachters are removed if not used.
+
+Issues related to inserted text positioning which need to be handled.
 
 ## Literature
 
