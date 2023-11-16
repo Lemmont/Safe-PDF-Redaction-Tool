@@ -14,6 +14,16 @@
 
 ## Findings
 
+### 16-11:
+
+Gland:
+
+> *The glyph shifts present in a PDF document are dependent on the specific workflow used to produce the PDF document. This includes an originating software, called the PDF producer by the ISO 32000 PDF standard [19], and any software that may modify the PDF file contents thereafter,
+including, for example, a redaction tool. A given workflow creates a specific pattern of glyph shifts,
+determining, in part, the security of any redacted text* (p. 4)
+
+Microsoft Word "Save as a PDF" have a class of dependent schemes. Word Desktop 2007 to 2016 use a different scheme then Word desktop 2019 to present.
+
 ### 15-11:
 
 Worked a lot on trying things with PDF.
