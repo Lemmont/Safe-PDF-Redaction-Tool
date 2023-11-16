@@ -18,11 +18,35 @@
 
 Gland:
 
-> *The glyph shifts present in a PDF document are dependent on the specific workflow used to produce the PDF document. This includes an originating software, called the PDF producer by the ISO 32000 PDF standard [19], and any software that may modify the PDF file contents thereafter,
-including, for example, a redaction tool. A given workflow creates a specific pattern of glyph shifts,
-determining, in part, the security of any redacted text* (p. 4)
+> _The glyph shifts present in a PDF document are dependent on the specific workflow used to produce the PDF document. This includes an originating software, called the PDF producer by the ISO 32000 PDF standard [19], and any software that may modify the PDF file contents thereafter,
+> including, for example, a redaction tool. A given workflow creates a specific pattern of glyph shifts,
+> determining, in part, the security of any redacted text_ (p. 4)
 
 Microsoft Word "Save as a PDF" have a class of dependent schemes. Word Desktop 2007 to 2016 use a different scheme then Word desktop 2019 to present.
+
+Dependent schemes accumalte a **What You See Is What You Get** error measurement for each glyph from left to right across each line of text.
+
+**If redacted content is
+not removed from a Word document before running “Save as PDF”, redacted glyph positioning
+information affects the accumulated error value. Thus information about the content of a redaction
+is leaked into the shifts applied to non-redacted characters.**
+
+**A majority of the redaction tools from
+Section 3 preserved all non-redacted glyph shifts.**
+
+> Changing a character inside of
+> a Microsoft Word document splits the internal representation of the text fragment containing the
+> character into two fragments.
+
+> In cases where integrity requirements may be relaxed, the NSA-recommended practice of altering
+> the original document to replace the redacted text with meaningless text, e.g. REDACTED, provides
+> the highest level of security.
+
+Thus:
+
+- Remove to-be-redacted-text from document (directly edit/remove the command)
+- Replace it with a text which preserves semantic context/meaning and make it a fixed width.
+- Most important: DO NOT KEEP THE SAME WIDTH AS THE ORIGNAL TEXT!
 
 ### 15-11:
 
