@@ -7,19 +7,28 @@ A PDF document can be split into 4 distinct parts:
 \\\\
 \textbf{Header}. The header of a PDF document serves as its starting point. It contains the critical information about the file which is essential for identifying the PDF format and ensuring compatibility with PDF readers. \\
 \textbf{Trailer}. The trailer is found at the end of the document and provides essential information for reading and processing the document. It includes the number of entries in the cross-reference table. It references to the root object of the document's catelog, which contains information about the document's structure, outlines and elements. A reference to the document's information dictonary, which may include metadata about the document. Finally it may include additional information about encryption and digital signatures if present. \\
-\textbf{Cross-Reference Table(Xref)}. The Cross-Reference Table maintains a record of the location and structure of all objects within the PDF. The Xref table enables efficient random access and editing of the document. It lists the objects, their byte offsets within the file and information about whether an object is in use of has been deleted. 
-\\\\
+\textbf{Cross-Reference Table(Xref)}. The Cross-Reference Table maintains a record of the location and structure of all objects within the PDF. The Xref table enables efficient random access and editing of the document. It lists the objects, their byte offsets within the file and information about whether an object is in use of has been deleted. \\
 \textbf{Body}. The body is where the actual content resides. It includes everything that is visible within the document. This includes text, images, graphical elements, forms and more. The content of a PDF is organized into objects which reference each other to make the document. 
 \\\\
 \textbf{TODO: image displaying an example object for reference}
 \\\\
-Every object is enclosed by the delimiters \textit{obj} and \textit{endobj}, has a specific type which is used to store and manage a specific type of content or resource, and has a unique identifier which is used to reference to it. Content can be provided as a string or as a stream. A stream is enclosed by \textit{stream} and \textit{endstream} and are used for more efficient storage and retrieval of objects i.e. multiple small objects are grouped together in one single stream. A stream can be prefaced with additional information which tells something about the stream, such as the length (in bytes) or the encoding used. Furthermore, streams can optionally be compressed \textbf{to be added...}
+Every object is enclosed by the delimiters \textit{obj} and \textit{endobj}, has a specific type which is used to store and manage a specific type of content or resource, and has a unique identifier which is used to reference to it. Content can be provided as a string or as a stream. A stream is enclosed by \textit{stream} and \textit{endstream} and are used for more efficient storage and retrieval of objects i.e. multiple small objects are grouped together in one single stream. A stream can be prefaced with additional information which tells something about the stream, such as the length (in bytes) or the encoding used.
 \\\\
-There are two types of objects. Indirect objects have their content seperated from their reference in the PDF, making the content easy to update or replace without changing the reference to the object. Direct objects have their content directly embedded within the document stream. Most objects are stored as indirect objects. 
+There are two types of objects. Indirect objects have their content separated from their reference in the PDF, making the content easy to update or replace without changing the reference to the object. Direct objects have their content directly embedded within the document stream. Most objects are stored as indirect objects. 
 \\\\
-Objects often have hierarchical relationships which define the structure and layout of the document. 
+Objects often have hierarchical relationships which define the structure and layout of the document. The catalog provides the start point for reading a PDF document. The catalog references to different objects, from which the \textit{pages} object is especially important. The pages object acts as a root node of all pages and references to all page objects which together make up the actual document. The page objects act as children of the root node (pages objects). \\
+Each page object has information about the page it represents. It defines the size of the page, which resources it uses and the actual content it displays among all things. Font information, images and complex graphic elements are referenced through the \textit{resources} object, which in turn are used by the \textit{contents} object to construct elements of the page.
+\\\\
+The actual contents of the page are often embedded through a stream. A stream can consist of many operators with operands which may also reference information through the resources object which it is linked by through the page object.
+\\\\
+\textbf{image: simple example of stream object}
+\\\\
+\textbf{example about text and fonts which are specific for this study}
 
 \subsection{Interpreting a PDF}
+To be able to understand, interact and change a PDF document, it first must be interpreted what is read. Content in a PDF is not just in there, but it is defined how it is rendered by a sequence of operations. To properly work with PDF its contents must be dissected in structures which enable easy manipulation.
+
 \subsection{Manipulating a PDF}
+To redact text in a PDF document it must be manipulated. Streams have to be adapted; text removed, positions changed, font changed etc. 
 
 \section{A new redaction method?}
