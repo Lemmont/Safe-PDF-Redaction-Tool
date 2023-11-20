@@ -9,6 +9,7 @@ def main():
     root = reader.get_root_object()
     pagesObj = reader.get_pages_object(root['Pages'])
     pagesDoc = reader.get_pages(pagesObj['Kids'])
+
     # page 6
     page_content = reader.get_page_content(pagesDoc[6])
     page_fonts = {6: reader.get_page_fonts(pagesDoc[6])}
