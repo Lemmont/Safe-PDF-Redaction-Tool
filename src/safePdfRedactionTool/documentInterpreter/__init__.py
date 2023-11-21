@@ -4,10 +4,11 @@ import re
 import codecs
 
 class DocumentInterpreter:
-    def __init__(self, document: fitz.Document, pages: Dict[int, fitz.Page], fonts: Dict[int, str]):
+    def __init__(self, document: fitz.Document, pages: Dict[int, fitz.Page], fonts: Dict[int, str], contents):
         self.doc: fitz.Document = document
         self.pages: Dict[int, any] = pages # TO BE EDITED
         self.fonts: Dict[int, Dict[str, any]] = fonts # TO BE EDITED
+        self.contents = contents
 
     def parse_character_mapping(self, page_fonts: Dict[str, any]):
         """

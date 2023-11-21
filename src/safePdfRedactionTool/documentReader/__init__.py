@@ -124,7 +124,7 @@ class DocumentReader:
             :return: all BT...ET sections from the content_stream of the page
         """
         import re
-        import codecs
+
         content_stream = page_content['Stream']
 
         # Get all text elements (BT...ET) from content stream

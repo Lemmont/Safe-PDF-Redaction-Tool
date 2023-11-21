@@ -15,7 +15,7 @@ class DocumentManipulator:
         self.text_elements: Dict[int, Dict[Tuple[float, float], any]] = text_elements # {page_ref: {(x, y), text_info}}
         self.edits_made = {}
 
-    def remove_text(self, page, index, text_element) -> bool:
+    def remove_text(self, page, content_obj, index, text_element) -> bool:
         """
             Remove 'text_element' from document
 
@@ -39,7 +39,7 @@ class DocumentManipulator:
         match = text_info['match']
 
         # Get text stream of page
-        text_stream = self.text_streams[page]
+        text_stream = self.text_streams[page][content_obj]
         old_content = text_stream[index]
 
         new_string = ""
@@ -58,11 +58,11 @@ class DocumentManipulator:
         self.text_streams[page][index] = new_string
 
         # Update local text_elements
-        self.text_elements[page].pop(cords)
+        self.text_elements[page][content_obj].pop(cords)
 
         # Update edits_made
         print("OK", len(old_content), len(new_string), check)
-        self.edits_made[page] = {index: {old_content: text_stream[index]}}
+        self.edits_made[page] = {content_obj: {index: {old_content: new_string}}}
 
         return True
 
@@ -74,16 +74,15 @@ class DocumentManipulator:
             Update the document with the local edits; content_streams, metadata, font etc.
         """
         print(self.edits_made)
-        for page_contents in self.edits_made.items():
-            page = page_contents[0]
-            old_content = str(self.pages[page]['Stream'])
-            #print(old_content)
-            for new_stream_content in page_contents[1].items():
-                 new_content = ""
-                 for item in new_stream_content[1].items():
-                    print(len(item[0]), len(item[1]))
-                    new_content = bytes(old_content.replace(item[0], item[1]), "latin-1")
-                    self.doc.update_stream(17, new_content)
+        for page_edits in self.edits_made.items():
+            for content_stream in page_edits[1].items():
+                old_content = str(self.pages[page_edits[0]][content_stream[0]]['Stream'])
+                for index in content_stream[1].items():
+                    new_content = ""
+                    for item in index[1].items():
+                        print("Ok", item)
+                        new_content = bytes(old_content.replace(item[0], item[1]), "latin-1")
+                        self.doc.update_stream(content_stream[0], new_content)
 
     def save_document(self):
         self.doc.save("../res.pdf")
