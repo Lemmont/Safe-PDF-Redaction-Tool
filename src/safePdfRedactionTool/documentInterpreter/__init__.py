@@ -52,10 +52,10 @@ class DocumentInterpreter:
 
         text_elements = {}
         pattern = re.compile(r'(\(.*?\))(\w+)')
-        for match in text_contents:
+        for match in text_contents.items():
             font_info = {'reference': '/F0', 'fontsize': '11', 'match': ""}
             raw_string = ""
-            split = match.strip().split("\n")
+            split = match[1].strip().split("\n")
             for item in split:
                 tokenized = ""
                 if item[0] == "(":
@@ -82,7 +82,7 @@ class DocumentInterpreter:
                         # check if pk[1] == 'Tj'
                         text = pk.group(1)[1:-1]
                         raw_string = raw_string + "\n" + item
-                        text_elements[(x, y)] = {'font': font_info, 'string': text, 'match': raw_string}
+                        text_elements[(x, y)] = {'font': font_info, 'string': text, 'match': raw_string, 'index': match[0]}
                     except ValueError:
                         pass
 

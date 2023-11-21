@@ -17,20 +17,23 @@ def main():
 
     interpreter = DocumentInterpreter(reader.doc, pagesDoc, page_fonts)
     cmap = interpreter.parse_character_mapping(interpreter.fonts[6])
-    content_stream = reader.get_content_from_stream(page_content[17])
-    text_elements = interpreter.parse_text_elements(content_stream)
+    text_content = reader.get_content_from_stream(page_content[17]) # content_stream = BT...ET
+    text_elements = interpreter.parse_text_elements(text_content)
     text_translated = interpreter.translate_text_elements(text_elements, cmap )
     text_element_1 = list(text_elements.items())[0]
 
-    content_streams = {6: content_stream}
+    text_streams = {6: text_content}
     text_elements_6 = {6: text_elements}
 
-    manipulator = DocumentManipulator(reader.doc, content_streams, text_elements_6)
-    manipulator.remove_text(6, text_element_1)
+    manipulator = DocumentManipulator(reader.doc, text_streams, {6: page_content[17]}, text_elements_6)
+    manipulator.remove_text(6, 0, text_element_1)
 
     text_translated_after_removal = interpreter.translate_text_elements(manipulator.text_elements[6], cmap)
     print(text_translated)
     print(text_translated_after_removal)
+    manipulator.finalize_manipulation()
+    manipulator.save_document()
+
 
     # remove text element 1
 

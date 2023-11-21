@@ -121,13 +121,23 @@ class DocumentReader:
             Extract text elements from a content stream of a page.
 
             :param page_content: content of a page
+            :return: all BT...ET sections from the content_stream of the page
         """
         import re
         import codecs
         content_stream = page_content['Stream']
 
         # Get all text elements (BT...ET) from content stream
-        return re.findall(r'BT(.*?)ET',content_stream, re.DOTALL)
+        matches = re.findall(r'BT(.*?)ET',content_stream, re.DOTALL)
+
+        # Map every BT-ET to an index.
+        i = 0
+        temp = {}
+        for match in matches:
+            temp[i] = match
+            i += 1
+
+        return temp
 
     def get_page_resources(self, page):
         """
