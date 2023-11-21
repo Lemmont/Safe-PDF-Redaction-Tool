@@ -1,5 +1,6 @@
 from documentInterpreter import *
 from documentReader import *
+from documentManipulator import DocumentManipulator
 
 def main():
     """
@@ -17,9 +18,21 @@ def main():
     interpreter = DocumentInterpreter(reader.doc, pagesDoc, page_fonts)
     cmap = interpreter.parse_character_mapping(interpreter.fonts[6])
     content_stream = reader.get_content_from_stream(page_content[17])
-    text = interpreter.parse_text_elements(content_stream)
-    text2 = interpreter.translate_text_elements(text, cmap )
-    print(text2)
+    text_elements = interpreter.parse_text_elements(content_stream)
+    text_translated = interpreter.translate_text_elements(text_elements, cmap )
+    text_element_1 = list(text_elements.items())[0]
+
+    content_streams = {6: content_stream}
+    text_elements_6 = {6: text_elements}
+
+    manipulator = DocumentManipulator(reader.doc, content_streams, text_elements_6)
+    manipulator.remove_text(6, text_element_1)
+
+    text_translated_after_removal = interpreter.translate_text_elements(manipulator.text_elements[6], cmap)
+    print(text_translated)
+    print(text_translated_after_removal)
+
+    # remove text element 1
 
 # Using the special variable
 # __name__
