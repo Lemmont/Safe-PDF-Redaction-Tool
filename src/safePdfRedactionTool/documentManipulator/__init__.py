@@ -45,7 +45,6 @@ class DocumentManipulator:
         new_string = ""
         try:
             new_string = str(text_stream[index]).replace(match, " ")
-            print(len(new_string))
             check = True
         except:
             check = False
@@ -61,7 +60,6 @@ class DocumentManipulator:
         self.text_elements[page][content_obj].pop(cords)
 
         # Update edits_made
-        print("OK", len(old_content), len(new_string), check)
         self.edits_made[page] = {content_obj: {index: {old_content: new_string}}}
 
         return True
@@ -73,17 +71,18 @@ class DocumentManipulator:
         """
             Update the document with the local edits; content_streams, metadata, font etc.
         """
-        print(self.edits_made)
         for page_edits in self.edits_made.items():
             for content_stream in page_edits[1].items():
                 old_content = str(self.pages[page_edits[0]][content_stream[0]]['Stream'])
                 for index in content_stream[1].items():
                     new_content = ""
                     for item in index[1].items():
-                        print("Ok", item)
                         new_content = bytes(old_content.replace(item[0], item[1]), "latin-1")
                         self.doc.update_stream(content_stream[0], new_content)
+        print("Edits added!")
+
 
     def save_document(self):
         self.doc.save("../res.pdf")
+        print("Succesfully saved!")
         pass

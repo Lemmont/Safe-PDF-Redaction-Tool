@@ -16,11 +16,22 @@
 
 ## Progress
 
+### Woensdag 22 November
+
+TODO:
+
+- Replace removed text with new text test
+- Metadata extraction test
+
+- Testsuite Maxwell bland lezen
+- Write related work/introduction based on feedback by Maarten
+- Design test method
+
 ### Dinsdag 21 November
 
 TODO:
 
-- Remove text from file
+- ~~Remove text from file~~ more work then expected, but rewritten to handle more than one page automatic.
 - Remove white space when text is removed
 - Metadata extraction test
 
