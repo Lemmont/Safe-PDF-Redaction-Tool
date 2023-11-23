@@ -44,14 +44,26 @@ def main():
         text_contents[page_xref] = temp_text_contents
         text_elements[page_xref] = temp_text_elements
 
-    #print(cmaps)
+    print(cmaps)
     #print(text_contents)
     #print(text_elements)
 
+    test_text_element = text_elements[6][17][(226.935, 721.212)]
+
+    # end of text character...
+    test_text_element2 = text_elements[6][17][(274.263, 721.212)]
+
+
+    """
+    for item in text_elements[6][17].items():
+        if item[0][1] == 721.212 and item[0][0] >= 226.935:
+            print(item)
+    """
 
     manipulator = DocumentManipulator(reader.doc, text_contents, contents, text_elements)
-    test_text_element = text_elements[6][17][(226.935, 721.212)]
     manipulator.remove_text(6, 17, 0, ((226.935, 721.212), test_text_element))
+    manipulator.remove_text(6, 17, 0, ((274.263, 721.212), test_text_element2))
+    manipulator.remove_white_space(6, 17, 0, ((226.935, 721.212), test_text_element))
     manipulator.finalize_manipulation()
     manipulator.save_document()
 
