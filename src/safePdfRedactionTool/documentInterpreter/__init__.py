@@ -50,6 +50,7 @@ class DocumentInterpreter:
             :return: return dict where every text element is mapped to its position
                     on the page.
         """
+        print(text_contents.items())
 
         text_elements = {}
         pattern = re.compile(r'(\(.*?\))(\w+)')

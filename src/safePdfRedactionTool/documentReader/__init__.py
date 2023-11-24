@@ -147,6 +147,8 @@ class DocumentReader:
 
         if resources[0] == 'xref':
             resource_xref = self.get_object_num(resources)
+        else:
+            print(resources)
 
         return self.get_object_dictionary(resource_xref, check_stream=False)
 
@@ -165,6 +167,7 @@ class DocumentReader:
         if fonts[0] == 'dict':
             # example: <</F3 19 0 R/F2 20 0 R/F1 21 0 R/F0 22 0 R>>
             fonts_ref = fonts[1].strip("<<>>").split("/")[1:]
+
             for font_ref in fonts_ref:
                 tokens = font_ref.split(" ")
                 fonts_xrefs[tokens[0]] = int(tokens[1])
