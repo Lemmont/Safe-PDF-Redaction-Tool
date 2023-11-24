@@ -25,7 +25,26 @@ class DocumentManipulator:
         to_be_updated = []
 
         # get all cords on the same line after text_element
-        prev_cord = cords[0]
+        length = 0.0
+        line_cords = []
+        for key in self.text_elements[page][content_obj]:
+            if key[0] > cords[0] and key[1] == cords[1]:
+                line_cords.append(key)
+
+        for i in range(len(line_cords)):
+            item = self.text_elements[page][content_obj][line_cords[i]]
+            to_be_replaced = item['match'].split("\n")[0].split(" ")[4]
+            if i == 0:
+                new_pos = float(cords[0])
+            #elif i == len(line_cords) - 1:
+            #    new_pos = float(line_cords[i - 1][0])
+            else:
+                length += (float(line_cords[i - 1][0]) - float(line_cords[i][0]))
+                new_pos = cords[0] - length
+            print(i, line_cords[i][0], new_pos)
+            new_item = str(item['match']).replace(str(to_be_replaced), str(new_pos))
+            to_be_updated.append((item['match'], new_item))
+        """
         for item in self.text_elements[page][content_obj].items():
             if item[0][0] > cords[0] and item[0][1] == cords[1]:
                 # get match and update it
@@ -33,8 +52,9 @@ class DocumentManipulator:
                 new_item = str(item[1]['match']).replace(str(to_be_replaced), str(float(to_be_replaced) - (float(to_be_replaced) - float(prev_cord))))
                 to_be_updated.append((item[1]['match'], new_item))
                 prev_cord = to_be_replaced # TODO: spacing fix
+        """
 
-        print(to_be_updated)
+        #print(to_be_updated)
 
         if page in self.edits_made and content_obj in self.edits_made[page] and index in self.edits_made[page][content_obj]:
             old_content = self.edits_made[page][content_obj][index]
