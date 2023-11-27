@@ -109,6 +109,8 @@ class DocumentReader:
         # Get all referejces to 'Contents' object(s) from this page.
         if contents[0] == 'array':
             contents_xref = self.get_object_array_num(contents[1])
+        elif contents[0] == 'xref':
+            contents_xref = [self.get_object_num(contents)]
 
         # Get all 'Contents' objects information.
         for content_xref in contents_xref:
@@ -147,13 +149,16 @@ class DocumentReader:
 
         if resources[0] == 'xref':
             resource_xref = self.get_object_num(resources)
-        else:
-            print(resources)
+        elif resources[0] == 'dict':
+            resource_xref = "" #TODO: add dict
+            #TODO: extract /Font<<..>> and /fXObject<<..>>
+            return resources
 
         return self.get_object_dictionary(resource_xref, check_stream=False)
 
     def get_page_fonts(self, page):
         """
+            TODO: needs to be edited
             Extract fonts used by page
 
             :param page: page information/dictionary
@@ -200,3 +205,4 @@ class DocumentReader:
             fonts[font[0]] = {'toUnicode': toUnicode, 'descendentFonts': descendant}
 
         return fonts
+
