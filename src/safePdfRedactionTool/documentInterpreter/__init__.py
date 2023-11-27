@@ -59,23 +59,26 @@ class DocumentInterpreter:
             2) ()Tj | (\r\n)Tj | ( ) Tj | [(T)0.8(E)1.8(R)8.2( )0.7(B)6.8(E)-16.8(S)10.3(L)11.4(U)1.2(I)-5.6(T)0.8(V)8.8(O)2.1(R)-10.3(M)7.6(I)-5.6(N)-0.8(G )] TJ | [(B)5 (r)-0.7 (i)-7 (e)-5 (f)4.3 ( v)4.3 (ast)-7 (e)-5 ( co)-7.4 (m)-1.3 (m)-1.3 (i)-7 (ssi)-7 (e)-5 ( F)0.6 (i)-7 (n)-8 (.)3 ( )13.7 (aan)-8 ( )]TJ
             3) (\\000$\\000D\\000Q)Tj
         """
-        patternText = re.compile(r'\(.*?\)[Tt][Jj]|\[.*?\)[Tt][Jj]|<.*?>[Tt][Jj]|\\\\.*?[Tt][Jj]\?')
+        patternText = re.compile(r'\[.*?\].*TJ|<.*?>.*Tj|\(.*?\).*Tj')
         patternTm = re.compile(r'\d+(\.\d+)?\s+-?\d+(\.\d+)?\s+-?\d+(\.\d+)?\s+\d+(\.\d+)?\s+-?\d+(\.\d+)?\s+-?\d+(\.\d+)?\s+Tm')
-
+        test = re.compile(r'Tj|TJ')
         # Get every index (text_element)
         for i in range(len(text_contents)):
             #print(text_contents[i])
 
             # Get font reference
-            font_ref = patternTf.findall(text_contents[i])
+            #font_ref = patternTf.findall(text_contents[i])
 
             # Get text render
             text_ref = patternText.findall(text_contents[i])
+            test2 = test.findall(text_contents[i])
 
-            print(text_ref)
-            print(text_contents[i])
+            if len(text_ref) != len(test2):
+                #TODO: only these cases need to be handled...
+                print("OKEEE",text_contents[i], "\n-")
+            #print(text_contents[i])
 
-
+            #print(text_contents[i])
 
             #print(i, text_ref, end="\n\n")
             #for j in text_contents[i]:
