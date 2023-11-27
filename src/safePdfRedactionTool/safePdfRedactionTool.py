@@ -142,7 +142,7 @@ def main():
                 #print(i, j, k, text_content, "\n")
 
                 parsed = interpreters[i].parse_text_elements(text_content)
-                print(i,j,k,parsed, "\n")
+                #print(i,j,k,parsed, "\n")
 
 
                 # TODO: parse text_content
