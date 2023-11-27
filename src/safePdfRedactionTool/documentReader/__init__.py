@@ -1,3 +1,4 @@
+import re
 import fitz
 from typing import List
 
@@ -118,7 +119,7 @@ class DocumentReader:
 
         return page_contents
 
-    def get_content_from_stream(self, page_content):
+    def get_text_content_from_stream(self, page_content):
         """
             Extract text elements from a content stream of a page.
 
@@ -143,22 +144,48 @@ class DocumentReader:
 
     def get_page_resources(self, page):
         """
-            Extract information about the resources referenced by the page
+            Extract information about the resources referenced by the page.
+
+            Extract info, xobjects and ProcSet reference
         """
         resources = page['Resources']
+        font_pattern = re.compile(r'/Font<<([^<>]+)>>')
+        xobject_pattern = re.compile(r'/XObject<<([^<>]+)>>')
+        procset_pattern = re.compile(r'/ProcSet\[([^\[\]]+)\]')
 
         if resources[0] == 'xref':
             resource_xref = self.get_object_num(resources)
         elif resources[0] == 'dict':
-            resource_xref = "" #TODO: add dict
             #TODO: extract /Font<<..>> and /fXObject<<..>>
-            return resources
+
+            font_ref = None
+            xobjects_ref = None
+            procset_ref = None
+
+            # Extract font refrences
+            font_matches = font_pattern.findall(resources[1])
+            if len(font_matches) == 1:
+                font_ref = ("dict", "<<" + font_matches[0] + ">>")
+
+            # Extract xobject references
+            xobject_matches = xobject_pattern.findall(resources[1])
+            if len(xobject_matches) == 1:
+                xobjects_ref = ("dict", "<<" + xobject_matches[0] + ">>")
+
+            # Extract Procset
+            procset_matches = procset_pattern.findall(resources[1])
+            if len(procset_matches) == 1:
+                procset_ref = ("array", "[" + procset_matches[0] + "]")
+
+            #print(font_matches, xobject_matches, procset_matches)
+
+            return {'Font': font_ref, "XObject": xobjects_ref, "ProcSet": procset_ref}
 
         return self.get_object_dictionary(resource_xref, check_stream=False)
 
     def get_page_fonts(self, page):
         """
-            TODO: needs to be edited
+            TODO: needs to be edited based on edit to get_page_resources
             Extract fonts used by page
 
             :param page: page information/dictionary
@@ -166,7 +193,10 @@ class DocumentReader:
         """
         fonts_xrefs = {}
 
-        fonts = self.get_page_resources(page)['Font']
+        # Can be done without using get_page_resources on our own
+        #fonts = self.get_page_resources(page)['Font']
+
+        fonts = page["Font"]
 
         # Get all font references for this page.
         if fonts[0] == 'dict':
@@ -177,7 +207,7 @@ class DocumentReader:
                 tokens = font_ref.split(" ")
                 fonts_xrefs[tokens[0]] = int(tokens[1])
         else:
-            print("error")
+            return "error"
 
         fonts_info = {}
 
@@ -189,20 +219,24 @@ class DocumentReader:
 
         # Get character mapping and descendent fonts
         for font in fonts_info.items():
-            toUnicode = {}
-            descendant = {}
+            encoding = font[1]["Encoding"][1]
+            subtype = font[1]["Subtype"][1]
             toUnicode_xref = font[1]['ToUnicode']
-            descendent_xref = font[1]['DescendantFonts']
+            toUnicode = {}
+
+            #descendant = {}
+
+            #descendent_xref = font[1]['DescendantFonts']
 
             if toUnicode_xref[0] == 'xref':
                 toUnicode_xref = self.get_object_num(toUnicode_xref)
                 toUnicode = self.get_object_dictionary(toUnicode_xref, check_stream=True)
 
-            if descendent_xref[0] == 'array':
-                descendent_xref = self.get_object_array_num(descendent_xref[1])[0]
-                descendant = self.get_object_dictionary(descendent_xref, check_stream=True)
+            #if descendent_xref[0] == 'array':
+            #    descendent_xref = self.get_object_array_num(descendent_xref[1])[0]
+            #descendant = self.get_object_dictionary(descendent_xref, check_stream=True)
 
-            fonts[font[0]] = {'toUnicode': toUnicode, 'descendentFonts': descendant}
+            fonts[font[0]] = {'encoding': encoding, "subtype": subtype, 'toUnicode': toUnicode, 'descendentFonts': None}
 
         return fonts
 

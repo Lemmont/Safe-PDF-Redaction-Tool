@@ -50,9 +50,31 @@ class DocumentInterpreter:
             :return: return dict where every text element is mapped to its position
                     on the page.
         """
-        print(text_contents.items())
+        # Extract font info such as /TT0 1 Tf and /F0 8.17 Tf
+        patternTf = re.compile(r'/(TT\d|F\d+) ([+-]?\d*\.?\d+) Tf')
 
-        text_elements = {}
+        """
+            Extract text:
+            1) Tm<00300030003000300031>Tj | <0036>Tj
+            2) ()Tj | (\r\n)Tj | ( ) Tj | [(T)0.8(E)1.8(R)8.2( )0.7(B)6.8(E)-16.8(S)10.3(L)11.4(U)1.2(I)-5.6(T)0.8(V)8.8(O)2.1(R)-10.3(M)7.6(I)-5.6(N)-0.8(G )] TJ | [(B)5 (r)-0.7 (i)-7 (e)-5 (f)4.3 ( v)4.3 (ast)-7 (e)-5 ( co)-7.4 (m)-1.3 (m)-1.3 (i)-7 (ssi)-7 (e)-5 ( F)0.6 (i)-7 (n)-8 (.)3 ( )13.7 (aan)-8 ( )]TJ
+            3) (\\000$\\000D\\000Q)Tj
+        """
+        patternText = re.compile(r'(\([^)]*\)|<[^>]*>|TJ|Tj|\[\s*([^\]]*)\s*\])')
+
+        # Get every index (text_element)
+        for i in range(len(text_contents)):
+
+            # Get font reference
+            font_ref = patternTf.findall(text_contents[i])
+
+            # Get text render
+            text_ref = patternText.findall(text_contents[i])
+
+            print(font_ref, text_ref, "\n")
+
+        return(text_contents)
+
+        """text_elements = {}
         pattern = re.compile(r'(\(.*?\))(\w+)')
         for match in text_contents.items():
             font_info = {'reference': '/F0', 'fontsize': '11', 'match': ""}
@@ -88,7 +110,7 @@ class DocumentInterpreter:
                     except ValueError:
                         pass
 
-        return text_elements
+        return text_elements"""
 
     def translate_text_elements(self, text_elements, fonts_mapping):
         """

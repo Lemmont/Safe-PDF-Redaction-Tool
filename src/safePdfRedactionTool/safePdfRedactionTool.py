@@ -15,10 +15,7 @@ def printDict(dict, index=None):
             print(i, dict[i])
             print()
 
-def main():
-    """
-    Example
-    """
+def readFiles():
     reader0 = DocumentReader("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/pal.pdf")
     reader1 = DocumentReader("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/sns.pdf")
     reader2 = DocumentReader("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/marx.pdf")
@@ -38,8 +35,8 @@ def main():
 
         roots[i] = root
 
-    print("Root of all documents:")
-    printDict(roots, ['Pages'])
+    #print("Root of all documents:")
+    #printDict(roots, ['Pages'])
 
     # Get all 'Pages' object
     pagesObjects = {}
@@ -47,8 +44,8 @@ def main():
         pageObj = readers[i].get_pages_object(roots[i]['Pages'])
         pagesObjects[i] = pageObj
 
-    print("Pages Object of all documents:")
-    printDict(pagesObjects)
+    #print("Pages Object of all documents:")
+    #printDict(pagesObjects)
 
     # Get all page objects of each document
     documentsPages = {}
@@ -57,8 +54,8 @@ def main():
         documentsPages[i] = page
 
     # TODO: resources -> xref, dict
-    print("Page objects of all documents:")
-    printDict(documentsPages)
+    #print("Page objects of all documents:")
+    #printDict(documentsPages)
 
     # Get all contents
     documentPagesContents = {}
@@ -79,12 +76,84 @@ def main():
     #print(documentPagesContents)
 
     # Get all resources (images and fonts)
+    documentPagesResources = {}
     for i in range(len(readers)):
 
         # get page
+        resour = {}
         for j in range(len(documentsPages[i])):
             resource = readers[i].get_page_resources(list(documentsPages[i].items())[j][1])
-            print(i, j, resource)
+
+            # print here the pages resources
+            #print(i, j, resource, "\n")
+
+            resour[j] = resource
+
+        documentPagesResources[i] = resour
+
+    #print(documentPagesResources)
+
+    # Get all font info for all pages for all documents
+
+    #print(">>> FONTS\n")
+    documentPagesFonts = {}
+
+    for i in range(len(readers)):
+        fontTemp = {}
+        for j in range(len(documentPagesResources[i])):
+            font = readers[i].get_page_fonts(list(documentPagesResources[i].items())[j][1])
+            #print(i, j,  font, "\n")
+            fontTemp[j] = font
+
+        documentPagesFonts[i] = fontTemp
+
+    #print(documentPagesFonts)
+
+
+    return (readers, documentsPages, documentPagesFonts, documentPagesContents)
+
+
+def main():
+    """
+    Example
+    """
+    (readers, pages, fonts, contents) = readFiles()
+    interpreters: List[DocumentManipulator] = []
+
+    # Make interpreters based on readers
+    for i in range(len(readers)):
+        interpreters.append(DocumentInterpreter(readers[i].doc, pages[i], fonts[i], contents[i]))
+
+    # Loop over interpreters and get text_elements
+
+    # Get document
+    for i in range(len(interpreters)):
+
+        # Get contents object of document
+        for j in interpreters[i].contents:
+
+            # Get each content object of all contents object of document
+            for k in interpreters[i].contents[j]:
+                content_obj = interpreters[i].contents[j][k]
+                stream = content_obj["Stream"]
+                text_content = readers[i].get_text_content_from_stream(content_obj)
+                #print(i, j, k, content_obj, "\n")
+                #print(i, j, k, stream, "\n")
+                #print(i, j, k, text_content, "\n")
+
+                parsed = interpreters[i].parse_text_elements(text_content)
+                print(i,j,k,parsed, "\n")
+
+
+                # TODO: parse text_content
+                """
+                1) Tm<00300030003000300031>Tj | <0036>Tj
+                2) ()Tj | (\r\n)Tj | ( ) Tj | [(T)0.8(E)1.8(R)8.2( )0.7(B)6.8(E)-16.8(S)10.3(L)11.4(U)1.2(I)-5.6(T)0.8(V)8.8(O)2.1(R)-10.3(M)7.6(I)-5.6(N)-0.8(G )] TJ | [(B)5 (r)-0.7 (i)-7 (e)-5 (f)4.3 ( v)4.3 (ast)-7 (e)-5 ( co)-7.4 (m)-1.3 (m)-1.3 (i)-7 (ssi)-7 (e)-5 ( F)0.6 (i)-7 (n)-8 (.)3 ( )13.7 (aan)-8 ( )]TJ
+                3) (\\000$\\000D\\000Q)Tj
+                """
+
+
+
     """
     # Rawreader = DocumentReader("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/pal.pdf")
     root = reader.get_root_object()
