@@ -50,38 +50,36 @@ class DocumentInterpreter:
             :return: return dict where every text element is mapped to its position
                     on the page.
         """
-        # Extract font info such as /TT0 1 Tf and /F0 8.17 Tf
-        patternTf = re.compile(r'/(TT\d|F\d+) ([+-]?\d*\.?\d+) Tf')
-
-        """
-            Extract text:
-            1) Tm<00300030003000300031>Tj | <0036>Tj
-            2) ()Tj | (\r\n)Tj | ( ) Tj | [(T)0.8(E)1.8(R)8.2( )0.7(B)6.8(E)-16.8(S)10.3(L)11.4(U)1.2(I)-5.6(T)0.8(V)8.8(O)2.1(R)-10.3(M)7.6(I)-5.6(N)-0.8(G )] TJ | [(B)5 (r)-0.7 (i)-7 (e)-5 (f)4.3 ( v)4.3 (ast)-7 (e)-5 ( co)-7.4 (m)-1.3 (m)-1.3 (i)-7 (ssi)-7 (e)-5 ( F)0.6 (i)-7 (n)-8 (.)3 ( )13.7 (aan)-8 ( )]TJ
-            3) (\\000$\\000D\\000Q)Tj
-        """
-        patternText = re.compile(r'\[.*?\].*TJ|<.*?>.*Tj|\(.*?\).*Tj')
-        patternTm = re.compile(r'\d+(\.\d+)?\s+-?\d+(\.\d+)?\s+-?\d+(\.\d+)?\s+\d+(\.\d+)?\s+-?\d+(\.\d+)?\s+-?\d+(\.\d+)?\s+Tm')
-        test = re.compile(r'Tj|TJ')
         # Get every index (text_element)
+        cords = (0.0, 0.0)
+        font_info = {}
         for i in range(len(text_contents)):
-            #print(text_contents[i])
+            t = str(text_contents[i]).replace("Tm(", "Tm\n(").replace("Tf", "Tf\n").replace("Tm[", "Tm\n[").replace("Tj", "Tj\n").replace("TJ", "TJ\n").replace("Tm<", "Tm\n<").split("\n")
+            if len(t) == 1:
+                print("error", t)
+            for item in t:
+                if item.strip().endswith("Tm"):
+                    x = item.split(" ")[4]
+                    y = item.split(" ")[4]
+                    cords = (x, y)
+                elif item.strip().endswith("Tj") or item.strip().endswith("TJ"):
+                    # remove TJ or Tj
+                    operator = item.strip()[-2:]
+                    string = item[:-2]
+                    #print(operator, string)
 
-            # Get font reference
-            #font_ref = patternTf.findall(text_contents[i])
+                    # Complex text operator
+                    if operator == "TJ":
+                        #print(string[1:-1])
+                        pass
+                    elif operator "Tj":
+                        pass
 
-            # Get text render
-            text_ref = patternText.findall(text_contents[i])
-            test2 = test.findall(text_contents[i])
-
-            if len(text_ref) != len(test2):
-                #TODO: only these cases need to be handled...
-                print("OKEEE",text_contents[i], "\n-")
-            #print(text_contents[i])
-
-            #print(text_contents[i])
-
-            #print(i, text_ref, end="\n\n")
-            #for j in text_contents[i]:
+                    # remove <..>, (..) or [..]
+                elif item.strip().endswith("Tf"):
+                    splitted = item.split(" ")
+                    font_info["ref"] = splitted[0]
+                    font_info["size"] = splitted[1]
 
             """if str(j).endswith("Tm"):
                     if len(str(j).split(" ")) > 7:
