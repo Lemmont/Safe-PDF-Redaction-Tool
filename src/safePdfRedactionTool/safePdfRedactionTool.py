@@ -147,70 +147,59 @@ def readFiles():
 def main():
     """
     Example
-    """
-    reader2 = DocumentReader("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/marx.pdf")
-    for page in reader2.doc:
-        k = page.cropbox
-        x_dim = k.x1
-        y_dim = k.y1
-        print(x_dim, y_dim)
-        xref = page.get_contents()[0]
-        lines = page.read_contents().splitlines()
 
-        words = page.get_text("words")
+    steps:
+        for each page:
+            read annotations/boxes/selected text
+            retrieve text in boxes
+            get cords/bounding box of text
+            remove annots
+
+            get lines of page
+            get word of page
+
+            add redact annots to page
+            apply redactions
+
+            get lines of page
+            get word of page
+
+            determine what to insert
+            insert new text
+            add white space before and after
+
+            get lines of page
+            get word of page
+
+            remove white spaces
+    """
+    reader = DocumentReader("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/marx.pdf")
+    pages = reader.get_pages()
+    for page in pages:
+        dim = reader.get_page_dimensions(page)
+        (xref, lines, words) = reader.get_page_contents(page)
+
         to_be_redacted = words[1]
-        print("OK",to_be_redacted)
         test_rect = fitz.Rect(to_be_redacted[0], to_be_redacted[1], to_be_redacted[2] - 60, to_be_redacted[3])
-        rect = fitz.Rect(to_be_redacted[0], to_be_redacted[1], to_be_redacted[2], to_be_redacted[3])
+
         page.add_redact_annot(test_rect.quad)
         page._apply_redactions()
 
-        words = page.get_text("words")
-        xref = page.get_contents()[0]
-        lines = page.read_contents().splitlines()
+        (xref, lines, words) = reader.get_page_contents(page)
         #print(words)
 
-        to_be_repositioned = []
-        for word in page.get_text("words"):
-            if word[1] >= to_be_redacted[1] and word[3] <= to_be_redacted[3]:
-                print(word)
+        to_be_repositioned = reader.get_to_be_repositioned_words(dim[1], lines, test_rect)
 
         new_pos = to_be_redacted[0]
+
         length = 0.0
         count = 0
         last_tm = 0
-        for i in range(len(lines)):
-            if lines[i].endswith(b"Tm"):
-                string_line = lines[i].split()
-                x = float(string_line[4])
-                y = y_dim - float(string_line[5])
-                if x >= to_be_redacted[0] and  y >= to_be_redacted[1] and y <= to_be_redacted[3]:
-                    to_be_repositioned.append((lines[i], i))
-                    #print(lines[i], lines[i+1], x, y)
-                    """
-                    if count >= 1:
-                        length += float(lines[last_tm].split()[4]) - x
-                        print(lines[last_tm], x, length)
-                        new_pos = to_be_redacted[0] - length
-                    else:
-                        new_pos = to_be_redacted[0]
-                    string_line[4] = str(new_pos).encode()
-                    new_string = b" ".join(string_line)
-
-                    print(lines[i], new_string)
-                    lines[i] = new_string
-
-                    # removes all text after the
-                    #for k in range(i, i+2):
-                    #    lines[k] = lines[k]
-                    count += 1
-                    last_tm = i
-                    """
 
         for i in range(len(to_be_repositioned)):
             string_line = to_be_repositioned[i][0].split()
             x = float(string_line[4])
-            y = y_dim - float(string_line[5])
+            y = dim[1] - float(string_line[5])
             if count >= 1:
                 length += float(to_be_repositioned[i - 1][0].split()[4]) - x
                 print(to_be_repositioned[i], x, length)
@@ -229,9 +218,9 @@ def main():
             #    lines[k] = lines[k]
             count += 1
 
-        reader2.doc.update_stream(xref, b"\n".join(lines))
-    reader2.doc.save("pdf_doc1_remove_text_test.pdf")
-    reader2.doc.close()
+        reader.doc.update_stream(xref, b"\n".join(lines))
+    reader.doc.save("pdf_doc1_remove_text_test.pdf")
+    reader.doc.close()
     """
     (readers, pages, fonts, contents) = readFiles()
     interpreters: List[DocumentManipulator] = []
