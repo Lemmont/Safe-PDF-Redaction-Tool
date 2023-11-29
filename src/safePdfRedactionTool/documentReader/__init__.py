@@ -29,9 +29,10 @@ class DocumentReader:
         """
             returns xref, lines and words of page.
         """
+        page.clean_contents()
         xref = page.get_contents()[0]
         lines = page.read_contents().splitlines()
-        words = page.get_text("words")
+        words = page.get_text("words", sort=True)
         return (xref, lines, words)
 
     def get_redact_annots(self, page: fitz.Page):
@@ -52,6 +53,14 @@ class DocumentReader:
                 y = page_height - float(string_line[5])
                 if x >= first_redaction[0] and  y >= first_redaction[1] and y <= first_redaction[3]:
                     to_be_repositioned.append((lines[i], i))
+            elif lines[i].endswith(b"Td"):
+                string_line = lines[i].split()
+                x = float(string_line[0])
+                y = page_height - float(string_line[1])
+                print(x, y, first_redaction)
+                if first_redaction[0] >= x and  first_redaction[1] <= y  and first_redaction[3] >= y :
+                    to_be_repositioned.append((lines[i], i))
+
 
         return to_be_repositioned
 

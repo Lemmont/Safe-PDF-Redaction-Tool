@@ -173,52 +173,61 @@ def main():
 
             remove white spaces
     """
-    reader = DocumentReader("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/marx.pdf")
+    reader = DocumentReader("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/test1.pdf")
     pages = reader.get_pages()
     for page in pages:
         dim = reader.get_page_dimensions(page)
         (xref, lines, words) = reader.get_page_contents(page)
+        #print(words)
 
-        to_be_redacted = words[1]
-        test_rect = fitz.Rect(to_be_redacted[0], to_be_redacted[1], to_be_redacted[2] - 60, to_be_redacted[3])
+        to_be_redacted = words[3]
+        test_rect = fitz.Rect(to_be_redacted[0], to_be_redacted[1], to_be_redacted[2], to_be_redacted[3])
 
         page.add_redact_annot(test_rect.quad)
+        reader.doc.save("pdf_doc1_remove_text_test_temp.pdf")
         page._apply_redactions()
 
         (xref, lines, words) = reader.get_page_contents(page)
         #print(words)
+        #print(words)
 
         to_be_repositioned = reader.get_to_be_repositioned_words(dim[1], lines, test_rect)
-
-        new_pos = to_be_redacted[0]
+        print(to_be_repositioned)
 
         length = 0.0
         count = 0
-        last_tm = 0
 
         for i in range(len(to_be_repositioned)):
             string_line = to_be_repositioned[i][0].split()
-            x = float(string_line[4])
-            y = dim[1] - float(string_line[5])
+            x = float(string_line[4]) if len(string_line) > 4 else float(string_line[0])
+            y = dim[1] - float(string_line[5]) if len(string_line) > 3 else float(string_line[1])
             if count >= 1:
                 length += float(to_be_repositioned[i - 1][0].split()[4]) - x
-                print(to_be_repositioned[i], x, length)
                 new_pos = to_be_redacted[0] - length
             else:
                 new_pos = to_be_redacted[0]
-            string_line[4] = str(new_pos).encode()
+
+            if len(string_line) > 3:
+                string_line[4] = str(new_pos).encode()
+            else:
+                string_line[0] = str(new_pos).encode()
+
+            print(new_pos, string_line)
             new_string = b" ".join(string_line)
+            #print(to_be_repositioned[i], new_string)
             lines[to_be_repositioned[i][1]] = new_string
 
-            print(to_be_repositioned[i], new_string)
-            i = new_string
 
             # removes all text after the
             #for k in range(i, i+2):
             #    lines[k] = lines[k]
             count += 1
 
+        #print(lines)
         reader.doc.update_stream(xref, b"\n".join(lines))
+        (xref, lines, words) = reader.get_page_contents(page)
+        #print(lines)
+
     reader.doc.save("pdf_doc1_remove_text_test.pdf")
     reader.doc.close()
     """
