@@ -65,14 +65,25 @@ class DocumentInterpreter:
                 elif item.strip().endswith("Tj") or item.strip().endswith("TJ"):
                     # remove TJ or Tj
                     operator = item.strip()[-2:]
-                    string = item[:-2]
+                    string = item.strip()[:-2]
                     #print(operator, string)
 
                     # Complex text operator
                     if operator == "TJ":
-                        #print(string[1:-1])
-                        pass
-                    elif operator "Tj":
+                        substrings = []
+                        #operands = string.strip()[1:-1]
+                        start_index = string.find("[", 0)
+                        #if start_index == -1:
+                        #    print(string, "does not start with [")
+                        start_index += len(string)
+                        end_index = string.find("]", start_index)
+                        #print(end_index)
+                        #if end_index == -1:
+                            #print(string, "does not end with ]")
+                        #pass
+                    # simple text operator
+                    elif operator == "Tj":
+                        #print(item)
                         pass
 
                     # remove <..>, (..) or [..]

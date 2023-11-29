@@ -1,6 +1,7 @@
 from documentInterpreter import *
 from documentReader import *
 from documentManipulator import DocumentManipulator
+import fitz
 
 def printDict(dict, index=None):
     for i in dict:
@@ -36,7 +37,36 @@ def readFiles():
         roots[i] = root
 
     #print("Root of all documents:")
-    #printDict(roots, ['Pages'])
+    #printDict(roots, ["Metadata"])
+
+    # Get metadata
+    #for i in range(len(readers)):
+    #    print(readers[i].doc.metadata)
+
+    """trailers = {}
+    # trailer
+    for i in range(len(readers)):
+        trailer = {}
+        trailer_xref = -1
+        for key in readers[i].doc.xref_get_keys(trailer_xref):
+            trailer[key] = readers[i].doc.xref_get_key(trailer_xref, key)
+
+        trailers[i] = trailer
+
+    print(trailers)
+
+    # Get all metadata
+    documentsMetadata = {}
+    for i in range(len(readers)):
+        metadata = {}
+        if "Metadata" in
+        metadata_xref = readers[i].get_object_num(trailers[i]['Metadata'])
+        for key in readers[i].doc.xref_get_keys(metadata_xref):
+            metadata[key] = readers[i].doc.xref_get_key(metadata_xref, key)
+
+        documentsMetadata[i] = metadata
+
+    print(documentsMetadata)"""
 
     # Get all 'Pages' object
     pagesObjects = {}
@@ -109,6 +139,7 @@ def readFiles():
 
     #print(documentPagesFonts)
 
+    all_redactions = (b"226.935", b"721.212")
 
     return (readers, documentsPages, documentPagesFonts, documentPagesContents)
 
@@ -116,6 +147,91 @@ def readFiles():
 def main():
     """
     Example
+    """
+    reader2 = DocumentReader("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/marx.pdf")
+    for page in reader2.doc:
+        k = page.cropbox
+        x_dim = k.x1
+        y_dim = k.y1
+        print(x_dim, y_dim)
+        xref = page.get_contents()[0]
+        lines = page.read_contents().splitlines()
+
+        words = page.get_text("words")
+        to_be_redacted = words[1]
+        print("OK",to_be_redacted)
+        test_rect = fitz.Rect(to_be_redacted[0], to_be_redacted[1], to_be_redacted[2] - 60, to_be_redacted[3])
+        rect = fitz.Rect(to_be_redacted[0], to_be_redacted[1], to_be_redacted[2], to_be_redacted[3])
+        page.add_redact_annot(test_rect.quad)
+        page._apply_redactions()
+
+        words = page.get_text("words")
+        xref = page.get_contents()[0]
+        lines = page.read_contents().splitlines()
+        #print(words)
+
+        to_be_repositioned = []
+        for word in page.get_text("words"):
+            if word[1] >= to_be_redacted[1] and word[3] <= to_be_redacted[3]:
+                print(word)
+
+        new_pos = to_be_redacted[0]
+        length = 0.0
+        count = 0
+        last_tm = 0
+        for i in range(len(lines)):
+            if lines[i].endswith(b"Tm"):
+                string_line = lines[i].split()
+                x = float(string_line[4])
+                y = y_dim - float(string_line[5])
+                if x >= to_be_redacted[0] and  y >= to_be_redacted[1] and y <= to_be_redacted[3]:
+                    to_be_repositioned.append((lines[i], i))
+                    #print(lines[i], lines[i+1], x, y)
+                    """
+                    if count >= 1:
+                        length += float(lines[last_tm].split()[4]) - x
+                        print(lines[last_tm], x, length)
+                        new_pos = to_be_redacted[0] - length
+                    else:
+                        new_pos = to_be_redacted[0]
+                    string_line[4] = str(new_pos).encode()
+                    new_string = b" ".join(string_line)
+
+                    print(lines[i], new_string)
+                    lines[i] = new_string
+
+                    # removes all text after the
+                    #for k in range(i, i+2):
+                    #    lines[k] = lines[k]
+                    count += 1
+                    last_tm = i
+                    """
+
+        for i in range(len(to_be_repositioned)):
+            string_line = to_be_repositioned[i][0].split()
+            x = float(string_line[4])
+            y = y_dim - float(string_line[5])
+            if count >= 1:
+                length += float(to_be_repositioned[i - 1][0].split()[4]) - x
+                print(to_be_repositioned[i], x, length)
+                new_pos = to_be_redacted[0] - length
+            else:
+                new_pos = to_be_redacted[0]
+            string_line[4] = str(new_pos).encode()
+            new_string = b" ".join(string_line)
+            lines[to_be_repositioned[i][1]] = new_string
+
+            print(to_be_repositioned[i], new_string)
+            i = new_string
+
+            # removes all text after the
+            #for k in range(i, i+2):
+            #    lines[k] = lines[k]
+            count += 1
+
+        reader2.doc.update_stream(xref, b"\n".join(lines))
+    reader2.doc.save("pdf_doc1_remove_text_test.pdf")
+    reader2.doc.close()
     """
     (readers, pages, fonts, contents) = readFiles()
     interpreters: List[DocumentManipulator] = []
@@ -146,14 +262,15 @@ def main():
 
 
                 # TODO: parse text_content
-                """
+
                 1) Tm<00300030003000300031>Tj | <0036>Tj
                 2) ()Tj | (\r\n)Tj | ( ) Tj | [(T)0.8(E)1.8(R)8.2( )0.7(B)6.8(E)-16.8(S)10.3(L)11.4(U)1.2(I)-5.6(T)0.8(V)8.8(O)2.1(R)-10.3(M)7.6(I)-5.6(N)-0.8(G )] TJ | [(B)5 (r)-0.7 (i)-7 (e)-5 (f)4.3 ( v)4.3 (ast)-7 (e)-5 ( co)-7.4 (m)-1.3 (m)-1.3 (i)-7 (ssi)-7 (e)-5 ( F)0.6 (i)-7 (n)-8 (.)3 ( )13.7 (aan)-8 ( )]TJ
                 3) (\\000$\\000D\\000Q)Tj
-                """
 
 
 
+
+    """
     """
     # Rawreader = DocumentReader("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/pal.pdf")
     root = reader.get_root_object()
