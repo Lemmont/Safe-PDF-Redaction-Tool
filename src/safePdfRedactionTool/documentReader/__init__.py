@@ -29,7 +29,6 @@ class DocumentReader:
         """
             returns xref, lines and words of page.
         """
-        page.clean_contents()
         xref = page.get_contents()[0]
         lines = page.read_contents().splitlines()
         words = page.get_text("words", sort=True)
@@ -58,7 +57,7 @@ class DocumentReader:
                 x = float(string_line[0])
                 y = page_height - float(string_line[1])
                 print(x, y, first_redaction)
-                if first_redaction[0] >= x and  first_redaction[1] <= y  and first_redaction[3] >= y :
+                if first_redaction[0] <= x and  first_redaction[1] <= y  and first_redaction[3] >= y :
                     to_be_repositioned.append((lines[i], i))
 
 

@@ -176,11 +176,13 @@ def main():
     reader = DocumentReader("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/test1.pdf")
     pages = reader.get_pages()
     for page in pages:
+        page.clean_contents()
         dim = reader.get_page_dimensions(page)
         (xref, lines, words) = reader.get_page_contents(page)
+        print(lines)
         #print(words)
 
-        to_be_redacted = words[3]
+        to_be_redacted = words[0]
         test_rect = fitz.Rect(to_be_redacted[0], to_be_redacted[1], to_be_redacted[2], to_be_redacted[3])
 
         page.add_redact_annot(test_rect.quad)
@@ -222,10 +224,12 @@ def main():
             #for k in range(i, i+2):
             #    lines[k] = lines[k]
             count += 1
+        reader.doc.update_stream(xref, b"\n".join(lines))
 
         #print(lines)
-        reader.doc.update_stream(xref, b"\n".join(lines))
         (xref, lines, words) = reader.get_page_contents(page)
+
+        print(lines)
         #print(lines)
 
     reader.doc.save("pdf_doc1_remove_text_test.pdf")
