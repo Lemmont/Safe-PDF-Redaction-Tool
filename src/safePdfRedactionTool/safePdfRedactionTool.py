@@ -173,28 +173,67 @@ def main():
 
             remove white spaces
     """
-    reader = DocumentReader("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/test1.pdf")
+
+    reader = DocumentReader("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/test2.pdf")
     pages = reader.get_pages()
     for page in pages:
         page.clean_contents()
         dim = reader.get_page_dimensions(page)
         (xref, lines, words) = reader.get_page_contents(page)
-        print(lines)
+        #print(lines)
         #print(words)
+        #print(lines)
+        print(lines)
+        angle_bracket_pattern = re.compile(r'<(.*?)>|\((.*?)\)')
+        for i in range(len(lines)):
+            if lines[i].endswith(b"TJ"):
+                operands = lines[i][:-2].strip().decode()
+                text = angle_bracket_pattern.findall(operands)
+                print(text)
+                res_text = "["
+                for t in text:
+                    if t[0] == '':
+                        res_text = res_text + "(" + t[1] + ")"
+                    elif t[1] == '':
+                        res_text = res_text + "<" + t[0] + ">"
+                res_text += "]TJ"
+                lines[i] = res_text.encode()
+        reader.doc.update_stream(xref, b"\n".join(lines))
+        print(lines)
 
-        to_be_redacted = words[0]
+        to_be_redacted = words[5]
         test_rect = fitz.Rect(to_be_redacted[0], to_be_redacted[1], to_be_redacted[2], to_be_redacted[3])
 
         page.add_redact_annot(test_rect.quad)
         reader.doc.save("pdf_doc1_remove_text_test_temp.pdf")
         page._apply_redactions()
 
+
         (xref, lines, words) = reader.get_page_contents(page)
         #print(words)
         #print(words)
+        #print(lines)
+
+        angle_bracket_pattern = re.compile(r'<(.*?)>|\((.*?)\)')
+        for i in range(len(lines)):
+            if lines[i].endswith(b"TJ"):
+                operands = lines[i][:-2].strip().decode()
+                text = angle_bracket_pattern.findall(operands)
+                print(text)
+                res_text = "["
+                for t in text:
+                    if t[0] == '':
+                        res_text = res_text + "(" + t[1] + ")"
+                    elif t[1] == '':
+                        res_text = res_text + "<" + t[0] + ">"
+                res_text += "]TJ"
+                lines[i] = res_text.encode()
+        reader.doc.update_stream(xref, b"\n".join(lines))
+
+        #print(lines)
 
         to_be_repositioned = reader.get_to_be_repositioned_words(dim[1], lines, test_rect)
-        print(to_be_repositioned)
+        #print(to_be_repositioned)
 
         length = 0.0
         count = 0
@@ -214,10 +253,23 @@ def main():
             else:
                 string_line[0] = str(new_pos).encode()
 
-            print(new_pos, string_line)
+            #print(new_pos, string_line)
             new_string = b" ".join(string_line)
             #print(to_be_repositioned[i], new_string)
             lines[to_be_repositioned[i][1]] = new_string
+
+            # get text operator TJ/Tj
+            text = lines[to_be_repositioned[i][1]+1].strip()
+            operator = text[-2:]
+            print(operator)
+
+            """if operator == b"TJ":
+                t = text[1:6]
+                print(text, operator, t)
+                new_text = text.replace(t, b"")
+                print(new_text)
+                lines[to_be_repositioned[i][1]+1] = new_text
+            """
 
 
             # removes all text after the
@@ -229,7 +281,6 @@ def main():
         #print(lines)
         (xref, lines, words) = reader.get_page_contents(page)
 
-        print(lines)
         #print(lines)
 
     reader.doc.save("pdf_doc1_remove_text_test.pdf")

@@ -45,6 +45,7 @@ class DocumentReader:
 
     def get_to_be_repositioned_words(self, page_height, lines, first_redaction: fitz.Rect):
         to_be_repositioned = []
+        print(first_redaction)
         for i in range(len(lines)):
             if lines[i].endswith(b"Tm"):
                 string_line = lines[i].split()
@@ -53,10 +54,11 @@ class DocumentReader:
                 if x >= first_redaction[0] and  y >= first_redaction[1] and y <= first_redaction[3]:
                     to_be_repositioned.append((lines[i], i))
             elif lines[i].endswith(b"Td"):
+                print(lines[i])
                 string_line = lines[i].split()
                 x = float(string_line[0])
                 y = page_height - float(string_line[1])
-                print(x, y, first_redaction)
+                #print(x, y, first_redaction)
                 if first_redaction[0] <= x and  first_redaction[1] <= y  and first_redaction[3] >= y :
                     to_be_repositioned.append((lines[i], i))
 
