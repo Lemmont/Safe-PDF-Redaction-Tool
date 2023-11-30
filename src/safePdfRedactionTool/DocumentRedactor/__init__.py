@@ -75,7 +75,6 @@ class DocumentRedactor:
             if lines[i].endswith(b"TJ"):
                 operands = lines[i][:-2].strip().decode()
                 text = angle_bracket_pattern.findall(operands)
-                print(text)
                 res_text = "["
                 for t in text:
                     if t[0] == '':
@@ -99,9 +98,40 @@ class DocumentRedactor:
             y = dim[1] - float(string_line[5]) if len(string_line) > 3 else float(string_line[1])
             if count >= 1:
                 length += float(to_be_repositioned[i - 1][0].split()[4]) - x
-                new_pos = first_redacted[0] - length
+                new_pos = first_redacted[0][0] - length
             else:
-                new_pos = first_redacted[0]
+                new_pos = first_redacted[0][0]
+
+            value = 0.0
+
+            for j in range(1, len(first_redacted)):
+                if x >= first_redacted[j][0]:
+                    if j < len(first_redacted) -1:
+                        value += first_redacted[j][2] - first_redacted[j][0]
+                        print("OK", value)
+                    elif j == len(first_redacted) - 1:
+                        value += first_redacted[j][2] - first_redacted[j][0]
+                        print(value)
+                else:
+                    break
+
+
+            new_pos -= value
+
+            """
+            for j in range(len(first_redacted)):
+                if j < len(first_redacted) - 1:
+                    if x >= first_redacted[j][0] and x <= first_redacted[j+1][0]:
+                        if j != 0:
+                            new_pos += first_redacted[j][0] - x
+                            break
+                        else:
+                            break
+                elif j == len(first_redacted) - 1:
+                    for p in range(1,j+1):
+                        new_pos += first_redacted[p][0] - x
+                    break
+            """
 
             if len(string_line) > 3:
                 string_line[4] = str(new_pos).encode()
@@ -111,17 +141,9 @@ class DocumentRedactor:
             #print(new_pos, string_line)
             new_string = b" ".join(string_line)
             #print(to_be_repositioned[i], new_string)
+            print(new_string)
             lines[to_be_repositioned[i][1]] = new_string
 
-            # get text operator TJ/Tj
-            text = lines[to_be_repositioned[i][1]+1].strip()
-            operator = text[-2:]
-            print(operator)
-
-
-            # removes all text after the
-            #for k in range(i, i+2):
-            #    lines[k] = lines[k]
             count += 1
         self.doc.update_stream(xref, b"\n".join(lines))
 
