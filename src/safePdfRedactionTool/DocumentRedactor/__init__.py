@@ -54,9 +54,9 @@ class DocumentRedactor:
         """
         font = fitz.Font("times-roman")
         #print(font.text_length("x"))
-        new_length = font.text_length("x")
-        newx1 = rect[1] + new_length + 5
-        print(rect, newx1, new_length)
+        new_length = font.text_length("x", 12)
+        newx1 = rect[0] + new_length
+        print(rect, newx1)
         new_rect = fitz.Rect(rect[0], rect[1], newx1, rect[2])
         page.insert_textbox(new_rect, "x", fontname="times-roman", fontsize=12)
         return new_rect
@@ -68,18 +68,24 @@ class DocumentRedactor:
                 string_line = lines[i].split()
                 x = float(string_line[4])
                 y = page_height - float(string_line[5])
+                for replacement in replacements:
+                    print(replacement, x, y)
+                    if x >= round(replacement[0],3) and y >= replacement[1] and y <= replacement[3]:
+                        continue
                 if x >= first_redaction[0] and  y >= first_redaction[1] and y <= first_redaction[3]:
                     to_be_repositioned.append((lines[i], i))
             elif lines[i].endswith(b"Td"):
                 string_line = lines[i].split()
                 x = float(string_line[0])
                 y = page_height - float(string_line[1])
-                print(lines[i], replacements, y)
+                for replacement in replacements:
+                    print(replacement, x, y)
+                    if x >= round(replacement[0], 3) and y >= replacement[1] and y <= replacement[3]:
+                        continue
                 if first_redaction[0] <= x and  first_redaction[1] <= y  and first_redaction[3] >= y :
                     to_be_repositioned.append((lines[i], i))
 
         # filter out the replacement texts
-
         return to_be_repositioned
 
     def remove_positional_adjustments(self, lines, xref):
@@ -93,12 +99,25 @@ class DocumentRedactor:
                 operands = lines[i][:-2].strip().decode()
                 text = angle_bracket_pattern.findall(operands)
                 res_text = "["
+                #print(text)
                 for t in text:
                     if t[0] == '':
                         res_text = res_text + "(" + t[1] + ")"
                     elif t[1] == '':
                         res_text = res_text + "<" + t[0] + ">"
                 res_text += "]TJ"
+
+                """
+                #TODO: what if not divided by \n?
+                if b"Tm" in lines[i] or b"Tf" in lines[i]:
+                    temp = lines[i].replace(b"Tm", b"Tm\n").replace(b"Tf", b"Tf\n").split(b"\n")
+                    temp = [i.strip() for i in temp]
+                    temp[-1] = res_text.encode()
+                    lines[i] = b"\n ".join(temp)
+                else:
+
+                    lines[i] = res_text.encode()
+                """
                 lines[i] = res_text.encode()
         self.doc.update_stream(xref, b"\n".join(lines))
 
@@ -114,9 +133,9 @@ class DocumentRedactor:
             x = float(string_line[4]) if len(string_line) > 4 else float(string_line[0])
             if count >= 1:
                 length += float(to_be_repositioned[i - 1][0].split()[4]) - x
-                new_pos = redactions[0][0] - length
+                new_pos = redactions[0][0] + replacements[0].width - length
             else:
-                new_pos = redactions[0][0]
+                new_pos = redactions[0][0] + replacements[0].width
 
             value = 0.0
 
@@ -128,7 +147,6 @@ class DocumentRedactor:
                         value += redactions[j][2] - redactions[j][0]
                 else:
                     break
-
 
             new_pos -= value
 

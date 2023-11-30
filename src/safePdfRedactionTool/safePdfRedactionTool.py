@@ -2,7 +2,7 @@ import fitz
 from DocumentRedactor import DocumentRedactor
 
 def select_multiple_redactions_example(words):
-    return [words[0]]
+    return [words[1]]
 
 def redact_example():
     redactor = DocumentRedactor("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/pdf2Roboto.pdf")
@@ -24,16 +24,21 @@ def redact_example():
         redactor.doc.save("res_temp.pdf")
         redactor.apply_redactions(page)
 
+        (xref, lines, words) = redactor.get_page_contents(page)
+
         # insert text "x" in first redaction
         test = fitz.Rect(first_redaction[0], first_redaction[1]-2, first_redaction[2], first_redaction[3]+5)
-        redactor.insert_replacement_text(page, test)
+        test = redactor.insert_replacement_text(page, test)
         redactor.doc.save("res_temp2.pdf")
 
         (xref, lines, words) = redactor.get_page_contents(page)
+        #print(lines)
         redactor.remove_positional_adjustments(lines, xref)
+        #print(lines)
+        (xref, lines, words) = redactor.get_page_contents(page)
 
-        to_be_repositioned = redactor.get_to_be_repositioned_words(dim[1], lines, first_redaction, test)
-        redactor.reposition_words_same_line(to_be_repositioned, redactions, test, lines, xref)
+        to_be_repositioned = redactor.get_to_be_repositioned_words(dim[1], lines, first_redaction, [test])
+        redactor.reposition_words_same_line(to_be_repositioned, redactions, [test], lines, xref)
 
         redactor.finalize_redactions()
 def main():
