@@ -2,19 +2,8 @@ from documentInterpreter import *
 from documentReader import *
 from documentManipulator import DocumentManipulator
 import fitz
+from DocumentRedactor import DocumentRedactor
 
-def printDict(dict, index=None):
-    for i in dict:
-        if index and len(index) > 0:
-            for j in index:
-                if j in dict[i]:
-                    print(i, j, dict[i][j])
-                    print()
-                else:
-                    print(j, "not in", i)
-        else:
-            print(i, dict[i])
-            print()
 
 def readFiles():
     reader0 = DocumentReader("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/pal.pdf")
@@ -143,7 +132,32 @@ def readFiles():
 
     return (readers, documentsPages, documentPagesFonts, documentPagesContents)
 
+def redact_example():
+    redactor = DocumentRedactor("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/marx.pdf")
+    pages = redactor.get_pages()
+    for page in pages:
+        redactor.prepare_page(page)
+        dim = redactor.get_page_dimensions(page)
+        (xref, lines, words) = redactor.get_page_contents(page)
+        redactor.remove_positional_adjustments(lines, xref)
 
+        # test redaction manually selected
+        to_be_redacted = words[20]
+        rect_of_to_be_redacted = fitz.Rect(to_be_redacted[0], to_be_redacted[1], to_be_redacted[2], to_be_redacted[3])
+
+        redactor.add_redact_annot(page, rect_of_to_be_redacted)
+
+        # Intermediate save with all to_be_redacted
+        redactor.doc.save("res_temp.pdf")
+        redactor.apply_redactions(page)
+
+        (xref, lines, words) = redactor.get_page_contents(page)
+        redactor.remove_positional_adjustments(lines, xref)
+
+        to_be_repositioned = redactor.get_to_be_repositioned_words(dim[1], lines, rect_of_to_be_redacted)
+        redactor.reposition_words_same_line(to_be_repositioned, rect_of_to_be_redacted, lines, dim, xref)
+
+        redactor.finalize_redactions()
 def main():
     """
     Example
@@ -173,7 +187,8 @@ def main():
 
             remove white spaces
     """
-
+    redact_example()
+    """
     reader = DocumentReader("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/test2.pdf")
     pages = reader.get_pages()
     for page in pages:
@@ -263,14 +278,6 @@ def main():
             operator = text[-2:]
             print(operator)
 
-            """if operator == b"TJ":
-                t = text[1:6]
-                print(text, operator, t)
-                new_text = text.replace(t, b"")
-                print(new_text)
-                lines[to_be_repositioned[i][1]+1] = new_text
-            """
-
 
             # removes all text after the
             #for k in range(i, i+2):
@@ -285,6 +292,7 @@ def main():
 
     reader.doc.save("pdf_doc1_remove_text_test.pdf")
     reader.doc.close()
+    """
     """
     (readers, pages, fonts, contents) = readFiles()
     interpreters: List[DocumentManipulator] = []
