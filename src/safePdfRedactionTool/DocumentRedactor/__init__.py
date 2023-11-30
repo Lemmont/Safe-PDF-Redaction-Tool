@@ -46,7 +46,22 @@ class DocumentRedactor:
     def get_word_bbox(self, word: str):
         pass
 
-    def get_to_be_repositioned_words(self, page_height, lines, first_redaction: fitz.Rect):
+    def insert_replacement_text(self, page: fitz.Page, rect: fitz.Rect):
+        """
+            Insert replacement text in rect. of redacted text
+
+            FOR NOW ONLY "x"
+        """
+        font = fitz.Font("times-roman")
+        #print(font.text_length("x"))
+        new_length = font.text_length("x")
+        newx1 = rect[1] + new_length + 5
+        print(rect, newx1, new_length)
+        new_rect = fitz.Rect(rect[0], rect[1], newx1, rect[2])
+        page.insert_textbox(new_rect, "x", fontname="times-roman", fontsize=12)
+        return new_rect
+
+    def get_to_be_repositioned_words(self, page_height, lines, first_redaction: fitz.Rect, replacements):
         to_be_repositioned = []
         for i in range(len(lines)):
             if lines[i].endswith(b"Tm"):
@@ -59,9 +74,11 @@ class DocumentRedactor:
                 string_line = lines[i].split()
                 x = float(string_line[0])
                 y = page_height - float(string_line[1])
+                print(lines[i], replacements, y)
                 if first_redaction[0] <= x and  first_redaction[1] <= y  and first_redaction[3] >= y :
                     to_be_repositioned.append((lines[i], i))
 
+        # filter out the replacement texts
 
         return to_be_repositioned
 
@@ -85,7 +102,7 @@ class DocumentRedactor:
                 lines[i] = res_text.encode()
         self.doc.update_stream(xref, b"\n".join(lines))
 
-    def reposition_words_same_line(self, to_be_repositioned, first_redacted, lines, dim, xref):
+    def reposition_words_same_line(self, to_be_repositioned, redactions, replacements, lines, xref):
         """
             Reposition the to be repositioned words based on the first redaction
             on the line.
@@ -95,53 +112,32 @@ class DocumentRedactor:
         for i in range(len(to_be_repositioned)):
             string_line = to_be_repositioned[i][0].split()
             x = float(string_line[4]) if len(string_line) > 4 else float(string_line[0])
-            y = dim[1] - float(string_line[5]) if len(string_line) > 3 else float(string_line[1])
             if count >= 1:
                 length += float(to_be_repositioned[i - 1][0].split()[4]) - x
-                new_pos = first_redacted[0][0] - length
+                new_pos = redactions[0][0] - length
             else:
-                new_pos = first_redacted[0][0]
+                new_pos = redactions[0][0]
 
             value = 0.0
 
-            for j in range(1, len(first_redacted)):
-                if x >= first_redacted[j][0]:
-                    if j < len(first_redacted) -1:
-                        value += first_redacted[j][2] - first_redacted[j][0]
-                        print("OK", value)
-                    elif j == len(first_redacted) - 1:
-                        value += first_redacted[j][2] - first_redacted[j][0]
-                        print(value)
+            for j in range(1, len(redactions)):
+                if x >= redactions[j][0]:
+                    if j < len(redactions) -1:
+                        value += redactions[j][2] - redactions[j][0]
+                    elif j == len(redactions) - 1:
+                        value += redactions[j][2] - redactions[j][0]
                 else:
                     break
 
 
             new_pos -= value
 
-            """
-            for j in range(len(first_redacted)):
-                if j < len(first_redacted) - 1:
-                    if x >= first_redacted[j][0] and x <= first_redacted[j+1][0]:
-                        if j != 0:
-                            new_pos += first_redacted[j][0] - x
-                            break
-                        else:
-                            break
-                elif j == len(first_redacted) - 1:
-                    for p in range(1,j+1):
-                        new_pos += first_redacted[p][0] - x
-                    break
-            """
-
             if len(string_line) > 3:
                 string_line[4] = str(new_pos).encode()
             else:
                 string_line[0] = str(new_pos).encode()
 
-            #print(new_pos, string_line)
             new_string = b" ".join(string_line)
-            #print(to_be_repositioned[i], new_string)
-            print(new_string)
             lines[to_be_repositioned[i][1]] = new_string
 
             count += 1
