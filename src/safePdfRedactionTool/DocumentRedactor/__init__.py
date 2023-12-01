@@ -181,7 +181,7 @@ class DocumentRedactor:
         return replacements_texts_rects
 
 def select_multiple_redactions_example(words):
-    return [words[1]]
+    return [words[5]]
 
 def redact_example():
     redactor = DocumentRedactor("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/simple.pdf")
@@ -203,6 +203,7 @@ def redact_example():
         redactor.apply_redactions(page)
 
         xref, lines, words = redactor.get_page_contents(page)
+        """
         print(lines)
         for i in range(len(lines)):
             if lines[i].endswith(b"TJ"):
@@ -210,7 +211,8 @@ def redact_example():
             if lines[i].endswith(b"Tj"):
                 print("Tj", lines[i])
 
-        break
+        """
+
 
         # insert text "x" for each redaction
         replacements_texts_rects = redactor.add_replacements(redactions, page)
@@ -220,7 +222,7 @@ def redact_example():
 
         xref, lines, words = redactor.get_page_contents(page)
 
-        pattern = re.compile(r'<[^>]+>|\([^)]+\)')
+        """pattern = re.compile(r'<[^>]+>|\([^)]+\)')
         for i in range(len(lines)):
             if lines[i].endswith(b"TJ"):
                 if b"Tm" not in lines[i] or b"Tf" not in lines[i]:
@@ -252,7 +254,7 @@ def redact_example():
 
 
 
-        redactor.doc.update_stream(xref, b"\n".join(lines))
+        redactor.doc.update_stream(xref, b"\n".join(lines))"""
 
         xref, lines, words = redactor.get_page_contents(page)
 
@@ -260,6 +262,7 @@ def redact_example():
         # split redactions per line
         redaction_per_line = {}
         replacements_per_line = {}
+        lines_per_line = {}
         for i in range(len(redactions)):
             # get y-cords aka which text line its on
             y_cords = (redactions[i][1], redactions[i][3])
@@ -269,6 +272,33 @@ def redact_example():
             else:
                 redaction_per_line[y_cords] = [redactions[i]]
                 replacements_per_line[y_cords] = [replacements_texts_rects[i]]
+                lines_per_line[y_cords] = [(redactions[i][0], redactions[i][2])]
+                for j in range(len(lines)):
+                    if lines[j].endswith(b"Tm"):
+                        y = dim[1] - float(lines[j].split()[5].decode())
+                        if y >= y_cords[0] and y <= y_cords[1]:
+                            lines_per_line[y_cords].append((lines[j], j))
+                        pass
+                    elif lines[j].endswith(b"Td"):
+                        pass
+
+        # Loop over and select the right one
+        print(lines_per_line)
+        for i in lines_per_line:
+            x = lines_per_line[i][0]
+            red_cnt = len(redaction_per_line[i])
+
+            # get candidates
+            for j in range(1, len(lines_per_line[i]) - red_cnt):
+                print(j)
+                if j == len(lines_per_line[i]) - red_cnt - 1:
+                    final = lines_per_line[i][j]
+                    print("Final (last item)", final[0], final[1], lines[final[1]+1])
+                    break
+                elif j > 1:
+                    if x[0] > float(lines_per_line[i][j-1][0].split()[4]) and x[0] < float(lines_per_line[i][j][0].split()[4]):
+                        print("Final", lines_per_line[i][j-1][0], lines_per_line[i][j-1][1], lines[lines_per_line[i][j-1][1] + 1])
+                        break
 
         xref, lines, words = redactor.get_page_contents(page)
         for i in redaction_per_line:
