@@ -56,7 +56,7 @@ class DocumentRedactor:
         new_length = font.text_length("x", 12)
         newx1 = rect[0] + new_length
         new_rect = fitz.Rect(rect[0], rect[1], newx1, rect[2])
-        page.insert_textbox(new_rect, "x", fontname="times-roman", fontsize=8)
+        page.insert_textbox(new_rect, "x", fontname="times-roman", fontsize=12)
         return new_rect
 
     def get_to_be_repositioned_words(self, page_height, lines, first_redaction: fitz.Rect, replacements):
@@ -72,9 +72,9 @@ class DocumentRedactor:
                 #print(lines[i], x, y)
                 for replacement in replacements:
                     #print(replacement, x, y)
-                    if x >= round(replacement[0],3) and y >= replacement[1] and y <= replacement[3]:
+                    if x > round(replacement[0],3) and y >= replacement[1] and y <= replacement[3]:
                         continue
-                if x >= first_redaction[0] and  y >= first_redaction[1] and y <= first_redaction[3]:
+                if x > first_redaction[0] and  y >= first_redaction[1] and y <= first_redaction[3]:
                     to_be_repositioned.append((lines[i], i))
             elif lines[i].endswith(b"Td"):
                 temp = False
@@ -84,8 +84,8 @@ class DocumentRedactor:
                 for replacement in replacements:
                     #print(replacement, x, y)
                     if x >= round(replacement[0], 3) and y >= replacement[1] and y <= replacement[3]:
-                        continue
-                if first_redaction[0] <= x and  first_redaction[1] <= y  and first_redaction[3] >= y :
+                        temp = True
+                if first_redaction[0] < x and  first_redaction[1] <= y  and first_redaction[3] >= y :
                     to_be_repositioned.append((lines[i], i))
 
         # filter out the replacement texts
@@ -131,22 +131,59 @@ class DocumentRedactor:
             Reposition the to be repositioned words based on the first redaction
             on the line.
         """
+        length = redactions[0][2] - redactions[0][0]
+        print(redactions, replacements)
+        diff = 0
+        length = 0
+        for i in range(len(to_be_repositioned)):
+            string_line = to_be_repositioned[i][0].split()
+            x = float(string_line[4]) if len(string_line) > 4 else float(string_line[0])
+            for j in range(len(redactions)):
+                if x >= redactions[j][2]:
+                    diff += (redactions[j][2]-redactions[j][0]) - replacements[j].width
+                else:
+                    break
+            print(i, diff)
+
+            if i > 0:
+                new_pos = x - diff
+            else:
+                new_pos = redactions[0][0]
+
+            if len(string_line) > 3:
+                string_line[4] = str(new_pos).encode()
+            else:
+                string_line[0] = str(new_pos).encode()
+
+            new_string = b" ".join(string_line)
+            print(x, new_string)
+            lines[to_be_repositioned[i][1]] = new_string
+
+            diff = 0
+        if len(to_be_repositioned) > 0:
+            self.doc.update_stream(xref, b"\n".join(lines))
+
+        """
         length = 0.0
         count = 0
+        q = 0
+        print("rep", replacements)
         for i in range(len(to_be_repositioned)):
+            q = 0
             string_line = to_be_repositioned[i][0].split()
             x = float(string_line[4]) if len(string_line) > 4 else float(string_line[0])
             if count >= 1:
                 length += float(to_be_repositioned[i - 1][0].split()[4]) - x
-                new_pos = redactions[0][0] + replacements[0].width - length
+                new_pos = redactions[0][0] - length + replacements[0].width
             else:
-                new_pos = redactions[0][0] + replacements[0].width
+                new_pos = redactions[0][0]
 
             value = 0.0
 
             for j in range(1, len(redactions)):
                 if x >= redactions[j][0]:
-                    if j < len(redactions) -1:
+                    q+=1
+                    if j < len(redactions) - 1:
                         value += redactions[j][2] - redactions[j][0]
                     elif j == len(redactions) - 1:
                         value += redactions[j][2] - redactions[j][0]
@@ -154,6 +191,8 @@ class DocumentRedactor:
                     break
 
             new_pos -= value
+
+            print(new_pos, to_be_repositioned[i], x, length)
 
             if len(string_line) > 3:
                 string_line[4] = str(new_pos).encode()
@@ -164,8 +203,7 @@ class DocumentRedactor:
             lines[to_be_repositioned[i][1]] = new_string
 
             count += 1
-        if len(to_be_repositioned) > 0:
-            self.doc.update_stream(xref, b"\n".join(lines))
+            """
 
     def finalize_redactions(self, new_filename="res.pdf"):
         self.doc.save(new_filename)
@@ -185,7 +223,7 @@ class DocumentRedactor:
         return replacements_texts_rects
 
 def select_multiple_redactions_example(words):
-    return [words[4]]
+    return [words[4], words[20], words[22], words[24], words[27], words[29]]
 
 def redact_example():
     redactor = DocumentRedactor("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/marx.pdf")
@@ -212,19 +250,9 @@ def redact_example():
         replacements_texts_rects = redactor.add_replacements(redactions, page)
         redactor.doc.save("res_temp2.pdf")
 
-        xref, lines, words = redactor.get_page_contents(page)
-        #print(lines)
-
-        #redactor.remove_positional_adjustments(lines, xref)
-        #(xref, lines, words) = redactor.get_page_contents(page)
-        #print(lines)
-
-        xref, lines, words = redactor.get_page_contents(page)
-
         page.clean_contents()
 
         xref, lines, words = redactor.get_page_contents(page)
-        #print("after clean", lines)
 
         pattern = re.compile(r'<[^>]+>|\([^)]+\)')
         for i in range(len(lines)):
@@ -262,7 +290,7 @@ def redact_example():
 
         xref, lines, words = redactor.get_page_contents(page)
 
-        print(lines)
+        #print(lines)
         # split redactions per line
         redaction_per_line = {}
         replacements_per_line = {}
