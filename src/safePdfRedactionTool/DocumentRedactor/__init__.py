@@ -53,10 +53,10 @@ class DocumentRedactor:
         """
         font = fitz.Font("times-roman")
         #print(font.text_length("x"))
-        new_length = font.text_length("x", 12)
+        new_length = font.text_length("redacted", 8)
         newx1 = rect[0] + new_length
         new_rect = fitz.Rect(rect[0], rect[1], newx1, rect[2])
-        page.insert_textbox(new_rect, "x", fontname="times-roman", fontsize=12)
+        page.insert_textbox(new_rect, "redacted", fontname="times-roman", fontsize=8)
         return new_rect
 
     def get_to_be_repositioned_words(self, page_height, lines, first_redaction: fitz.Rect, replacements):
@@ -163,48 +163,6 @@ class DocumentRedactor:
         if len(to_be_repositioned) > 0:
             self.doc.update_stream(xref, b"\n".join(lines))
 
-        """
-        length = 0.0
-        count = 0
-        q = 0
-        print("rep", replacements)
-        for i in range(len(to_be_repositioned)):
-            q = 0
-            string_line = to_be_repositioned[i][0].split()
-            x = float(string_line[4]) if len(string_line) > 4 else float(string_line[0])
-            if count >= 1:
-                length += float(to_be_repositioned[i - 1][0].split()[4]) - x
-                new_pos = redactions[0][0] - length + replacements[0].width
-            else:
-                new_pos = redactions[0][0]
-
-            value = 0.0
-
-            for j in range(1, len(redactions)):
-                if x >= redactions[j][0]:
-                    q+=1
-                    if j < len(redactions) - 1:
-                        value += redactions[j][2] - redactions[j][0]
-                    elif j == len(redactions) - 1:
-                        value += redactions[j][2] - redactions[j][0]
-                else:
-                    break
-
-            new_pos -= value
-
-            print(new_pos, to_be_repositioned[i], x, length)
-
-            if len(string_line) > 3:
-                string_line[4] = str(new_pos).encode()
-            else:
-                string_line[0] = str(new_pos).encode()
-
-            new_string = b" ".join(string_line)
-            lines[to_be_repositioned[i][1]] = new_string
-
-            count += 1
-            """
-
     def finalize_redactions(self, new_filename="res.pdf"):
         self.doc.save(new_filename)
         self.doc.close()
@@ -223,10 +181,10 @@ class DocumentRedactor:
         return replacements_texts_rects
 
 def select_multiple_redactions_example(words):
-    return [words[4], words[20], words[22], words[24], words[27], words[29]]
+    return [words[4]]
 
 def redact_example():
-    redactor = DocumentRedactor("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/marx.pdf")
+    redactor = DocumentRedactor("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/test1.pdf")
     pages = redactor.get_pages()
     for page in pages:
         redactor.prepare_page(page)
