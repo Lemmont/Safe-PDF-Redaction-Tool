@@ -132,7 +132,7 @@ class DocumentRedactor:
             on the line.
         """
         length = redactions[0][2] - redactions[0][0]
-        print(redactions, replacements)
+        #print(redactions, replacements)
         diff = 0
         length = 0
         for i in range(len(to_be_repositioned)):
@@ -143,7 +143,7 @@ class DocumentRedactor:
                     diff += (redactions[j][2]-redactions[j][0]) - replacements[j].width
                 else:
                     break
-            print(i, diff)
+            #print(i, diff)
 
             if i > 0:
                 new_pos = x - diff
@@ -156,7 +156,7 @@ class DocumentRedactor:
                 string_line[0] = str(new_pos).encode()
 
             new_string = b" ".join(string_line)
-            print(x, new_string)
+            #print(x, new_string)
             lines[to_be_repositioned[i][1]] = new_string
 
             diff = 0
@@ -181,16 +181,16 @@ class DocumentRedactor:
         return replacements_texts_rects
 
 def select_multiple_redactions_example(words):
-    return [words[4]]
+    return [words[1]]
 
 def redact_example():
-    redactor = DocumentRedactor("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/test1.pdf")
+    redactor = DocumentRedactor("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/simple.pdf")
     pages = redactor.get_pages()
     for page in pages:
         redactor.prepare_page(page)
         dim = redactor.get_page_dimensions(page)
         (xref, lines, words) = redactor.get_page_contents(page)
-        redactor.remove_positional_adjustments(lines, xref)
+        #redactor.remove_positional_adjustments(lines, xref)
 
         # Actual redactions
         redactions = select_multiple_redactions_example(words)
@@ -203,6 +203,14 @@ def redact_example():
         redactor.apply_redactions(page)
 
         xref, lines, words = redactor.get_page_contents(page)
+        print(lines)
+        for i in range(len(lines)):
+            if lines[i].endswith(b"TJ"):
+                print(lines[i])
+            if lines[i].endswith(b"Tj"):
+                print("Tj", lines[i])
+
+        break
 
         # insert text "x" for each redaction
         replacements_texts_rects = redactor.add_replacements(redactions, page)
@@ -266,6 +274,9 @@ def redact_example():
         for i in redaction_per_line:
             redactions_on_line = redaction_per_line[i]
             replacements_on_line = replacements_per_line[i]
+
+            # what if we only use the lines which are the same as the y cords of the redacted items per line?
+            # That way we can also check the TJ(s) of that line!
             to_be_repositioned = redactor.get_to_be_repositioned_words(dim[1], lines, redactions_on_line[0], replacements_on_line)
             redactor.reposition_words_same_line(to_be_repositioned, redactions_on_line, replacements_on_line, lines, xref)
 
