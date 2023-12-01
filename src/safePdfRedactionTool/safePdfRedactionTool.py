@@ -3,10 +3,10 @@ import fitz
 from DocumentRedactor import DocumentRedactor
 
 def select_multiple_redactions_example(words):
-    return [words[1]]
+    return [words[19], words[21]]
 
 def redact_example():
-    redactor = DocumentRedactor("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/test2.pdf")
+    redactor = DocumentRedactor("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/marx.pdf")
     pages = redactor.get_pages()
     for page in pages:
         redactor.prepare_page(page)
