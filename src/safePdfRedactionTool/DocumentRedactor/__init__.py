@@ -1,5 +1,6 @@
 import re
 import fitz
+
 class DocumentRedactor:
     def __init__(self, document):
         self.doc: fitz.Document = fitz.open(document, filetype="pdf")
@@ -41,8 +42,6 @@ class DocumentRedactor:
     def apply_redactions(self, page: fitz.Page):
         page._apply_redactions()
 
-
-
     def get_word_bbox(self, word: str):
         pass
 
@@ -56,30 +55,34 @@ class DocumentRedactor:
         #print(font.text_length("x"))
         new_length = font.text_length("x", 12)
         newx1 = rect[0] + new_length
-        print(rect, newx1)
         new_rect = fitz.Rect(rect[0], rect[1], newx1, rect[2])
-        page.insert_textbox(new_rect, "x", fontname="times-roman", fontsize=12)
+        page.insert_textbox(new_rect, "x", fontname="times-roman", fontsize=8)
         return new_rect
 
     def get_to_be_repositioned_words(self, page_height, lines, first_redaction: fitz.Rect, replacements):
         to_be_repositioned = []
         for i in range(len(lines)):
+
+            #print(lines[i])
             if lines[i].endswith(b"Tm"):
+                temp = False
                 string_line = lines[i].split()
                 x = float(string_line[4])
                 y = page_height - float(string_line[5])
+                #print(lines[i], x, y)
                 for replacement in replacements:
-                    print(replacement, x, y)
+                    #print(replacement, x, y)
                     if x >= round(replacement[0],3) and y >= replacement[1] and y <= replacement[3]:
                         continue
                 if x >= first_redaction[0] and  y >= first_redaction[1] and y <= first_redaction[3]:
                     to_be_repositioned.append((lines[i], i))
             elif lines[i].endswith(b"Td"):
+                temp = False
                 string_line = lines[i].split()
                 x = float(string_line[0])
                 y = page_height - float(string_line[1])
                 for replacement in replacements:
-                    print(replacement, x, y)
+                    #print(replacement, x, y)
                     if x >= round(replacement[0], 3) and y >= replacement[1] and y <= replacement[3]:
                         continue
                 if first_redaction[0] <= x and  first_redaction[1] <= y  and first_redaction[3] >= y :
@@ -119,6 +122,8 @@ class DocumentRedactor:
                     lines[i] = res_text.encode()
                 """
                 lines[i] = res_text.encode()
+
+
         self.doc.update_stream(xref, b"\n".join(lines))
 
     def reposition_words_same_line(self, to_be_repositioned, redactions, replacements, lines, xref):
@@ -159,8 +164,125 @@ class DocumentRedactor:
             lines[to_be_repositioned[i][1]] = new_string
 
             count += 1
-        self.doc.update_stream(xref, b"\n".join(lines))
+        if len(to_be_repositioned) > 0:
+            self.doc.update_stream(xref, b"\n".join(lines))
 
     def finalize_redactions(self, new_filename="res.pdf"):
         self.doc.save(new_filename)
         self.doc.close()
+
+    def add_redactions(self, redactions, page):
+        for redaction in redactions:
+            rect = fitz.Rect(redaction[0], redaction[1], redaction[2], redaction[3])
+            self.add_redact_annot(page, rect)
+
+    def add_replacements(self, redactions, page):
+        replacements_texts_rects = []
+        for i in range(len(redactions)):
+            rect = fitz.Rect(redactions[i][0], redactions[i][1] -5 , redactions[i][2], redactions[i][3])
+            new_rect = self.insert_replacement_text(page, rect)
+            replacements_texts_rects.append(new_rect)
+        return replacements_texts_rects
+
+def select_multiple_redactions_example(words):
+    return [words[4]]
+
+def redact_example():
+    redactor = DocumentRedactor("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/marx.pdf")
+    pages = redactor.get_pages()
+    for page in pages:
+        redactor.prepare_page(page)
+        dim = redactor.get_page_dimensions(page)
+        (xref, lines, words) = redactor.get_page_contents(page)
+        redactor.remove_positional_adjustments(lines, xref)
+
+        # Actual redactions
+        redactions = select_multiple_redactions_example(words)
+
+        # Add all redactions
+        redactor.add_redactions(redactions, page)
+
+        # Intermediate save with all to_be_redacted
+        redactor.doc.save("res_temp.pdf")
+        redactor.apply_redactions(page)
+
+        xref, lines, words = redactor.get_page_contents(page)
+
+        # insert text "x" for each redaction
+        replacements_texts_rects = redactor.add_replacements(redactions, page)
+        redactor.doc.save("res_temp2.pdf")
+
+        xref, lines, words = redactor.get_page_contents(page)
+        #print(lines)
+
+        #redactor.remove_positional_adjustments(lines, xref)
+        #(xref, lines, words) = redactor.get_page_contents(page)
+        #print(lines)
+
+        xref, lines, words = redactor.get_page_contents(page)
+
+        page.clean_contents()
+
+        xref, lines, words = redactor.get_page_contents(page)
+        #print("after clean", lines)
+
+        pattern = re.compile(r'<[^>]+>|\([^)]+\)')
+        for i in range(len(lines)):
+            if lines[i].endswith(b"TJ"):
+                if b"Tm" not in lines[i] or b"Tf" not in lines[i]:
+                    #print("TJ FOUND", lines[i])
+                    operands = lines[i].strip()[:-2].decode().strip()[1:-1]
+                    res = re.sub(pattern, " ", operands).strip().split()
+                    new = operands
+                    #print(res)
+                    if len(res) > 0:
+                        for r in range(len(res)):
+                            if r > 0:
+                                new = new.replace(res[r], "-1")
+                                operands = new
+                            else:
+                                #TODO calculate based on text
+                                new = new.replace(res[r], "-300")
+                                operands = new
+
+                        lines[i] = b"[" + operands.encode() + b"]" + b" TJ"
+                        #print("TJ FOUND AND POSITIONAL INFORMATION CHANGED")
+                elif b"Tm" in lines[i] and b"Tf" in lines[i]:
+                    #print(lines[i])
+                    temp = lines[i].replace(b"Tm", b"Tm\n").replace(b"Tf", b"Tf\n").split(b"\n")
+                    temp = [item.strip() for item in temp]
+
+                    #\lines[i] = b""
+                    lines[i] = b"\n ".join(temp)
+                    #print(lines[i])
+
+
+
+        redactor.doc.update_stream(xref, b"\n".join(lines))
+
+        xref, lines, words = redactor.get_page_contents(page)
+
+        print(lines)
+        # split redactions per line
+        redaction_per_line = {}
+        replacements_per_line = {}
+        for i in range(len(redactions)):
+            # get y-cords aka which text line its on
+            y_cords = (redactions[i][1], redactions[i][3])
+            if y_cords in redaction_per_line:
+                redaction_per_line[y_cords].append(redactions[i])
+                replacements_per_line[y_cords].append(replacements_texts_rects[i])
+            else:
+                redaction_per_line[y_cords] = [redactions[i]]
+                replacements_per_line[y_cords] = [replacements_texts_rects[i]]
+
+        xref, lines, words = redactor.get_page_contents(page)
+        for i in redaction_per_line:
+            redactions_on_line = redaction_per_line[i]
+            replacements_on_line = replacements_per_line[i]
+            to_be_repositioned = redactor.get_to_be_repositioned_words(dim[1], lines, redactions_on_line[0], replacements_on_line)
+            redactor.reposition_words_same_line(to_be_repositioned, redactions_on_line, replacements_on_line, lines, xref)
+
+        xref, lines, words = redactor.get_page_contents(page)
+        #print(lines)
+        redactor.finalize_redactions()
