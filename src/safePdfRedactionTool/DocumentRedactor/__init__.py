@@ -189,11 +189,31 @@ def redact_example():
     for page in pages:
         redactor.prepare_page(page)
         dim = redactor.get_page_dimensions(page)
-        (xref, lines, words) = redactor.get_page_contents(page)
-        #redactor.remove_positional_adjustments(lines, xref)
+        xref, lines, words = redactor.get_page_contents(page)
+
+       # Text blocks
+        text_blocks: list[rect] = []
+        blocks = page.get_text("blocks", sort=True)
+        for i in range(len(blocks)):
+            # [0:4]: b-boxes of text blocks.
+            rect = fitz.Rect(blocks[i][0], blocks[i][1], blocks[i][2], blocks[i][3])
+            text_blocks.append(rect)
+
+        #print(text_blocks)
 
         # Actual redactions
         redactions = select_multiple_redactions_example(words)
+
+        # Determine in which text_block the redactions are situated:
+        redacts_to_textblocks = {}
+        for i in redactions:
+            redact_rect = fitz.Rect(i[0], i[1], i[2], i[3])
+            for j in text_blocks:
+                if j.contains(redact_rect):
+                    redacts_to_textblocks[redact_rect] = j
+
+        # USE THIS TO CHECK TEXT BLOCK OF REDACTION!
+        #print(redacts_to_textblocks)
 
         # Add all redactions
         redactor.add_redactions(redactions, page)
@@ -203,16 +223,6 @@ def redact_example():
         redactor.apply_redactions(page)
 
         xref, lines, words = redactor.get_page_contents(page)
-        """
-        print(lines)
-        for i in range(len(lines)):
-            if lines[i].endswith(b"TJ"):
-                print(lines[i])
-            if lines[i].endswith(b"Tj"):
-                print("Tj", lines[i])
-
-        """
-
 
         # insert text "x" for each redaction
         replacements_texts_rects = redactor.add_replacements(redactions, page)
@@ -222,44 +232,7 @@ def redact_example():
 
         xref, lines, words = redactor.get_page_contents(page)
 
-        """pattern = re.compile(r'<[^>]+>|\([^)]+\)')
-        for i in range(len(lines)):
-            if lines[i].endswith(b"TJ"):
-                if b"Tm" not in lines[i] or b"Tf" not in lines[i]:
-                    #print("TJ FOUND", lines[i])
-                    operands = lines[i].strip()[:-2].decode().strip()[1:-1]
-                    res = re.sub(pattern, " ", operands).strip().split()
-                    new = operands
-                    #print(res)
-                    if len(res) > 0:
-                        for r in range(len(res)):
-                            if r > 0:
-                                new = new.replace(res[r], "-1")
-                                operands = new
-                            else:
-                                #TODO calculate based on text
-                                new = new.replace(res[r], "-300")
-                                operands = new
-
-                        lines[i] = b"[" + operands.encode() + b"]" + b" TJ"
-                        #print("TJ FOUND AND POSITIONAL INFORMATION CHANGED")
-                elif b"Tm" in lines[i] and b"Tf" in lines[i]:
-                    #print(lines[i])
-                    temp = lines[i].replace(b"Tm", b"Tm\n").replace(b"Tf", b"Tf\n").split(b"\n")
-                    temp = [item.strip() for item in temp]
-
-                    #\lines[i] = b""
-                    lines[i] = b"\n ".join(temp)
-                    #print(lines[i])
-
-
-
-        redactor.doc.update_stream(xref, b"\n".join(lines))"""
-
-        xref, lines, words = redactor.get_page_contents(page)
-
-        #print(lines)
-        # split redactions per line
+        # split redactions, replacements and TM/TD per line
         redaction_per_line = {}
         replacements_per_line = {}
         lines_per_line = {}
@@ -277,20 +250,26 @@ def redact_example():
                     if lines[j].endswith(b"Tm"):
                         y = dim[1] - float(lines[j].split()[5].decode())
                         if y >= y_cords[0] and y <= y_cords[1]:
-                            lines_per_line[y_cords].append((lines[j], j))
-                        pass
+                            if lines[j+1].endswith(b"TJ"):
+                                lines_per_line[y_cords].append((lines[j], j))
                     elif lines[j].endswith(b"Td"):
-                        pass
+                        y = dim[1] - float(lines[j].split()[1].decode())
+                        if y >= y_cords[0] and y <= y_cords[1]:
+                            if lines[j].endswith(b"TJ"):
+                                lines_per_line[y_cords].append((lines[j], j))
 
         # Loop over and select the right one
         print(lines_per_line)
         for i in lines_per_line:
             x = lines_per_line[i][0]
+            rect = fitz.Rect(x[0], i[0], x[1], i[1])
+            corresponding_text_block = redacts_to_textblocks[rect]
             red_cnt = len(redaction_per_line[i])
 
             # get candidates
             for j in range(1, len(lines_per_line[i]) - red_cnt):
-                print(j)
+
+                # Select candidate
                 if j == len(lines_per_line[i]) - red_cnt - 1:
                     final = lines_per_line[i][j]
                     print("Final (last item)", final[0], final[1], lines[final[1]+1])
