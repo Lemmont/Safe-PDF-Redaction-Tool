@@ -1,6 +1,19 @@
 import re
 import fitz
+import os
 from DocumentRedactor import DocumentRedactor, redact_example
+
+def pdf_checker(file):
+    doc = fitz.Document(file, filetype="pdf")
+    metadata = doc.metadata
+    producer = doc.metadata['producer']
+    creator = doc.metadata['creator']
+    #print(metadata)
+    if producer == "":
+        print(file, creator)
+    else:
+        print(file, producer)
+
 
 def main():
     """
@@ -31,6 +44,11 @@ def main():
 
             remove white spaces
     """
+    os.chdir('/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/src/test_cases')
+    print(os.getcwd())
+    files = os.listdir()
+    for file in files:
+        pdf_checker(file)
     redact_example()
 
 # Using the special variable
