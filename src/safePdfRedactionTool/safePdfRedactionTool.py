@@ -44,7 +44,7 @@ def main():
 
             remove white spaces
     """
-    os.chdir('/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/src/test_cases')
+    os.chdir('/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/src/')
     # print(os.getcwd())
     # files = os.listdir()
     # for file in files:
@@ -54,7 +54,7 @@ def main():
 
 
     # redact a file, save intermediate steps
-    redact_file("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/staatslot.pdf")
+    redact_file("./test_cases/staatslot.pdf")
 
 # Using the special variable
 # __name__

@@ -445,12 +445,19 @@ def redact_step_3(redactor: DocumentRedactor, pages, redactions, replacements, r
         Remove white spaces, repositon text and edit positional data.
     """
     for page in pages:
+
+        # Get page redactions, replacements and to-textblock mapping for this page.
         page_redactions = redactions[page]
         page_replacements = replacements[page]
         page_redacts_to_textblocks = redacts_textblocks[page]
+
+        # Get dimensions of page.
         dim = redactor.get_page_dimensions(page)
 
+        # Clean this page's objects.
         page.clean_contents()
+
+        # Get page info.
         xref, lines, words, text_blocks = redactor.get_page_contents(page)
 
         # Get redaction per line.
@@ -482,6 +489,8 @@ def redact_step_3(redactor: DocumentRedactor, pages, redactions, replacements, r
             replacements_on_line = replacements_per_line[i]
             to_be_repositioned = redactor.get_to_be_repositioned_words(dim[1], lines, redactions_on_line[0], replacements_on_line)
             redactor.reposition_words_same_line(to_be_repositioned, redactions_on_line, replacements_on_line, lines, xref)
+
+        # TODO: optional noise to positional information throughout the page
 
 
 def redact_file(file):
