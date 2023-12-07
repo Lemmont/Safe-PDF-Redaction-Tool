@@ -54,19 +54,35 @@ class DocumentRedactor:
     def get_word_bbox(self, word: str):
         pass
 
-    def insert_replacement_text(self, page: fitz.Page, rect: fitz.Rect):
+    def insert_replacement_text(self, page: fitz.Page, rect: fitz.Rect, fontsize):
         """
             Insert replacement text in rect. of redacted text
 
             FOR NOW ONLY "x"
         """
-        font = fitz.Font("times-roman")
-        #print(font.text_length("x"))
-        new_length = font.text_length("redacted", 8)
+        space = -1
+
+        # Font used for inserted text. TODO: needs to be added to document
+        font_used = "courier"
+        font = fitz.Font(font_used)
+
+
+        # New length of text
+        new_length = font.text_length("[x]",fontsize=fontsize)
+
+        # New height needed for text based on fontsize
+        new_height = (font.ascender - font.descender) * fontsize
+
+        # New x1
         newx1 = rect[0] + new_length
-        new_rect = fitz.Rect(rect[0], rect[1], newx1, rect[3])
-        #print(new_rect)
-        page.insert_textbox(new_rect, "redacted", fontname="times-roman", fontsize=8)
+
+        # New rect for text to be inserted
+        # TODO: how to determine positional adjusment?
+        new_rect = fitz.Rect(rect[0], rect[1], newx1, rect[1] + new_height)
+        while space < 0:
+            space = page.insert_textbox(new_rect, "[x]", fontname=font_used, fontsize=fontsize)
+            new_height -= space
+            new_rect = fitz.Rect(rect[0], rect[1], newx1, rect[1] + new_height)
         return new_rect
 
     def get_to_be_repositioned_words(self, page_height, lines, first_redaction: fitz.Rect, replacements):
@@ -88,20 +104,6 @@ class DocumentRedactor:
                     for j in range(i, len(lines)):
                         if lines[j].endswith(b"TJ") or lines[j].endswith(b"Tj"):
                             to_be_repositioned.append((lines[i], i, j))
-
-            """
-            elif lines[i].endswith(b"Td"):
-                temp = False
-                string_line = lines[i].split()
-                x = float(string_line[0])
-                y = page_height - float(string_line[1])
-                for replacement in replacements:
-                    #print(replacement, x, y)
-                    if x >= round(replacement[0], 3) and y >= replacement[1] and y <= replacement[3]:
-                        temp = True
-                if first_redaction[0] < x and  first_redaction[1] <= y  and first_redaction[3] >= y :
-                    to_be_repositioned.append((lines[i], i))
-            """
 
         # filter out the replacement texts
         return to_be_repositioned
@@ -125,17 +127,6 @@ class DocumentRedactor:
                         res_text = res_text + "<" + t[0] + ">"
                 res_text += "]TJ"
 
-                """
-                #TODO: what if not divided by \n?
-                if b"Tm" in lines[i] or b"Tf" in lines[i]:
-                    temp = lines[i].replace(b"Tm", b"Tm\n").replace(b"Tf", b"Tf\n").split(b"\n")
-                    temp = [i.strip() for i in temp]
-                    temp[-1] = res_text.encode()
-                    lines[i] = b"\n ".join(temp)
-                else:
-
-                    lines[i] = res_text.encode()
-                """
                 lines[i] = res_text.encode()
 
 
@@ -184,13 +175,65 @@ class DocumentRedactor:
     def add_redactions(self, redactions, page):
         for redaction in redactions:
             rect = fitz.Rect(redaction[0], redaction[1], redaction[2], redaction[3])
+
+            # Make the redact annotation small so that no other text is selected
+            h = rect.height
+            my = (rect.y0 + rect.y1) / 2
+            y0 = my - h * 0.1
+            y1 = my + h * 0.1
+            rect.y0 = y0
+            rect.y1 = y1
+
             self.add_redact_annot(page, rect)
 
-    def add_replacements(self, redactions, page):
+    def get_redaction_info(self, redaction, words_dict):
+        """
+            Get information about the redacted text, i.e. fontsize.
+        """
+        block = redaction[5]
+        line = redaction[6]
+        print(redaction)
+        res = words_dict["blocks"][block + 1]
+
+        if 'lines' in res:
+            if line in res:
+                res = words_dict["blocks"][block + 1]["lines"][line]
+            else:
+                res = words_dict["blocks"][block + 1]["lines"][0]
+        else:
+            return 9.0
+
+        if 'spans' in res:
+            res = res['spans']
+            #print("SPANS FOUND","\n",span, res)
+            if len(res) == 1:
+                res = res[0]
+                #print(res)
+            else:
+                #print("MORE","\n", len(res), res)
+                for i in range(0, len(res)):
+                    if redaction[4] in res[i]['text']:
+                        res = res[i]
+                        break
+
+        else:
+            print("NO SPANS","\n", res)
+            return 9.0
+
+        try:
+            fontsize = res['size']
+        except TypeError:
+            fontsize = res[0]['size']
+
+        return fontsize
+
+
+    def add_replacements(self, redactions, page, words_dict, xref):
         replacements_texts_rects = []
         for i in range(len(redactions)):
-            rect = fitz.Rect(redactions[i][0], redactions[i][1] -5 , redactions[i][2], redactions[i][3])
-            new_rect = self.insert_replacement_text(page, rect)
+            fontsize = self.get_redaction_info(redactions[i], words_dict)
+            rect = fitz.Rect(redactions[i][0], redactions[i][1] , redactions[i][2], redactions[i][3] )
+            new_rect = self.insert_replacement_text(page, rect, fontsize)
             replacements_texts_rects.append(new_rect)
         return replacements_texts_rects
 
@@ -261,8 +304,9 @@ def select_multiple_redactions_example(words):
     words_list = []
     b = []
     for i in range(random.randint(1, 20)):
-        a = random.randint(0, len(words))
-        b.append(a)
+        a = random.randint(0, len(words) - 1)
+        if a not in b:
+            b.append(a)
 
     b.sort()
     for j in b:
@@ -307,14 +351,45 @@ def line_decoder(line):
 
     return (text_list, num_list)
 
+def line_encoder(i, red_cnt, res, text, redaction_per_line, replacements_per_line):
+    new_posadj =[]
+    if len(res) > 1 and len(text) > 0:
+        for q in res:
+            if q == "":
+                new_posadj.append("")
+            # find re-positions
+            elif float(q) > 100 or float(q) < -200:
+                l = redaction_per_line[i][len(redaction_per_line[i]) - red_cnt][2] - redaction_per_line[i][len(redaction_per_line[i]) - red_cnt][0]
+                m = replacements_per_line[i][len(redaction_per_line[i]) - red_cnt].width
+                b = m/l
+                new_posadj.append(float(q) * (b if b != 0 else 1.0) * random.uniform(0.95, 1.05))
+                red_cnt -= 1
+            else:
+                rand = random.uniform(0.8, 1.2)
+                new_posadj.append(float(q) * rand)
+
+        new = b"["
+        t_index = 0
+        for m in range(len(res)):
+            #print(res[m])
+            if res[m] == "":
+                new += str(text[t_index]).encode()
+                t_index += 1
+            else:
+                if m != len(res) - 1:
+                    new += str(new_posadj[m]).encode()
+        new += b"] TJ"
+        return new
+
 def redact_example():
-    redactor = DocumentRedactor("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/staatslot.pdf")
+    redactor = DocumentRedactor("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/marx.pdf")
     pages = redactor.get_pages()
     for page in pages[:1]:
+        # Get word dict with extra info
+        words_dict = page.get_text("dict")
         redactor.prepare_page(page)
         dim = redactor.get_page_dimensions(page)
         xref, lines, words, text_blocks = redactor.get_page_contents(page)
-
         # The (test) redactions (for this page)
         redactions = select_multiple_redactions_example(words)
 
@@ -334,7 +409,7 @@ def redact_example():
         xref, lines, words, text_blocks = redactor.get_page_contents(page)
 
         # Insert text ("x") for each redaction
-        replacements_texts_rects = redactor.add_replacements(redactions, page)
+        replacements_texts_rects = redactor.add_replacements(redactions, page, words_dict, xref)
 
         # Intermediate save with all insertions.
         redactor.doc.save("res_temp2.pdf")
@@ -350,74 +425,18 @@ def redact_example():
 
         for i in lines_per_line:
             red_cnt = len(redaction_per_line[i])
-            x_cords = lines_per_line[i][0]
-            #print(len(lines_per_line[i][1:]), lines_per_line[i][1:], red_cnt)
             for j in lines_per_line[i][1:]:
-                new_posadj = []
-                #print("OK", j, x_cords, "\n")
-                item = j[0].strip()[:-2].strip()[1:-1].decode()
 
-                """
-                    string decoder
-                """
+                # Decode line
                 text, res = line_decoder(j[0])
 
-                print(item, "res", res, "item", text)
-                #print(item,text, res, len(text), len(res))
-                if len(res) > 1 and len(text) > 0:
-                    #print("RES", res, len(res))
-                    for q in res:
-                        if q == "":
-                            new_posadj.append("")
-                        # find re-positions
-                        elif float(q) > 100 or float(q) < -200:
-                            #print(red_cnt)
-                            l = redaction_per_line[i][len(redaction_per_line[i]) - red_cnt][2] - redaction_per_line[i][len(redaction_per_line[i]) - red_cnt][0]
-                            m = replacements_per_line[i][len(redaction_per_line[i]) - red_cnt].width
-                            #print("check", l,m, m / l)
-                            new_posadj.append(float(q) * (m/l) * random.uniform(0.95, 1.05))
-                            # change based on replacement
-                            red_cnt -= 1
-                        else:
-                            rand = random.uniform(0.8, 1.2)
-                            new_posadj.append(float(q) * rand)
-
-
-                    #print(len(text), len(new_posadj))
-                    new = b"["
-                    t_index = 0
-                    for m in range(len(res)):
-                        if res[m] == "":
-                            new += str(text[t_index]).encode()
-                            t_index += 1
-                            continue
-                        else:
-                            if m != len(text) - 1:
-                                new += str(new_posadj[m]).encode()
-                    new += b"] TJ"
-
-                    #print(item,"\n","NEW", new)
-                    #print(new)
+                # Encode line
+                new = line_encoder(i, red_cnt, res, text, redaction_per_line, replacements_per_line)
+                if new != None:
                     lines[j[1]] = new
-                    print(new)
-                """
-                elif len(res) == 0 and len(text) == 1:
-                    if text[0][1:-1] != " ":
-                        if red_cnt == len(redaction_per_line[i]):
-                            red_cnt -= 1
-                        elif red_cnt > 0:
-                            tm_line = lines[j[2]]
-                            x = float(lines[j[2]].split()[4].decode())
-                            new_x = x #- replacements_per_line[i][(-red_cnt + len(redaction_per_line[i]))].width # based on -redaction + replacement
-                            lines[j[2]] = tm_line.replace(str(x).encode(), str(new_x).encode())
-                            red_cnt -= 1
-                """
-
-
         redactor.doc.update_stream(xref, b"\n".join(lines))
         xref, lines, words, text_blocks = redactor.get_page_contents(page)
 
-        #print(lines)
 
         for i in redaction_per_line:
             redactions_on_line = redaction_per_line[i]
