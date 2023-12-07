@@ -39,26 +39,24 @@ class DocumentRedactor:
 
         return (xref, lines, words, text_blocks)
 
-    def get_redact_annots(self, page: fitz.Page):
-        pass
-
-    def get_words_in_annot(self, annot: fitz.Rect):
-        pass
-
     def add_redact_annot(self, page: fitz.Page, rect: fitz.Rect):
+        """
+            Add redaction to defined rect.
+        """
         page.add_redact_annot(rect.quad)
 
     def apply_redactions(self, page: fitz.Page):
+        """
+            Apply all redactions to a page.
+        """
         page._apply_redactions()
 
-    def get_word_bbox(self, word: str):
-        pass
 
     def insert_replacement_text(self, page: fitz.Page, rect: fitz.Rect, fontsize):
         """
             Insert replacement text in rect. of redacted text
 
-            FOR NOW ONLY "x"
+            FOR NOW ONLY placeholder
         """
         space = -1
 
@@ -77,7 +75,6 @@ class DocumentRedactor:
         newx1 = rect[0] + new_length
 
         # New rect for text to be inserted
-        # TODO: how to determine positional adjusment?
         new_rect = fitz.Rect(rect[0], rect[1], newx1, rect[1] + new_height)
         while space < 0:
             space = page.insert_textbox(new_rect, "[x]", fontname=font_used, fontsize=fontsize)
@@ -168,7 +165,7 @@ class DocumentRedactor:
         if len(to_be_repositioned) > 0:
             self.doc.update_stream(xref, b"\n".join(lines))
 
-    def finalize_redactions(self, new_filename="res.pdf"):
+    def finalize_redactions(self, new_filename="redacted.pdf"):
         self.doc.save(new_filename)
         self.doc.close()
 
@@ -380,6 +377,131 @@ def line_encoder(i, red_cnt, res, text, redaction_per_line, replacements_per_lin
                     new += str(new_posadj[m]).encode()
         new += b"] TJ"
         return new
+
+def generate_redactions_per_page(redactor: DocumentRedactor, pages):
+    redactions_per_page = {}
+    for page in pages:
+        redactor.prepare_page(page)
+        xref, lines, words, text_blocks = redactor.get_page_contents(page)
+        redactions = select_multiple_redactions_example(words)
+        redactions_per_page[page] = redactions
+
+    return redactions_per_page
+
+def redact_step_1(redactor: DocumentRedactor, pages, redactions):
+    """
+        Add redactions to a document and save a temporary file
+    """
+    redacts_textblocks_per_page = {}
+    for page in pages:
+        # Get redactions of this page
+        page_redactions = redactions[page]
+
+        # Get info of the page
+        xref, lines, words, text_blocks = redactor.get_page_contents(page)
+
+        # Determine mapping of redactions of this page to the text_blocks of this page.
+        redacts_to_textblocks = redactor.redactions_to_textblock(page_redactions, text_blocks)
+
+        redacts_textblocks_per_page[page] = redacts_to_textblocks
+
+        # Add all redactions to document
+        redactor.add_redactions(page_redactions, page)
+
+    redactor.doc.save("to-be-redacted.pdf")
+
+    return redacts_textblocks_per_page
+
+def redact_step_2(redactor: DocumentRedactor, pages, redactions):
+    """
+        Add replacement text to a document and save a temporary file
+    """
+    replacements_per_page = {}
+    for page in pages:
+        # Get redactions of this page
+        page_redactions = redactions[page]
+
+        # Get word dict with extra info
+        words_dict = page.get_text("dict")
+
+        # Get page contents
+        xref, lines, words, text_blocks = redactor.get_page_contents(page)
+
+        # Apply redactions
+        redactor.apply_redactions(page)
+
+        # Add replacements and return the replacements
+        replacements_texts_rects = redactor.add_replacements(page_redactions, page, words_dict, xref)
+        replacements_per_page[page] = replacements_texts_rects
+
+    # Save
+    redactor.doc.save("replaced-redactions.pdf")
+
+    # Return replacements
+    return replacements_per_page
+
+def redact_step_3(redactor: DocumentRedactor, pages, redactions, replacements, redacts_textblocks):
+    """
+        Remove white spaces, repositon text and edit positional data.
+    """
+    for page in pages:
+        page_redactions = redactions[page]
+        page_replacements = replacements[page]
+        page_redacts_to_textblocks = redacts_textblocks[page]
+        dim = redactor.get_page_dimensions(page)
+
+        page.clean_contents()
+        xref, lines, words, text_blocks = redactor.get_page_contents(page)
+
+        # Get redaction per line.
+        redaction_per_line, replacements_per_line = redactor.redactions_per_line(page_redactions, page_replacements)
+
+        # Get internal pdf command lines per line.
+        lines_per_line = redactor.command_lines_per_line(page_redactions, lines, page_redacts_to_textblocks, dim)
+
+        # Update complex text rendering (TJ) positioning.
+        for i in lines_per_line:
+            red_cnt = len(redaction_per_line[i])
+            for j in lines_per_line[i][1:]:
+
+                # Decode line
+                text, res = line_decoder(j[0])
+
+                # Encode line
+                new = line_encoder(i, red_cnt, res, text, redaction_per_line, replacements_per_line)
+                if new != None:
+                    lines[j[1]] = new
+
+        redactor.doc.update_stream(xref, b"\n".join(lines))
+
+        xref, lines, words, text_blocks = redactor.get_page_contents(page)
+
+        # Update text line (Tm) position.
+        for i in redaction_per_line:
+            redactions_on_line = redaction_per_line[i]
+            replacements_on_line = replacements_per_line[i]
+            to_be_repositioned = redactor.get_to_be_repositioned_words(dim[1], lines, redactions_on_line[0], replacements_on_line)
+            redactor.reposition_words_same_line(to_be_repositioned, redactions_on_line, replacements_on_line, lines, xref)
+
+
+def redact_file(file):
+    redactor = DocumentRedactor(file)
+    pages = redactor.get_pages()
+
+    # Generate (random) redactions for each page in file, in order from top-left to bottom-right.
+    redactions = generate_redactions_per_page(redactor, pages)
+
+    # Do the first redaction step: highlight the to-be-redacted-text in the document.
+    redacts_textblocks_per_page = redact_step_1(redactor, pages, redactions)
+
+    # Do the second redaction step: replace the to-be-redacted text items with new text
+    replacements_per_page = redact_step_2(redactor, pages, redactions)
+
+    # Do the third redaction step: remove whitespaces, reposition text and edit positional data
+    redact_step_3(redactor, pages, redactions, replacements_per_page, redacts_textblocks_per_page)\
+
+    redactor.finalize_redactions()
+
 
 def redact_example():
     redactor = DocumentRedactor("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/staatslot.pdf")

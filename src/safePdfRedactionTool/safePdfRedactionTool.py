@@ -1,7 +1,7 @@
 import re
 import fitz
 import os
-from DocumentRedactor import DocumentRedactor, redact_example
+from DocumentRedactor import DocumentRedactor, redact_example, redact_file
 
 def pdf_checker(file):
     doc = fitz.Document(file, filetype="pdf")
@@ -49,7 +49,12 @@ def main():
     # files = os.listdir()
     # for file in files:
     #     pdf_checker(file)
-    redact_example()
+
+    #redact_example()
+
+
+    # redact a file, save intermediate steps
+    redact_file("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/staatslot.pdf")
 
 # Using the special variable
 # __name__
