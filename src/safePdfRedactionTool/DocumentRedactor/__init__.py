@@ -192,14 +192,15 @@ class DocumentRedactor:
         """
         block = redaction[5]
         line = redaction[6]
-        print(redaction)
-        res = words_dict["blocks"][block + 1]
+
+        block = block if (block == len(words_dict['blocks']) - 1) else block + 1
+        res = words_dict["blocks"][block]
 
         if 'lines' in res:
             if line in res:
-                res = words_dict["blocks"][block + 1]["lines"][line]
+                res = words_dict["blocks"][block]["lines"][line]
             else:
-                res = words_dict["blocks"][block + 1]["lines"][0]
+                res = words_dict["blocks"][block]["lines"][0]
         else:
             return 9.0
 
@@ -357,7 +358,7 @@ def line_encoder(i, red_cnt, res, text, redaction_per_line, replacements_per_lin
         for q in res:
             if q == "":
                 new_posadj.append("")
-            # find re-positions
+            # Find re-positions
             elif float(q) > 100 or float(q) < -200:
                 l = redaction_per_line[i][len(redaction_per_line[i]) - red_cnt][2] - redaction_per_line[i][len(redaction_per_line[i]) - red_cnt][0]
                 m = replacements_per_line[i][len(redaction_per_line[i]) - red_cnt].width
@@ -371,7 +372,6 @@ def line_encoder(i, red_cnt, res, text, redaction_per_line, replacements_per_lin
         new = b"["
         t_index = 0
         for m in range(len(res)):
-            #print(res[m])
             if res[m] == "":
                 new += str(text[t_index]).encode()
                 t_index += 1
@@ -382,9 +382,9 @@ def line_encoder(i, red_cnt, res, text, redaction_per_line, replacements_per_lin
         return new
 
 def redact_example():
-    redactor = DocumentRedactor("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/marx.pdf")
+    redactor = DocumentRedactor("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/staatslot.pdf")
     pages = redactor.get_pages()
-    for page in pages[:1]:
+    for page in pages:
         # Get word dict with extra info
         words_dict = page.get_text("dict")
         redactor.prepare_page(page)
@@ -423,6 +423,8 @@ def redact_example():
         redaction_per_line, replacements_per_line = redactor.redactions_per_line(redactions, replacements_texts_rects)
         lines_per_line = redactor.command_lines_per_line(redactions, lines, redacts_to_textblocks, dim)
 
+
+        # Update complex text rendering (TJ) positioning
         for i in lines_per_line:
             red_cnt = len(redaction_per_line[i])
             for j in lines_per_line[i][1:]:
@@ -434,20 +436,15 @@ def redact_example():
                 new = line_encoder(i, red_cnt, res, text, redaction_per_line, replacements_per_line)
                 if new != None:
                     lines[j[1]] = new
+
         redactor.doc.update_stream(xref, b"\n".join(lines))
         xref, lines, words, text_blocks = redactor.get_page_contents(page)
 
-
+        # Update text line (Tm) position
         for i in redaction_per_line:
             redactions_on_line = redaction_per_line[i]
             replacements_on_line = replacements_per_line[i]
-
-            # what if we only use the lines which are the same as the y cords of the redacted items per line?
-            # That way we can also check the TJ(s) of that line!
             to_be_repositioned = redactor.get_to_be_repositioned_words(dim[1], lines, redactions_on_line[0], replacements_on_line)
-            #print("TOBE", to_be_repositioned, lines[239+1], lines[251+1], lines[2477+1])
             redactor.reposition_words_same_line(to_be_repositioned, redactions_on_line, replacements_on_line, lines, xref)
 
-        xref, lines, words, text_blocks = redactor.get_page_contents(page)
-        #print(lines)
-        redactor.finalize_redactions()
+    redactor.finalize_redactions()
