@@ -497,11 +497,11 @@ def line_encoder(i, red_cnt, res, text, redaction_per_line, replacements_per_lin
                 new_posadj.append("")
             # Find re-positions TODO: what if there are multiple really big or small positional adjustments.
             elif float(q) > 100 or float(q) < -100:
-                print("OK", q, l, m)
                 l = redaction_per_line[i][len(redaction_per_line[i]) - red_cnt][2] - redaction_per_line[i][len(redaction_per_line[i]) - red_cnt][0]
                 m = replacements_per_line[i][len(redaction_per_line[i]) - red_cnt].width
-                b = b * (m/l)
-                new_posadj.append(float(q) * (b if b != 0 else 1.0) * random.uniform(0.95, 1.05))
+                b = (m/l)
+                print("OK", q, l, m, b)
+                new_posadj.append(float(q) * (b if b != 0 else 1.0) )
                 red_cnt -= 1
             else:
                 rand = random.uniform(0.8, 1.2)
