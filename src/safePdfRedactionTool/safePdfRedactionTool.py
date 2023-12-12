@@ -1,7 +1,7 @@
 import re
 import fitz
 import os
-from DocumentRedactor import DocumentRedactor, redact_example, redact_file
+from DocumentRedactor import DocumentRedactor, redact_file
 
 def pdf_checker(file):
     doc = fitz.Document(file, filetype="pdf")
@@ -44,17 +44,17 @@ def main():
 
             remove white spaces
     """
-    os.chdir('/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/src/')
-    # print(os.getcwd())
-    # files = os.listdir()
-    # for file in files:
-    #     pdf_checker(file)
+    os.chdir('/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/src/test_cases')
+    print(os.getcwd())
+    files = os.listdir()
+    for file in files:
+        pdf_checker(file)
 
     #redact_example()
 
 
     # redact a file, save intermediate steps
-    redact_file("./test_cases/staatslot.pdf")
+    redact_file("./noannot.pdf")
 
 # Using the special variable
 # __name__

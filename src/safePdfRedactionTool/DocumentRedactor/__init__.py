@@ -1,6 +1,8 @@
 import re
 import fitz
 import random
+from typing import List
+import xml.etree.ElementTree as ET
 
 class DocumentRedactor:
     def __init__(self, document):
@@ -199,7 +201,7 @@ class DocumentRedactor:
             else:
                 res = words_dict["blocks"][block]["lines"][0]
         else:
-            return 9.0
+            return 7.0
 
         if 'spans' in res:
             res = res['spans']
@@ -213,10 +215,9 @@ class DocumentRedactor:
                     if redaction[4] in res[i]['text']:
                         res = res[i]
                         break
-
         else:
-            print("NO SPANS","\n", res)
-            return 9.0
+            #print("NO SPANS","\n", res)
+            return 7.0
 
         try:
             fontsize = res['size']
@@ -298,6 +299,125 @@ class DocumentRedactor:
                                     break
         return lines_per_line
 
+    def extract_annotations(self, pages: List[fitz.Page], redactions):
+        # annotations are the same as text in word
+        for page in pages:
+            print(page.xref)
+
+            pdf_pages = {}
+
+            print(page.xref)
+            fields = {}
+            for key in self.doc.xref_get_keys(page.xref):
+                fields[key] = self.doc.xref_get_key(page.xref, key)
+            pdf_pages[page.xref] = fields
+
+            print(pdf_pages)
+
+    def redact_xml_metadata(self, redactions, inputs=[]):
+        """
+            Redact values from XML metadata based on previous redactions and inputs
+        """
+        xml_metadata = self.doc.get_xml_metadata()
+        if xml_metadata == "":
+            print("No xml metadata")
+            return
+
+        to_be_redacted = set()
+
+        # Possibly add one or more redacted values
+        for i in redactions:
+            for j in redactions[i]:
+                word = j[4]
+                to_be_redacted.add(word)
+
+        # Possibly add one or more inputs
+        for i in inputs:
+            to_be_redacted.add(i)
+
+        root = ET.fromstring(xml_metadata)
+
+        for item in to_be_redacted:
+            for elem in root.iter():
+                value = elem.text
+                if value != None and item in value:
+                    elem.text = ""
+
+        modified_xml_data = ET.tostring(root, encoding='unicode')
+        self.doc.set_xml_metadata(modified_xml_data)
+
+    def redact_metadata(self, redactions, inputs=[]):
+        """
+            Check metadata for possible values/text/entries to be redacted based
+            on the possible inputs and redactions that have been in the document.
+        """
+        metadata = self.doc.metadata
+        if metadata == "" or metadata == {}:
+            print("No metadata")
+            return
+
+        to_be_redacted = set()
+
+        # Possibly add one or more redacted values
+        for i in redactions:
+            for j in redactions[i]:
+                word = j[4]
+                to_be_redacted.add(word)
+
+        # Possibly add one or more inputs
+        for i in inputs:
+            to_be_redacted.add(i)
+
+        # Loop over redaction values
+        for item in to_be_redacted:
+            for q in metadata:
+                if metadata[q] != None and item in metadata[q]:
+                    metadata[q] = str(metadata[q]).replace(item, "")
+
+    def redact_toc(self, redactions, input=[]):
+        """
+            Check table of contents for possible values/text/entries to be redacted based
+            on the possible inputs and redactions that have been in the document.
+        """
+        toc = self.doc.get_toc()
+        if toc == "" or toc == [] or toc == None:
+            print("No table of contents")
+            return
+
+        to_be_redacted = set()
+
+        # Possibly add one or more redacted values
+        for i in redactions:
+            for j in redactions[i]:
+                word = j[4]
+                to_be_redacted.add(word)
+
+        # Possibly add one or more inputs
+        for i in input:
+            to_be_redacted.add(i)
+
+        for item in to_be_redacted:
+            for e in range(len(toc)):
+                text = str(toc[e][1])
+                page = toc[e][2]
+                if item in text:
+                    self.doc.set_toc_item(e, title=text.replace(item, ""))
+
+        print(self.doc.get_toc())
+
+
+
+
+
+def select_redactions(redactor, pages, input=[]):
+    redactions = {}
+    if input != []:
+        redactions = select_redaction_based_on_input(pages, input[0])
+    else:
+        redactions = generate_redactions_per_page(redactor, pages)
+
+    return redactions
+
 def select_multiple_redactions_example(words):
     words_list = []
     b = []
@@ -310,8 +430,24 @@ def select_multiple_redactions_example(words):
     for j in b:
         words_list.append(words[j])
 
-
     return words_list
+
+def select_redaction_based_on_input(pages: List[fitz.Page], input):
+    words_selected = {}
+    for page in pages:
+        selected = []
+        res = page.search_for(input)
+        for r in res:
+            text = page.get_text("words", clip=r, sort=True)
+            print(r, text)
+            for t in text:
+                selected.append(t)
+
+        words_selected[page] = selected
+
+    return words_selected
+
+
 
 def line_decoder(line):
     item = line.strip()[:-2].strip()[1:-1].decode()
@@ -351,15 +487,20 @@ def line_decoder(line):
 
 def line_encoder(i, red_cnt, res, text, redaction_per_line, replacements_per_line):
     new_posadj =[]
+    print(res, text)
     if len(res) > 1 and len(text) > 0:
+        b = 1.0
+        l = 0.0
+        m = 0.0
         for q in res:
             if q == "":
                 new_posadj.append("")
-            # Find re-positions
-            elif float(q) > 100 or float(q) < -200:
+            # Find re-positions TODO: what if there are multiple really big or small positional adjustments.
+            elif float(q) > 100 or float(q) < -100:
+                print("OK", q, l, m)
                 l = redaction_per_line[i][len(redaction_per_line[i]) - red_cnt][2] - redaction_per_line[i][len(redaction_per_line[i]) - red_cnt][0]
                 m = replacements_per_line[i][len(redaction_per_line[i]) - red_cnt].width
-                b = m/l
+                b = b * (m/l)
                 new_posadj.append(float(q) * (b if b != 0 else 1.0) * random.uniform(0.95, 1.05))
                 red_cnt -= 1
             else:
@@ -376,6 +517,7 @@ def line_encoder(i, red_cnt, res, text, redaction_per_line, replacements_per_lin
                 if m != len(res) - 1:
                     new += str(new_posadj[m]).encode()
         new += b"] TJ"
+        print(new)
         return new
 
 def generate_redactions_per_page(redactor: DocumentRedactor, pages):
@@ -475,6 +617,7 @@ def redact_step_3(redactor: DocumentRedactor, pages, redactions, replacements, r
                 text, res = line_decoder(j[0])
 
                 # Encode line
+                print(j[0])
                 new = line_encoder(i, red_cnt, res, text, redaction_per_line, replacements_per_line)
                 if new != None:
                     lines[j[1]] = new
@@ -492,13 +635,26 @@ def redact_step_3(redactor: DocumentRedactor, pages, redactions, replacements, r
 
         # TODO: optional noise to positional information throughout the page
 
+def redact_step_4(redactor: DocumentRedactor, pages):
+    """
+        Adding noise to the document
+    """
 
 def redact_file(file):
     redactor = DocumentRedactor(file)
     pages = redactor.get_pages()
 
+    inputs = []
+
+    for page in pages[:1]:
+        xref, lines, words, text_blocks = redactor.get_page_contents(page)
+        for i in range(len(lines)):
+            pass
+
+    redactions = select_redactions(redactor, pages, input=inputs)
+
     # Generate (random) redactions for each page in file, in order from top-left to bottom-right.
-    redactions = generate_redactions_per_page(redactor, pages)
+    #redactions = generate_redactions_per_page(redactor, pages)
 
     # Do the first redaction step: highlight the to-be-redacted-text in the document.
     redacts_textblocks_per_page = redact_step_1(redactor, pages, redactions)
@@ -507,13 +663,23 @@ def redact_file(file):
     replacements_per_page = redact_step_2(redactor, pages, redactions)
 
     # Do the third redaction step: remove whitespaces, reposition text and edit positional data
-    redact_step_3(redactor, pages, redactions, replacements_per_page, redacts_textblocks_per_page)\
+    redact_step_3(redactor, pages, redactions, replacements_per_page, redacts_textblocks_per_page)
+
+    # Annotation checker
+    #redactor.extract_annotations(pages, redactions)
+
+    redactor.redact_xml_metadata(redactions, inputs=inputs)
+
+    redactor.redact_metadata(redactions, inputs=inputs)
+
+    redactor.redact_toc(redactions, input=inputs)
 
     redactor.finalize_redactions()
 
 
+"""
 def redact_example():
-    redactor = DocumentRedactor("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/staatslot.pdf")
+    redactor = DocumentRedactor("/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/resources/testpdf/stemming.pdf")
     pages = redactor.get_pages()
     for page in pages:
         # Get word dict with extra info
@@ -579,3 +745,4 @@ def redact_example():
             redactor.reposition_words_same_line(to_be_repositioned, redactions_on_line, replacements_on_line, lines, xref)
 
     redactor.finalize_redactions()
+"""
