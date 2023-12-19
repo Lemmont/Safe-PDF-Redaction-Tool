@@ -1,34 +1,50 @@
 \chapter{Design}
 
 \section{Portable Document Format}
-In the digital age, Portable Document Format (PDF) have become an integral part of our information ecosystem. These versatile file formats play a pivotal role in the dissemination, preservation and exchange of textual and visual information. In the context of text redaction, it is essential to consider the specific challenges and opportunities presented by the technical structure and components that make up a PDF and highlight the relevant aspects for our text redaction tool design.
-\subsection{Reading a PDF}
+In the context of text redaction, it is essential to consider the relevant components that make up a PDF document and influence security for direct redaction in the document. We consider the PDF document type which contains text data for both the font and the layout of each character (glyph) on a page. 
+
+\subsection{Structure}
 A PDF document can be split into 4 distinct parts: 
 \\\\
 \textbf{Header}. The header of a PDF document serves as its starting point. It contains the critical information about the file which is essential for identifying the PDF format and ensuring compatibility with PDF readers. \\
-\textbf{Trailer}. The trailer is found at the end of the document and provides essential information for reading and processing the document. It includes the number of entries in the cross-reference table. It references to the root object of the document's catelog, which contains information about the document's structure, outlines and elements. A reference to the document's information dictonary, which may include metadata about the document. Finally it may include additional information about encryption and digital signatures if present. \\
+\textbf{Trailer}. The trailer is found at the end of the document and provides essential information for reading and processing the document. It includes the number of entries in the cross-reference table. It references to the root object of the document's catalog, which contains information about the document's structure, outlines and elements. Finally it may include additional information about encryption, digital signatures and metadta if present. \\
 \textbf{Cross-Reference Table(Xref)}. The Cross-Reference Table maintains a record of the location and structure of all objects within the PDF. The Xref table enables efficient random access and editing of the document. It lists the objects, their byte offsets within the file and information about whether an object is in use of has been deleted. \\
-\textbf{Body}. The body is where the actual content resides. It includes everything that is visible within the document. This includes text, images, graphical elements, forms and more. The content of a PDF is organized into objects which reference each other to make the document. 
+\textbf{Body}. The body is where the actual content resides. It includes everything that is visible within the document. This includes text, images, graphical elements, forms and more. The content of a PDF is organized into objects. 
 \\\\
-\textbf{TODO: image displaying an example object for reference}
+The actual contents of a page are often embedded through a stream. A stream may be contained in an object and consists of a sequence of operators with operands which may refer to other objects or information elsewhere.
+\begin{figure}[h]
+\includegraphics[width=0.85\textwidth]{latex/media/TJexample.png}
+\centering
+\caption{The TJ text showing operator specifies the glyphs to render, along with their widths and associated positional adjustments by the reference to a font object (not shown here). Adjustments are given in text space units. }
+\label{fig:tjexample}
+\end{figure}
+\subsection{Text rendering}
+PDF documents can render text in a wide range of ways, including by the use of a text showing operator such as TJ or Tj. The TJ operator takes as arguments a string of text and a vector of positional adjustments which displace the character with respect to its default position. This position is often determined by the previous character on the line, consisting of a fixed offset that is equivalent to the \textit{advance width} of the previous character. Figure \ref{fig:tjexample} is an example of a TJ text showing operator in practice.
 \\\\
-Every object is enclosed by the delimiters \textit{obj} and \textit{endobj}, has a specific type which is used to store and manage a specific type of content or resource, and has a unique identifier which is used to reference to it. Content can be provided as a string or as a stream. A stream is enclosed by \textit{stream} and \textit{endstream} and are used for more efficient storage and retrieval of objects i.e. multiple small objects are grouped together in one single stream. A stream can be prefaced with additional information which tells something about the stream, such as the length (in bytes) or the encoding used.
-\\\\
-There are two types of objects. Indirect objects have their content separated from their reference in the PDF, making the content easy to update or replace without changing the reference to the object. Direct objects have their content directly embedded within the document stream. Most objects are stored as indirect objects. 
-\\\\
-Objects often have hierarchical relationships which define the structure and layout of the document. The catalog provides the start point for reading a PDF document. The catalog references to different objects, from which the \textit{pages} object is especially important. The pages object acts as a root node of all pages and references to all page objects which together make up the actual document. The page objects act as children of the root node (pages objects). \\
-Each page object has information about the page it represents. It defines the size of the page, which resources it uses and the actual content it displays among all things. Font information, images and complex graphic elements are referenced through the \textit{resources} object, which in turn are used by the \textit{contents} object to construct elements of the page.
-\\\\
-The actual contents of the page are often embedded through a stream. A stream can consist of many operators with operands which may also reference information through the resources object which it is linked by through the page object.
-\\\\
-\textbf{image: simple example of stream object}
-\\\\
-\textbf{example about text and fonts which are specific for this study}
+Glyph advance widths and glyph shifts create a security concern. The exact width of a redaction and any non-redacted glyph shifts conditioned on redacted glyphs may be used to eliminate potential redacted texts. \cite{bland2022story}. Documents may or may not have these positional adjustments based on the \textit{workflow} that has been used. When saving an email or using 'Save as PDF' in Microsoft Word for example, the documents have \textit{dependent} shifting schemes, while other workflows may produce documents which are \textit{unadjusted}.
 
-\subsection{Interpreting a PDF}
-To be able to understand, interact and change a PDF document, it first must be interpreted what is read. Content in a PDF is not just in there, but it is defined how it is rendered by a sequence of operations. To properly work with PDF its contents must be dissected in structures which enable easy manipulation.
+\subsubsection{Redaction width}
 
-\subsection{Manipulating a PDF}
-To redact text in a PDF document it must be manipulated. Streams have to be adapted; text removed, positions changed, font changed etc. 
 
-\section{A new redaction method?}
+\subsection{Metadata}
+A PDF document may contain extra 'hidden' information which is contained within the metadata of the document. This metadata may contain information about the actual textual contents of the document (figure \ref{fig:metadataexmp}). An example are annotations by authors or reviewers which may comment on a specific part of the document, referring or quoting text which has been redacted from the page, but not from the document. 
+\begin{figure}[h]
+    \includegraphics[width=0.5\linewidth]{latex/media/metadata.png}
+    \centering
+    \caption{An example of metadata which may be present in a PDF document. Information such as the author name, subject and description of the document can be retrieved if not also removed.}
+    \label{fig:metadataexmp}
+\end{figure}\\
+The table of contents, embedded files, XML metadata and internal links are also hidden to the eye but may contain sensitive information even after redaction. This information may include author names, document descriptions, links or other references to sensitive personal information which has not been correctly removed.
+
+\section{Steps of possible redaction}
+The process of safely redacting information from a document consists of multiple steps. To redact text, it first has be labeled as text that should be redacted in order to differentiate it from text that should not be removed. It is also important to differentiate between whole words and sub-strings of text elements so that exactly that what should be deleted is really removed from the document. Furthermore, a document can consist of multiple pages, so it should be known what set of possible redactions belongs to which page. 
+\\\\
+The next step is locating the text that has to be removed. As mentioned, text is rendered by a sequence of commands in a content stream. The position of a text element and even an individual character can be reconstructed with these commands. In order to find the location of a text element the commands in the content streams have to be read, parsed and interpreted. There are various ways of rendering text in PDF documents, some more complex than others, and thus it requires a lot of research and work to handle all possible options. 
+\\\\
+If text positions have been retrieved from a document, text can be removed. To redact, and thus to remove, text from a document, the commands that enable it to be rendered should be removed. Both the text rendering operation and other operations that may influence style and positioning should be removed completely. However, there is no guarantee that text is rendered in a certain way. Text on one line may consist of multiple text rendering operations or just one. Words may be individually grouped or each individual character is rendered separately. Again, this is dependent on the 'producer' of the file and the 'workflow' used. 
+\\\\
+\textbf{two images with examples of different text rendering styles based on found in the wild}
+\\\\
+If text has been removed, possible positional information of the other words on the line have to be adjusted to reduce the leaked information. \textbf{add more...} Again, because of the diversity of ways text can be rendered, it may get complex. 
+\\\\
+For small words
