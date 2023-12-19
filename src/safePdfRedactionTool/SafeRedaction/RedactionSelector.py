@@ -54,10 +54,14 @@ def _select_redaction_based_on_input(pages: List[fitz.Page], input):
 def _select_multiple_redactions_example(words, num):
         words_list = []
         b = []
-        for i in range(random.randint(1, num)):
-            a = random.randint(0, len(words) - 1)
-            if a not in b:
-                b.append(a)
+        while len(b) != num:
+            for i in range(random.randint(1, num)):
+                a = random.randint(0, len(words) - 1)
+                if a not in b:
+                    b.append(a)
+
+                if len(b) == num:
+                    break
 
         b.sort()
         for j in b:

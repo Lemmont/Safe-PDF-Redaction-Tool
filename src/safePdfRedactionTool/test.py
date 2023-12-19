@@ -8,92 +8,115 @@ from SafeRedaction import redact_file, DocumentRedactor
 class ValidateCustomRedactions(unittest.TestCase):
     def setUp(self):
         os.chdir('/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/src/test_cases')
-        self.docs = {
-            "test_simple_1" : 'simple1.pdf',
-            "test_simple_2" : 'simple2.pdf',
-            "test_simple_3" : 'simple3.pdf',
-            "test_simple_4" : 'simple4.pdf',
-            }
 
-    def test_simple_1(self):
+    def validate_redaction(self, file, num=1, input=[]):
+            """
+                Function to validate the redaction by comparing the input
+                with the output using the redactions and the possible difference
+                in occurences of words.
+            """
+
+            # File before redaction
+            redactor1 = DocumentRedactor(file)
+            old = redactor1.get_word_count()
+
+            # Perform redaction
+            redactions = redact_file(file, num, input)
+
+            # File after redaction
+            redactor2 = DocumentRedactor("temp3.pdf")
+            new = redactor2.get_word_count()
+
+            # Check if non-redacted words are still present
+            for new_word in new:
+                if new_word in old:
+                    with self.subTest(new_word=new_word):
+                        # Check if subtraction of the word does not equal 0
+                        self.assertNotEqual(old[new_word], 0, f"'{new_word}' occures more often than in the original file.")
+                        old[new_word] -= new[new_word]
+                else:
+                    with self.subTest(new_word=new_word):
+                        # Check if word that has not been found in the original file is a replacement value.
+                        self.assertEqual(str(new_word).replace("[x]", ""), "", f"'{new_word}' was not in the original file. It seems it has been added while redacting the file.")
+
+            # Check if all redactions have been removed from the file
+            for i in redactions:
+                for j in redactions[i]:
+                    # Check if redaction is still left in the occurence count of the old file.
+                    if j[4] in old:
+                        with self.subTest(j=j):
+                            # Check if subtraction of the redaction does not equal 0
+                            self.assertNotEqual(old[j[4]], 0, f"Redaction '{j[4]}' occures more often than in the original file.")
+                            old[j[4]] -= 1
+                    else:
+                        self.assertTrue(j[4] in old, f"'{j[4]}' can not be found as a redaction.")
+
+    def test_1_simple_1(self):
         """
             Simple PDF with a few words and a header (1 redaction)
         """
-        file = self.docs['test_simple_1']
-        redactor1 = DocumentRedactor(file)
-        old = redactor1.get_word_count()
-        redact_file(file, num=1)
-        redactor2 = DocumentRedactor("temp3.pdf")
-        new = redactor2.get_word_count()
-        print(old)
-        print(new)
+        file = "./simple1.pdf"
+        self.validate_redaction(file, num=1)
 
-        for new_word in new:
-            if new_word[4] in old:
-                old[new_word[4]] -= 1
-            else:
-                if new_word[4] != "[x]":
-                    print("error", new_word)
-                    return False
+    def test_1_simple_2(self):
+        """
+            Simple PDF with 4 lines and a header (5 redactions)
+        """
+        file = "./simple2.pdf"
+        self.validate_redaction(file, num=5)
 
+    def test_1_simple_3(self):
+        """
+            Simple PDF with 4 big words (1 redaction)
+        """
+        file = "./simple3.pdf"
+        self.validate_redaction(file, num=1)
 
-        # compare old and new
+    def test_1_simple_4(self):
+        """
+            Simple PDF with one page full of words with a medium font size (5 redactions)
+        """
+        file = "./simple4.pdf"
+        self.validate_redaction(file, num=5)
 
-        # m1 = redactor1.get_metadata()
-        # for q in m1:
-        #     print(q, m1[q])
+    def test_1_simple_5(self):
+        """
+            Simple PDF with one page full of words with a medium font size (10 redactions)
+        """
+        file = "./simple4.pdf"
+        self.validate_redaction(file, num=10)
 
-        # for page in new.pages():
-        # wordsNew = page.get_text("words", sort=True)
-        # for i in wordsNew:
-        #     if i[4] in wOld:
-        #         wOld[i[4]] -= 1
-        #     else:
-        #         if i[4] != "[x]":
-        #             print("error", i)
-        #             return False
+    def test_1_simple_6(self):
+        """
+            Simple PDF with one page full of words with a medium font size (25 redactions)
+        """
+        file = "./simple4.pdf"
+        self.validate_redaction(file, num=25)
 
-        # # Check all left over words from the old file and if they are a redaction
-        # for i in redactions:
-        #     for j in redactions[i]:
-        #         if j[4] in wOld:
-        #             if wOld[j[4]] == 0:
-        #                 return False
-        #             else:
-        #                 wOld[j[4]] -= 1
-        #         else:
-        #             return False
+    def test_2_medium_1(self):
+        """
+            Slightly complex PDF with half a page of text in a small fontsize. Text is made of
+            multiple lines and two paragraphs (5 redactions)
+        """
+        file = "./medium1.pdf"
+        self.validate_redaction(file, num=5)
 
+    def test_2_medium_2(self):
+        """
+            Slightly complex PDF with a page of text in a small fontsize. Text is made of
+            multiple lines, paragraphs and two headers (10 redactions)
+        """
+        file = "./medium2.pdf"
+        self.validate_redaction(file, num=10)
 
-    # def test_simple_2(self):
-    #     """
-    #         Simple PDF with more words and a header (5 redactions)
-    #     """
-    #     file = self.docs['test_simple_2']
-    #     old = file
-    #     redactions = redact_file(file, inputs=[], num=5)
-    #     new = file.split(".")[0] + "-res.pdf"
-    #     self.assertTrue(compare_content(old, new, redactions))
+    def test_2_medium_3(self):
+        """
+            Slightly complex PDF with two pages of text in a small fontsize. Text is made of
+            multiple lines, paragraphs and headers (20 redactions)
+        """
+        file = "./medium3.pdf"
+        self.validate_redaction(file, num=20)
 
-    # def test_simple_3(self):
-    #     """
-    #         Simple PDF with few words with a bigger fontsize (1 redaction)
-    #     """
-    #     file = self.docs['test_simple_3']
-    #     old = file
-    #     redactions = redact_file(file, inputs=[], num=1)
-    #     new = file.split(".")[0] + "-res.pdf"
-    #     self.assertTrue(compare_content(old, new, redactions))
-
-    # def test_simple_4(self):
-    #     """
-    #         Simple PDF with one full page with bigger fontsize (20 redactions)
-    #     """
-    #     file = self.docs['test_simple_4']
-    #     old = file
-    #     redactions = redact_file(file, inputs=[], num=20)
-    #     new = file.split(".")[0] + "-res.pdf"
-    #     self.assertTrue(compare_content(old, new, redactions))
 
     def tearDown(self):
         pass
