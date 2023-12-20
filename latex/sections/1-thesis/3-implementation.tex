@@ -1,22 +1,41 @@
 \chapter{Implementation}
 
 \section{to-be-added-name-of-tool}
-\textbf{talk about reading, interpreting and manipulating. Libraries used. Explain something about those methods and why we used them instead of not creating our own.}
+I present the \textbf{to-be-added-name} redaction method/tool which enables safe text redaction in PDF documents which removes the to-be-redacted text from the document, replaces it with a placeholder text, manipulates the positional information and shifts text to remove white spaces if applicable. I have built my tool/method upon the work of the \textit{PyMuPDF} \textbf{(add link)} Python library which supports text redaction in a wide variety of (PDF) documents. For manipulating positonal information and removing white spaces I have created my own method of reading, interpreting and manipulating content streams which is also built upon PyMuPDF functionality. \textbf{more about the underlying infrastructure...}
+
+\subsection{PyMuPDF}
+Building upon the existing library has enabled me to support more documents, focus on the redaction and make the process easier. The library had certain flaws related to text selection, bounding boxes and positional information which I have adapted or solved to fit my own method. 
+
+%\subsubsection{Bounding boxes}
+%PyMuPDF makes use of bounding boxes to select text on a page in the document. The standard method for text %selection creates a bounding box which goes outside... \textbf{more}
+
+%\subsubsection{Positional information after removal}
+%The redaction method of PyMuPDF is precise and can remove text based upon the bounding box that is given. This %allows for redaction of whole paragraphs, words and even characters.  \textbf{more}
 
 \section{Algorithm for Text Redaction}
-explain algorithm for text redaction and explain all the steps, including some \textbf{visual representation of the process}.
+The algorithm for text redaction consist of four main steps, with the third step consisting of multiple other steps. 
 
-\section{Replacement text/preserving semantic context}
-Talk about how replacement text preserves the semantic context. Reference to inspiring paper. What my custom made algorithm does. How text is replaced etc. 
-\textbf{add 1-2 example(s)}
+\subsection{Select redaction}
+\textbf{about how text can be selected through user input?}
+\\\\
+For each page, text is extracted using the \textit{get\_text} method of PyMuPDF. All words and text blocks are extracted and a mapping between the two is made: in which block does a word belong. This is necessary for step 3 where it has to be checked if a word is in the same text block as a redacted word. 
+\\\\
+Each word and/or selected piece of text is defined by a rectangle; a bounding box. When applying a redaction, an annotation is made with the exact dimension of the defined rectangle. PyMuPDF natively defines a bounding box which tends to be bigger than the exact dimensions of the word. Words are deleted based on intersection with a redaction annotation and so with bigger bounding boxes it may occur that other words or characters are deleted. To solve this issue, the redaction annotation is made smaller. 
+\\\\
+\textbf{image with the algorithm?}
 
-\section{Interesting aspects}
-    \subsection{White space removal}
-        Talk about how white space is removed
-    \subsection{Handling different PDF documents}
-        Talk about how differences between PDF documents are handled \\\\
-        \textbf{text showing operators}\\\\
-        \textbf{positions etc.}
+\subsection{Apply redactions}
+When redactions have been selected in the document they are applied \textbf{(more about this...)} and a replacement text is inserted. The style of the replacement text is based on the original text. Depending on the original text, the rectangle of the to-be-inserted, which is initially is the same as the original, text may have to be adapted to fit the new text. 
+\subsection{Positional adjustments}
+\textbf{talk about how relevant text is selected based on y positions and text block}
+\\\\
+\textbf{pymupdf lines/content stream reading and interpreting}
+\\\\
+\textbf{applying adjustments}
+\\\\
+\textbf{moving text}
+\subsection{Metadata}
 
 \section{Limitations}
-limitations related to PDF documents? Fonts maybe? 
+\textbf{Types of documents and why (complexity) limited functionality}
+\textbf{About positional information and why chosen}

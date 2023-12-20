@@ -2,14 +2,22 @@
 
 
 \section{Validation}
-Talk short about what we are testing-> removing things and keeping other things.
-\\\\
-Talk about Bland tool. x-ray tool. Possible custom methods. What is used for testing my method?
-\textbf{The Edact-Ray Tool Suite}, \textbf{X-ray}, \textbf{scanning whole document?}
+Effective redaction should adhere to two principles: what has to be removed has to be really removed from the document and the rest of the document should be kept as it is. To validate my method, input has to be compared to the output; is the text that should be removed gone and only that part of the document? \textbf{to be added: xray-tool}
 
-\section{Corpus}
-aka test documents, custom and 'found in the wild'. different cases. On what is being tested? \textbf{Has to be applicable to the Edact-Ray Tool Suite}.
+\section{Text corpus}
+For the evaluation of my method I simulate redaction on documents from multiple sources. First is my own set of documents which contains varying cases. From a couple of lines of text to multiple pages, and pages including headers to a page with table of contents. Multiple fontsizes, two columns and annotations are all included. Secondly I use a part of the 1 million page corpus of Dutch Freedom of Information Act(Woo) documents. This part consists of \textbf{amount} decision letters coming from mostly dutch municpialities, provicnes and \textit{waterschappen} written between \textbf{year 1-year 2} by legally trained civil servants. The machine readable text is extracted from these documents using \textit{PyMuPDF}.
 
-\section{Setup}
-How is the experimentation conducted? How is what used on what and how?
-\\\\
+\section{Experiment Procedure}
+To validate the redaction method, we set up an experiment which takes as input a set of PDF documents, runs a validation experiment and returns if this has been successfully or not. This procedure is characterized by the following steps:
+\begin{enumerate}
+    \item Select a document for redaction.
+    \item Depending on the document, select a string value to be redacted. This can be either a custom string value, for example \textbf{M. Jackson}, or a number of random words per page. 
+    \item Run the algorithm on the document given the (randomly) selected text. This outputs a result PDF file.
+    \item Extract the text from both the original and newly redacted PDF file.
+    \item Loop over the text of the original file. Count the occurrences of each word.
+    \item Loop over the text of the new file. Subtract the occurrences of each word from the previously counted words of the original file. If redaction went right, there should be occurrences of a replacement value such as \textbf{[x]}. These are skipped.
+    \item Finally, subtract the redacted text items from the counted words of the initial document. Redaction is valid if no occurrences are left.
+\end{enumerate}
+
+In addition to text in the PDF, I have validated if to-be-redacted text values are present in the metadata or annotations (if there are any). \textbf{to be added: X-ray tool}
+
