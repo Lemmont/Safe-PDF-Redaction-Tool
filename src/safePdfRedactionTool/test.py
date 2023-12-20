@@ -6,14 +6,40 @@ from SafeRedaction import redact_file, DocumentRedactor
 
 
 class ValidateCustomRedactions(unittest.TestCase):
+    """
+    Unit tests for validating custom redactions in a PDF document.
+
+    Test Cases:
+    - 'test_1_simple_1': Validates redaction process with a simple test case.
+
+    Test Environment:
+    - The tests utilize the 'unittest' framework.
+
+    Note: Ensure proper setup and cleanup for temporary files if required by the test cases.
+    """
     def setUp(self):
         os.chdir('/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/src/test_cases')
 
     def validate_redaction(self, file, num=1, input=[]):
             """
-                Function to validate the redaction by comparing the input
-                with the output using the redactions and the possible difference
-                in occurences of words.
+            Validates the redaction process by comparing word counts before and after redaction.
+
+            Parameters:
+            - file (str): The path to the PDF file to be redacted.
+            - num (int, optional): The number of redactions to generate. Default is 1.
+            - input (list, optional): A list of input strings for selecting redactions. Default is an empty list.
+
+            Returns:
+            - None
+
+            This function performs the following steps:
+            1. Loads the original document, gets the word count before redaction (old).
+            2. Performs redaction using the 'redact_file' function.
+            3. Loads the redacted document, gets the word count after redaction (new).
+            4. Checks if non-redacted words are still present in the original word count.
+            5. Checks if all redactions have been removed from the original word count.
+
+            The function raises AssertionError if any of the validation checks fail.
             """
 
             # File before redaction

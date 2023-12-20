@@ -436,29 +436,58 @@ def _get_redactions_to_textblock(redactions, text_blocks):
         return redacts_to_textblocks
 
 def _clean_page(page: fitz.Page):
+        """
+        Clean the contents of the specified page.
+
+        Parameters:
+        - page (fitz.Page): The page to be cleaned.
+
+        Returns:
+        - None
+        """
+        # Clean the contents of the specified page
         page.clean_contents()
 
 def _get_page_contents(page):
-        """
-            returns xref, lines and words of page.
-        """
-        xref = page.get_contents()[0]
-        lines = page.read_contents().splitlines()
-        words = page.get_text("words", sort=True)
+    """
+    Return xref, lines, words, and text blocks of the specified page.
 
-        text_blocks = []
-        blocks = page.get_text("blocks", sort=True)
-        for i in range(len(blocks)):
-            # [0:4]: b-boxes of text blocks.
-            rect = fitz.Rect(blocks[i][0], blocks[i][1], blocks[i][2], blocks[i][3])
-            text_blocks.append(rect)
+    Parameters:
+    - page: The page for which to retrieve contents.
 
-        return (xref, lines, words, text_blocks)
+    Returns:
+    - tuple: A tuple containing xref, lines, words, and text blocks of the page.
+    """
+    # Get the xref of the page
+    xref = page.get_contents()[0]
+
+    # Read the contents of the page and split into lines
+    lines = page.read_contents().splitlines()
+
+    # Get the words on the page, sorted
+    words = page.get_text("words", sort=True)
+
+    # Get the text blocks on the page
+    text_blocks = []
+    blocks = page.get_text("blocks", sort=True)
+    for i in range(len(blocks)):
+        # Create a Rect object representing the bounding box of the text block
+        rect = fitz.Rect(blocks[i][0], blocks[i][1], blocks[i][2], blocks[i][3])
+        text_blocks.append(rect)
+
+    return xref, lines, words, text_blocks
 
 def _insert_replacement_text(page: fitz.Page, rect: fitz.Rect, fontsize):
     """
-        Insert replacement text in rect. of redacted text
+    Insert replacement text in the rectangle of redacted text.
 
+    Parameters:
+    - page (fitz.Page): The page on which to insert replacement text.
+    - rect (fitz.Rect): The rectangle of the redacted text where replacement text will be inserted.
+    - fontsize: The font size of the replacement text.
+
+    Returns:
+    - fitz.Rect: The new rectangle representing the area occupied by the inserted replacement text.
     """
     space = -1
 
@@ -466,153 +495,234 @@ def _insert_replacement_text(page: fitz.Page, rect: fitz.Rect, fontsize):
     font_used = "courier"
     font = fitz.Font(font_used)
 
+    # Calculate the length of the replacement text
+    new_length = font.text_length("[x]", fontsize=fontsize)
 
-    # New length of text
-    new_length = font.text_length("[x]",fontsize=fontsize)
-
-    # New height needed for text based on fontsize
+    # Calculate the height needed for the text based on the font size
     new_height = (font.ascender - font.descender) * fontsize
 
-    # New x1
+    # Calculate the new x1 coordinate
     newx1 = rect[0] + new_length
 
-    # New rect for text to be inserted
+    # Create a new rectangle for the text to be inserted
     new_rect = fitz.Rect(rect[0], rect[1], newx1, rect[1] + new_height)
+
+    # Attempt to insert the text into the rectangle, adjusting the height if needed
     while space < 0:
         space = page.insert_textbox(new_rect, "[x]", fontname=font_used, fontsize=fontsize)
         new_height -= space
         new_rect = fitz.Rect(rect[0], rect[1], newx1, rect[1] + new_height)
+
     return new_rect
 
 def _get_to_be_repositioned_words(page_height, lines, first_redaction: fitz.Rect, replacements):
+    """
+    Identify words in the PDF page that need to be repositioned.
+
+    Parameters:
+    - page_height: The height of the PDF page.
+    - lines: List of lines in the PDF content.
+    - first_redaction (fitz.Rect): The rectangle of the first redaction.
+    - replacements: List of replacement rectangles.
+
+    Returns:
+    - list: List of lines that need to be repositioned.
+    """
     to_be_repositioned = []
+
+    # Iterate through each line in the PDF content
     for i in range(len(lines)):
 
-        #print(lines[i])
+        # Check if the line ends with "Tm" (text matrix)
         if lines[i].endswith(b"Tm"):
-            temp = False
             string_line = lines[i].split()
             x = float(string_line[4])
             y = page_height - float(string_line[5])
-            #print(lines[i], x, y)
+
+            # Check if the current position is within a replacement height
             for replacement in replacements:
-                #print(replacement, x, y)
-                if x > round(replacement[0],3) and y >= replacement[1] and y <= replacement[3]:
+                if x > round(replacement[0], 3) and y >= replacement[1] and y <= replacement[3]:
                     continue
-            if x > first_redaction[0] and  y >= first_redaction[1] and y <= first_redaction[3]:
+
+            # Check if the current position is within the height of the first redaction
+            if x > first_redaction[0] and y >= first_redaction[1] and y <= first_redaction[3]:
+                # Iterate through the lines to find the lines with text
                 for j in range(i, len(lines)):
                     if lines[j].endswith(b"TJ") or lines[j].endswith(b"Tj"):
+                        # Append the line information to the list of words to be repositioned
                         to_be_repositioned.append((lines[i], i, j))
 
-    # filter out the replacement texts
     return to_be_repositioned
 
 def _reposition_words_same_line(doc, to_be_repositioned, redactions, replacements, lines, xref):
     """
-        Reposition the to be repositioned words based on the first redaction
-        on the line.
+    Reposition the to-be-repositioned words based on the first redaction on the line.
+
+    Parameters:
+    - doc: The document.
+    - to_be_repositioned: List of lines that need to be repositioned.
+    - redactions: List of redaction rectangles.
+    - replacements: List of replacement rectangles.
+    - lines: List of lines in the PDF content.
+    - xref: The xref of the page.
+
+    Returns:
+    - None
     """
-    #print(redactions, replacements)
     diff = 0
-    length = 0
+
+    # Iterate through each word to be repositioned
     for i in range(len(to_be_repositioned)):
         string_line = to_be_repositioned[i][0].split()
         x = float(string_line[4]) if len(string_line) > 4 else float(string_line[0])
+
+        # Calculate the difference based on redactions and replacements
         for j in range(len(redactions)):
             if x >= redactions[j][2]:
                 if replacements != []:
-                    diff += (redactions[j][2]-redactions[j][0]) - replacements[j].width
+                    diff += (redactions[j][2] - redactions[j][0]) - replacements[j].width
                 else:
-                    diff += (redactions[j][2]-redactions[j][0])
+                    diff += (redactions[j][2] - redactions[j][0])
             else:
                 break
-        #print(i, diff)
+
+        # Calculate the new position of the word
         if (i > 0) or (len(redactions) > 1 and len(to_be_repositioned) == 1):
             new_pos = x - diff
         else:
             new_pos = redactions[0][0]
 
+        # Update the x-coordinate in the string representation of the line
         if len(string_line) > 3:
             string_line[4] = str(new_pos).encode()
         else:
             string_line[0] = str(new_pos).encode()
 
+        # Join the modified string line
         new_string = b" ".join(string_line)
-        #print(x, new_string, diff)
 
+        # Update the line in the list of lines
         lines[to_be_repositioned[i][1]] = new_string
 
         diff = 0
+
+    # If there are words to be repositioned, update the stream in the document
     if len(to_be_repositioned) > 0:
         doc.update_stream(xref, b"\n".join(lines))
 
 def _get_redaction_info(redaction, words_dict):
     """
-        Get information about the redacted text, i.e. fontsize.
+    Get information about the redacted text, i.e., fontsize.
+
+    Parameters:
+    - redaction: Information about the redaction.
+    - words_dict: Dictionary containing information about words, blocks, lines, and spans.
+
+    Returns:
+    - float: Fontsize of the redacted text.
     """
     block = redaction[5]
     line = redaction[6]
 
+    # Adjust the block index if it's not the last block
     block = block if (block == len(words_dict['blocks']) - 1) else block + 1
     res = words_dict["blocks"][block]
 
+    # Check if 'lines' information is present
     if 'lines' in res:
+        # If the line is present in the block, use that information
         if line in res:
             res = words_dict["blocks"][block]["lines"][line]
+        # If not, use the information of the first line in the block
         else:
             res = words_dict["blocks"][block]["lines"][0]
     else:
+        # Return a default font size if 'lines' information is not present
         return 7.0
 
+    # Check if 'spans' information is present
     if 'spans' in res:
         res = res['spans']
-        #print("SPANS FOUND","\n",span, res)
+
+        # If there is only one span, use that information
         if len(res) == 1:
             res = res[0]
-            #print(res)
+        # If there are multiple spans, find the span containing the redacted text
         else:
-            #print("MORE","\n", len(res), res)
             for i in range(0, len(res)):
                 if redaction[4] in res[i]['text']:
                     res = res[i]
                     break
     else:
-        #print("NO SPANS","\n", res)
+        # Return a default font size if 'spans' information is not present
         return 7.0
 
     try:
+        # Attempt to retrieve the font size from the span information
         fontsize = res['size']
     except TypeError:
+        # If there is an issue with the data structure, use the font size from the first span
         fontsize = res[0]['size']
 
     return fontsize
 
-def _add_replacements( redactions, page, words_dict, xref):
+def _add_replacements(redactions, page, words_dict, xref):
+    """
+    Add replacement texts for the specified redactions on a PDF page.
+
+    Parameters:
+    - redactions: List of redaction rectangles.
+    - page: The PDF page.
+    - words_dict: Dictionary containing information about words, blocks, lines, and spans.
+    - xref: The xref of the page.
+
+    Returns:
+    - list: List of rectangles representing the areas occupied by the added replacement texts.
+    """
     replacements_texts_rects = []
+
+    # Iterate through each redaction
     for i in range(len(redactions)):
+        # Get the font size information for the redaction
         fontsize = _get_redaction_info(redactions[i], words_dict)
-        rect = fitz.Rect(redactions[i][0], redactions[i][1] , redactions[i][2], redactions[i][3] )
+
+        # Create a rectangle based on the redaction coordinates
+        rect = fitz.Rect(redactions[i][0], redactions[i][1], redactions[i][2], redactions[i][3])
+
+        # Insert replacement text into the redacted area and get the new rectangle
         new_rect = _insert_replacement_text(page, rect, fontsize)
+
+        # Append the new rectangle to the list
         replacements_texts_rects.append(new_rect)
+
     return replacements_texts_rects
 
 def _get_redactions_per_line(redactions, replacements):
     """
-        Determine which redactions and replacements are on the same line
-        (between same y_0 and y_1)
+    Determine which redactions and replacements are on the same line (between the same y_0 and y_1).
+
+    Parameters:
+    - redactions: List of redaction rectangles.
+    - replacements: List of replacement rectangles.
+
+    Returns:
+    - Tuple: Tuple containing dictionaries representing redactions per line, replacements per line, and lines per line.
     """
     redaction_per_line = {}
     replacements_per_line = {}
     lines_per_line = {}
-    # Determine all redactions on a line, based on the y-cords.
+
+    # Determine all redactions on a line, based on the y-coordinates.
     for i in range(len(redactions)):
 
-        # Get y-cords for the line on which the redaction is on
+        # Get y-coordinates for the line on which the redaction is on
         y_cords = (redactions[i][1], redactions[i][3])
 
         # If a redaction with y_cords is already present, add to redactions per line for y_cords
         if y_cords in redaction_per_line:
             redaction_per_line[y_cords].append(redactions[i])
+
+            # If replacements are present, add to replacements per line for y_cords
             if replacements != []:
                 replacements_per_line[y_cords].append(replacements[i])
 
@@ -621,6 +731,8 @@ def _get_redactions_per_line(redactions, replacements):
             continue
         else:
             redaction_per_line[y_cords] = [redactions[i]]
+
+            # If replacements are present, add to replacements per line for y_cords
             if replacements != []:
                 replacements_per_line[y_cords] = [replacements[i]]
             else:
@@ -629,23 +741,53 @@ def _get_redactions_per_line(redactions, replacements):
     return (redaction_per_line, replacements_per_line)
 
 def _get_command_lines_per_line(redactions, lines, redacts_to_textblocks, dim):
+    """
+    Identify lines of text associated with each redaction based on their y-coordinates.
+
+    Parameters:
+    - redactions: List of redaction rectangles.
+    - lines: List of lines in the PDF content.
+    - redacts_to_textblocks: Dictionary mapping redaction rectangles to text blocks.
+    - dim: Tuple containing dimensions of the page (cropbox).
+
+    Returns:
+    - dict: Dictionary containing lines of text associated with each redaction's y-coordinates.
+    """
     lines_per_line = {}
+
+    # Iterate through each redaction
     for i in range(len(redactions)):
-        # Get y-cords for the line on which the redaction is on
+        # Get y-coordinates for the line on which the redaction is located
         y_cords = (redactions[i][1], redactions[i][3])
+
+        # If y_cords not already in lines_per_line, add a new entry
         if y_cords not in lines_per_line:
             lines_per_line[y_cords] = [(redactions[i][0], redactions[i][2])]
+
+            # Iterate through lines in the PDF content
             for j in range(len(lines)):
+                # Check if the line is a transformation matrix (ends with b"Tm")
                 if lines[j].endswith(b"Tm"):
                     x = float(lines[j].split()[4].decode())
                     y = dim[1] - float(lines[j].split()[5].decode())
+
+                    # Create a rectangle representing the redaction
                     rect = fitz.Rect(redactions[i][0], redactions[i][1], redactions[i][2], redactions[i][3])
+
+                    # Get the text block coordinates associated with the redaction
                     block_cords = redacts_to_textblocks[rect]
-                    if y >= round(redactions[i][1], 3) and y <= round(redactions[i][3]) and y >= round(block_cords[1], 3) and y <= round(block_cords[3], 3) and x >= round(block_cords[0], 3) and x <= round(block_cords[2], 3):
+
+                    # Check if the current line is within the y-coordinates and text block coordinates
+                    if y >= round(redactions[i][1], 3) and y <= round(redactions[i][3], 3) and \
+                       y >= round(block_cords[1], 3) and y <= round(block_cords[3], 3) and \
+                       x >= round(block_cords[0], 3) and x <= round(block_cords[2], 3):
+
+                        # Iterate through subsequent lines until a TJ command is found
                         for q in range(j + 1, len(lines)):
                             if lines[q].endswith(b"TJ"):
                                 lines_per_line[y_cords].append((lines[q], q, j))
                                 break
                             elif lines[q].endswith(b"Tj"):
                                 break
+
     return lines_per_line
