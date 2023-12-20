@@ -23,7 +23,7 @@ def main():
     # for file in files:
     #     pdf_checker(file)
 
-    redact_file("./../test_cases/simple4.pdf", num=5, mode="replace")
+    redact_file("./../test_cases/wob3.pdf", num=1, mode="replace", display=True)
 
 # Using the special variable
 # __name__

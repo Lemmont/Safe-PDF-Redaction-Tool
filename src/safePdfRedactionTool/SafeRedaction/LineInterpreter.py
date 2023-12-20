@@ -34,7 +34,6 @@ class LineManipulator:
 
                 # Encode the line with updated positions using line_encoder
                 new_line = line_encoder(lines, red_cnt, res, text, self.redactions_per_line, self.replacements_per_line)
-
                 # If the encoding was successful, update the line in the document_lines list
                 if new_line is not None:
                     self.document_lines[line_data[1]] = new_line

@@ -1,10 +1,8 @@
-import logging
 import fitz
 import xml.etree.ElementTree as ET
 from . import LineInterpreter as Li
 from typing import Dict
 
-logger = logging.getLogger(__name__)
 
 class DocumentRedactor:
     def __init__(self, document):
@@ -41,6 +39,7 @@ class DocumentRedactor:
 
 
 
+
     def __str__(self) -> str:
         """
         String representation of a Redactor object. Gives information about the file.
@@ -53,9 +52,10 @@ class DocumentRedactor:
         # Check if a document is associated with the Redactor object
         if self.doc:
             msg += "\n-- File Information --\n"
-            msg += " name        " + self.doc.name + "\n"  # Append document name
+            msg += " name        " + self.doc.name.split("/")[-1] + "\n"  # Append document name
             msg += " pages       " + str(self.doc.page_count) + "\n"  # Append page count
             msg += " emb. files  " + str(self.doc.embfile_count()) + "\n"  # Append embedded file count
+            msg += " creator     " + str(_pdf_producer_checker(self.doc)) + "\n" # Append document creator/producer
         else:
             msg += "No (valid) file inserted\n"  # If no document is associated
 
@@ -322,7 +322,7 @@ class DocumentRedactor:
             for elem in root.iter():
                 value = elem.text
                 if value != None and item in value:
-                    elem.text = ""
+                    elem.text = elem.text.replace(item, "[x]")
 
         modified_xml_data = ET.tostring(root, encoding='unicode')
         self.doc.set_xml_metadata(modified_xml_data)
@@ -345,6 +345,7 @@ class DocumentRedactor:
                 word = j[4]
                 to_be_redacted.add(word)
 
+
         # Possibly add one or more inputs
         for i in inputs:
             to_be_redacted.add(i)
@@ -353,7 +354,9 @@ class DocumentRedactor:
         for item in to_be_redacted:
             for q in metadata:
                 if metadata[q] != None and item in metadata[q]:
-                    metadata[q] = str(metadata[q]).replace(item, "")
+                    metadata[q] = str(metadata[q]).replace(item, "[x]")
+
+        self.doc.set_metadata(metadata)
 
     def redact_toc(self, redactions, input=[]):
         """
@@ -383,6 +386,15 @@ class DocumentRedactor:
                 page = toc[e][2]
                 if item in text:
                     self.doc.set_toc_item(e, title=text.replace(item, ""))
+
+def _pdf_producer_checker(doc):
+    producer = doc.metadata['producer']
+    creator = doc.metadata['creator']
+    #print(metadata)
+    if producer == "":
+        return creator
+    else:
+        return producer
 
 def _apply_redactions(page: fitz.Page):
         """
@@ -767,7 +779,7 @@ def _get_command_lines_per_line(redactions, lines, redacts_to_textblocks, dim):
             # Iterate through lines in the PDF content
             for j in range(len(lines)):
                 # Check if the line is a transformation matrix (ends with b"Tm")
-                if lines[j].endswith(b"Tm"):
+                if lines[j].endswith(b"Tm") :
                     x = float(lines[j].split()[4].decode())
                     y = dim[1] - float(lines[j].split()[5].decode())
 
