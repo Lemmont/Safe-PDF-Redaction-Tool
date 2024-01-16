@@ -5,12 +5,40 @@
 \usepackage{lipsum}
 \usepackage{subcaption}
 \usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{pdfpages}
+\usepackage{listings}
+
+\definecolor{mGreen}{rgb}{0,0.6,0}
+\definecolor{mGray}{rgb}{0.5,0.5,0.5}
+\definecolor{mPurple}{rgb}{0.58,0,0.82}
+\definecolor{backgroundColour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{CStyle}{
+    backgroundcolor=\color{backgroundColour},   
+    commentstyle=\color{mGreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{mGray},
+    stringstyle=\color{mPurple},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    language=Python
+}
 
 % Title Page
-\title{Title}
+\title{Safe Text Redaction In PDF Documents (go/no-go version)}
 \author{Lennaert Feijtes}
 \email{contact@ludof.nl - lennaert.feijtes@student.uva.nl}
-\supervisors{Supervisors}
+\supervisors{Maarten Marx}
 \signedby{Signees}
 
 \begin{document}
@@ -18,13 +46,7 @@
 
 \begin{abstract}
 
-This research examines how text redaction in PDF documents can be accomplished while effectively addressing security concerns and preserving non-redacted text. 
-
-Our findings reveal that a method can be created which both ensures confidentiality of sensitive information and the preservation of the non-redacted text. While file .... Using a sample of both custom and real world PDF documents in the Edact-Ray Tool Suite, we have tested our method on adhering to the safety concerns and possible leaking of information. Our findings reveal that no information is being leaked using our method...
-
-The results highlight that a tool for safe text redaction is possible and that information can be kept confidential while maintaining semantic context in the document. 
-
-This study contributes to...
+This research examines how text redaction in PDF documents can be accomplished while effectively addressing security concerns and preserving accessibility of the document and non-redacted text. Our findings reveal that a method can be created which both ensures sufficient confidentiality of sensitive information and the preservation of the non-redacted text. Using a sample of both custom and real world PDF documents, we have tested our method on adhering to the safety concerns and possible breaches in accessibility. Our findings reveal that while complete confidentiality can not be ensured without damaging the integrity of the document, no text is being leaked using our method and redacted text is removed from the document. The results highlight that a tool for safe text redaction is possible and that information can be kept sufficiently confidential while maintaining the integrity of the document. This study contributes to the text redaction landscape for publicly made available documents by government bodies and other organisations.
 \end{abstract}
 
 \tableofcontents
@@ -38,6 +60,7 @@ This study contributes to...
 \input{latex/sections/1-thesis/4-experiment}
 \input{latex/sections/1-thesis/5-results}
 \input{latex/sections/1-thesis/6-discussion}
+\input{latex/sections/1-thesis/7-bijlage1}
 
 % references
 \bibliographystyle{ACM-Reference-Format}

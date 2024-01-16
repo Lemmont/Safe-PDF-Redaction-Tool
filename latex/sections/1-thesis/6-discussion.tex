@@ -1,10 +1,20 @@
 \chapter{Discussion}
 
 \section{Interpret the results}
+\textbf{to be added...}
 
 \section{Conclusion}
+\textbf{to be added...}
 
-\section{Reflection}
+\subsection{Further recommendations}
+Redacting text directly in PDF documents may lead to sufficient confidentiality, but it does not ensure 100\% safety against deredaction. After a PDF document has been made, positional information of all text will be present and will have to be removed to ensure this. However as a result, document integrity and visual aesthetic will be greatly damaged. It is recommended to remove to-be-redacted text from a document before it is converted to a PDF document i.e. replacing text with \textit{REDACTED}. This leaves little to no positional information that can lead to the original value. Furthermore, directly redacting text before creating the PDF will lead to better accessibility. No manipulation after PDF creation is needed and thus there will be no changes to the internal structure and style. 
+\\\\
+For any hidden information, preventive measures can be taken to reduce and minimize the amount of information leaked. Manually setting metadata fields through a document editor leads to both better confidentiality and accessibility of the document by providing only the necessary information about the document. Furthermore, manually removing any unnecessary file attachments, (hidden/covered/transparent) text, table of contents entries, links, bookmarks and annotations before converting a document to PDF results in much less possible breaches in confidentiality.
+
+\section{Ethical considerations}
+\textbf{to-be-added}
 
 \section{Further work}
-
+Building upon already available methods, like PyMuPDF, and expanding upon them by creating a method of  manipulating positional adjustments and removing any confidential information from non-visual content for a wide(r) range of PDF types will be a logical next step to safely redact information from PDF files. While problems can be prevented for new documents, for already existing PDF documents it will be necessary to have a safe redaction tool.
+\\\\
+Expanding further upon the possibilities of positional information manipulation will allow for more confidentiality while maintaining accessibility and visual aesthetic. Reconstructing different positioning schemes (i.e. MS word schemes) will allow for better understanding of positional adjustments and the creation of better defenses against deredaction. 
