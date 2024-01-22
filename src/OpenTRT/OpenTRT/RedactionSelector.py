@@ -1,5 +1,5 @@
 from typing import List, Dict
-from SafeRedaction import DocumentRedactor
+from OpenTRT import DocumentRedactor
 import random
 import fitz
 

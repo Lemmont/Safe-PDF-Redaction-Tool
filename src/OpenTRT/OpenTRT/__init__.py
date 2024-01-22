@@ -3,7 +3,6 @@ from .RedactionSelector import RedactionSelector
 from .LineInterpreter import LineManipulator
 
 def redact_file(file, num=1, input=[], mode="replace", display=False, metadata=False, save_steps=True, pos_adj_changed=False):
-    prefix = str(file).split("/")[-1].split(".")[0]
     """
     Redact a file based on specified parameters.
 
@@ -13,10 +12,18 @@ def redact_file(file, num=1, input=[], mode="replace", display=False, metadata=F
     - input: Optional input for redaction selection.
     - mode: Redaction mode ("replace" or "white").
     - display: display information about document and redaction (False or True)
+    - metadata: check metadata for possible values that must be redacted. If
+    there are, redact them.
+    - save_steps: save intermediate steps of the redaction process in PDF format.
+    = pos_adj_changed: output to res.txt if positional adjustments have been changed.
 
     Returns:
     - redactions: Dictionary containing generated redactions.
     """
+
+    # Get filename without path
+    prefix = str(file).split("/")[-1].split(".")[0]
+
     # Initialize DocumentRedactor and RedactionSelector
     redactor = DocumentRedactor(file)
     redaction_selector = RedactionSelector(redactor)
@@ -52,6 +59,7 @@ def redact_file(file, num=1, input=[], mode="replace", display=False, metadata=F
 
     # Remove attached_files, comments, embedded_files, hidden_text, javascript, links, responses, thumbnails and rest form fields.
     redactor.doc.scrub(metadata=False, xml_metadata=False)
+
     # Save the document after editing positional information
     redactor.doc.save(prefix + "-redacted.pdf", garbage=4, clean=True)
 
@@ -60,6 +68,7 @@ def redact_file(file, num=1, input=[], mode="replace", display=False, metadata=F
         print(redactor)
         print(redaction_selector)
 
+    # Display
     if pos_adj_changed:
         f = open("res.txt", "a")
         temp = False
@@ -67,13 +76,11 @@ def redact_file(file, num=1, input=[], mode="replace", display=False, metadata=F
             if len(redactions[page]) > 0:
                 temp = True
         if temp:
-            print(prefix, ": pos. adj. have been changed?", has_been_changed)
+            print(prefix, ": Pos. Adj. have been changed?"," ", has_been_changed)
             f.write(prefix + " " + has_been_changed)
         else:
-            print(prefix, ": no redactions or redactions found, no pos. adj. changed")
+            print(prefix, ": No redactions or redactions found, no Pos. Adj. changed")
             f.write(prefix + " " + "None")
         f.close()
 
     return redactions
-
-

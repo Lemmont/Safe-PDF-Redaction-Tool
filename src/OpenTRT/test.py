@@ -1,6 +1,6 @@
 import os
 import unittest
-from SafeRedaction import redact_file, DocumentRedactor
+from OpenTRT import redact_file, DocumentRedactor
 import xml.etree.ElementTree as ET
 from pathlib import Path
 import re
