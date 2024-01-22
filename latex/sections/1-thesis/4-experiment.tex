@@ -7,7 +7,7 @@ An effective redaction implementation should adhere to the principles defined ea
 \begin{enumerate}
     \item The to-be-redacted text has been removed visually.
     \item The to-be-redacted text has been removed non-visually.
-    \item Non-redacted text should not be removed visually, but may be removed from the non-visible parts (i.e. embedded files).
+    \item Non-redacted text should not be removed visually, but may be removed from the non-visible parts that are not related to the rendering of the visible text (i.e. embedded files).
     \item Non-redacted text may be manipulated but still be readable by both human and machine, while preserving the original style as much as possible.
     \item Edited or inserted text may be moved, but must be kept to a minimum so that the result still resembles the layout of the original file.
 \end{enumerate}
@@ -18,14 +18,14 @@ The to-be-redacted information must be removed from any potential source where h
 
 
 \section{Text corpus}
-For the evaluation of my method we simulate redaction on documents from multiple sources. First is my own set of \textbf{18} PDF documents which contains cases varying in complexity and layout; from a couple of lines of text to multiple pages, and pages including headers to a page with table of contents. Multiple fontsizes, two columns and annotations are all included. These documents were originally created in Microsoft Word and then converted to PDF using the 'Save to PDF' functionality. Secondly we use a part of the 1 million page corpus of Dutch Freedom of Information Act(Woo) documents. This part consists of \textbf{55} decision letters coming from mostly dutch municpialities, provicnes and \textit{waterschappen} written  by legally trained civil servants. The machine readable text is extracted from these documents using \textit{PyMuPDF}.
+For the evaluation of my method we simulate redaction on documents from multiple sources. First is my own set of \textbf{27} PDF documents which contains cases varying in complexity and layout; from a couple of lines of text to multiple pages, and pages including headers to a page with table of contents. Multiple edge cases are included, such as a blank page, two columns and a page with a small table. These documents were originally created in Microsoft Word and then converted to PDF using the 'Save to PDF' functionality. Secondly we use a part of the 1 million page corpus of Dutch Freedom of Information Act(Woo) documents. This part consists of \textbf{48} decision letters coming from mostly dutch municpialities, provicnes and \textit{waterschappen} written  by legally trained civil servants. The machine readable text is extracted from these documents using \textit{PyMuPDF}.
 
 \section{Experiment Procedure}
-To validate the redaction method, we set up an experiment which takes as input a set of PDF documents which have not been redacted yet, performs redaction on one or more randomly chosen character sequences, runs a set of validation tests on the result and returns if these have been successful or not. This procedure is characterized by the following steps:
+To validate the redaction method, we set up an experiment which takes as input a set of PDF documents which have not been redacted yet, performs redaction on one or more (randomly) chosen character sequences per page, runs a set of validation tests on the result and returns if these have been successful or not. This procedure is characterized by the following steps:
 \begin{enumerate}
     \item Select a document for redaction.
-    \item Choose one or more character sequences randomly from the document for redaction
-    \item Run the \textbf{to-be-added-name} on the document given the (randomly) selected redactions. This outputs a resulting redacted PDF file.
+    \item Choose one or more character sequences (randomly) per page from the document for redaction
+    \item Run OpenTRT on the document given the selected redactions. This outputs a resulting redacted PDF file.
     \item Extract the text from both the original, the newly redacted PDF file and the selected redactions.
     \item Loop over the text of the original file in natural reading order, which gives the index \textbf{i}. Keep track of the current redaction that is being checked, index \textbf{j} and do the following:
         \begin{enumerate}
@@ -39,11 +39,11 @@ To validate the redaction method, we set up an experiment which takes as input a
         \end{enumerate}
 \end{enumerate}
 
-Finally, we also check if the positional adjustments for the lines, where one or more character sequence(s) have been redacted, have been manipulated.
+Finally, it is also checked if the positional adjustments for the lines where one or more character sequence(s) have been redacted, have been manipulated.
 
 \subsection{Metadata}
 
-In addition to text in the PDF, I have validated if to-be-redacted text values are present in the (xml) metadata (if there is any). Metadata is extracted from both the original and resulting file, its fields split, their values examined and finally compared. This procedure is characterized by the following steps:
+In addition to text in the PDF, I have validated if to-be-redacted text values are present in the (xml) metadata (if there is any). Specifically if my name (\textit{Lennaert Feijtes}) is present in the author field of the metadata and if this has been succesfully removed. Metadata is extracted from both the original and resulting file, its fields split, their values examined and finally compared. This procedure is characterized by the following steps:
 
 \begin{enumerate}
     \item Extract the metadata from both the original and resulting redacted PDF file, and the selected redactions.
@@ -61,5 +61,4 @@ To validate if text has not been manipulated to a point where document integrity
 \begin{enumerate}
     \item Are all words roughly in the same position as in the original, taking into account possible shifts to remove white spaces?
     \item Are all words easily readable? Have individual characters of words or entire words overlapped?
-    \item Is it clear where a redaction has taken place?
 \end{enumerate}

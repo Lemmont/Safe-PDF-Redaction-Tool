@@ -1,20 +1,38 @@
 \chapter{Discussion}
 
-\section{Interpret the results}
-\textbf{to be added...}
+\section{Interpreting the results}
+The results in table \ref{tab:redaction-res} clearly indicate that the redaction of text is mostly successful while maintaining accessibility for both custom and found PDF documents. Especially the custom documents were found to be easily redactable, with only a few cases of high complexity resulting in an error. These errors were often the result of not being able to correctly detect and/or find operations of text on the same line.  
+\\\\
+The accessibility was in almost none of the cases greatly damaged, taking into consideration the documents that resulted in a error. An unexpected result was redaction in multi-column page PDF documents (Figure \ref{fig:example-column-page}). Here the non-redacted text in one column was greatly altered by redaction of a word in the other, meaning that multi-column pages are not yet fully supported by OpenTRT. Overall, almost 90\% of the PDF documents closely resembled the original file in terms of visual layout and readability after redaction.
+\\\\
+Documents that were 'found', consisting of decision letters and other types of documents coming from mostly dutch municipalities, provinces and waterschappen, overall did have text successfully redacted. The rate of successful redaction of PDF documents that were found to be created using Microsoft Word was lower than expected, especially when compared to the custom made documents. A possible explanation for this may be due to the fact that some of these documents might have been edited or redacted using another software after creation before (there were a couple of documents where text seems to have been redacted or edited).
+\\\\
+In PDF documents that were created using another workflow no positional adjustments have been manipulated. This was as expected because during development it became clear that support for more types of PDF documents was too complex. However, after redaction both the text was removed and accessibility preserved. 
+\\\\
+Finally, table \ref{tab:metadata-table} clearly indicates that in all custom documents, the value \textit{Lennaert Feijtes} has been successfully removed from the metadata of the document. 
+
 
 \section{Conclusion}
-\textbf{to be added...}
+This research has examined how text redaction in PDF documents can be accomplished while
+effectively addressing security concerns and preserving accessibility of the document and non-redacted text. The main goal was to find a middle ground between the these two essential aspects. Our findings have revealed that a method can be created which both ensures sufficient confidentiality of sensitive information and preservation of the non-redacted text by directly manipulating the internal representation of text for most PDF documents that have been created using the 'save as PDF' functionality of Microsoft Word. By Using a
+sample of both custom and real world PDF documents that vary in compelxity, we have tested our method on adhering to the safety concerns and possible breaches in accessibility. Our findings reveal that while complete confidentiality can not be ensured for every document and document type without damaging the integrity of the document,
+no text is being leaked using our method and redacted text is removed from the document.
+The results highlight that a tool for safe text redaction is possible and that information
+can be kept sufficiently confidential while maintaining the integrity for most documents. This study contributes to the text redaction landscape for publicly made available documents by government bodies and other organisations.
+
+
 
 \subsection{Further recommendations}
-Redacting text directly in PDF documents may lead to sufficient confidentiality, but it does not ensure 100\% safety against deredaction. After a PDF document has been made, positional information of all text will be present and will have to be removed to ensure this. However as a result, document integrity and visual aesthetic will be greatly damaged. It is recommended to remove to-be-redacted text from a document before it is converted to a PDF document i.e. replacing text with \textit{REDACTED}. This leaves little to no positional information that can lead to the original value. Furthermore, directly redacting text before creating the PDF will lead to better accessibility. No manipulation after PDF creation is needed and thus there will be no changes to the internal structure and style. 
+Redacting text directly in PDF documents may lead to sufficient confidentiality, but it does not ensure 100\% safety against deredaction. After a PDF document has been made, positional information of all text will be present and will have to be removed to ensure this. However, document integrity and visual aesthetic will be greatly damaged in the process. It is recommended to remove to-be-redacted text from a document before it is converted to a PDF document i.e. replacing text with \textit{REDACTED}. This leaves little to no positional information that can lead to the original value. Furthermore, directly redacting text before creating the PDF will lead to better accessibility. No manipulation after PDF creation is needed and thus there will be no changes to the internal structure and style. 
 \\\\
-For any hidden information, preventive measures can be taken to reduce and minimize the amount of information leaked. Manually setting metadata fields through a document editor leads to both better confidentiality and accessibility of the document by providing only the necessary information about the document. Furthermore, manually removing any unnecessary file attachments, (hidden/covered/transparent) text, table of contents entries, links, bookmarks and annotations before converting a document to PDF results in much less possible breaches in confidentiality.
+For any hidden information, preventive measures can be taken to reduce and minimize the amount of information leaked. Manually setting metadata fields through a document editor leads to both better confidentiality and accessibility of the document by providing only the necessary information about the document. Furthermore, manually removing any unnecessary file attachments, (hidden/covered/transparent) text, table of contents entries, links, bookmarks and annotations before converting a document to PDF results in fewer possible breaches in confidentiality.
 
 \section{Ethical considerations}
-\textbf{to-be-added}
+This research field aims at protecting sensitive information from PDF documents which may be considered as something good. Extensive knowledge about positional information and how positional adjustments of text are dependent on each other can both be a good or bad thing, depending on the goal of the party involved. This information can both be used to create new solutions for safe redaction or deredact already existing documents and cases where these vulnerabilities are exposed. 
 
 \section{Further work}
-Building upon already available methods, like PyMuPDF, and expanding upon them by creating a method of  manipulating positional adjustments and removing any confidential information from non-visual content for a wide(r) range of PDF types will be a logical next step to safely redact information from PDF files. While problems can be prevented for new documents, for already existing PDF documents it will be necessary to have a safe redaction tool.
+Building upon already available methods, like PyMuPDF, and expanding upon them by creating a way of manipulating positional adjustments and removing any confidential information from non-visual content for a wide(r) range of PDF types would be a logical next step in order to create a method/tool that safely redacts information from PDF documents. While problems can be prevented for new documents, for already existing PDF documents it will be necessary to have a safe redaction tool.
 \\\\
-Expanding further upon the possibilities of positional information manipulation will allow for more confidentiality while maintaining accessibility and visual aesthetic. Reconstructing different positioning schemes (i.e. MS word schemes) will allow for better understanding of positional adjustments and the creation of better defenses against deredaction. 
+Furthermore, improving on the implementation and results in this paper is also a logical next step. Especially, dissecting the internal structure of the PDF and how text is rendered. A better alternative to extract operations and map them to the same line as a redaction may improve effective redaction. 
+\\\\
+Expanding further upon the possibilities of positional information manipulation will allow for more confidentiality while maintaining accessibility and visual aesthetic. Reconstructing different positioning schemes (i.e. MS word schemes) will allow for better understanding of positional adjustments and the creation of better defenses against deredaction.
