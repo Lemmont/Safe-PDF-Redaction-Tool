@@ -1,43 +1,53 @@
 \chapter{Results}
 
 \section{Experiment results}
-\textbf{Experiments have to be done again due to an error in the structure of the experiments... to be added...}
 \subsection{Text redaction}
 
+
 \begin{table}[h]
-\centering
-\begin{tabular}{llccc}
- & \multicolumn{4}{c}{validation criteria}                                                                                                                                                                                                                                                    \\ \cline{2-5} 
- & \multicolumn{1}{c}{document type}                & \begin{tabular}[c]{@{}c@{}}text has been \\ removed \end{tabular} & \begin{tabular}[c]{@{}c@{}}?\end{tabular} & \begin{tabular}[c]{@{}c@{}}Positional adjustments\\ have been \\ manipulated\end{tabular} \\ \cline{2-5} 
- & \multicolumn{1}{l|}{\textbf{custom}}    & 0                                                                                    & 0                                                                    & 0                                                                                  \\
- & \multicolumn{1}{l|}{\textit{simple}}    & 0                                                                                    & 0                                                                    & 0                                                                                  \\
- & \multicolumn{1}{l|}{\textit{medium}}    & 0                                                                                    & 0                                                                    & 0                                                                                  \\
- & \multicolumn{1}{l|}{\textit{hard}}      & 0                                                                                    & 0                                                                    & 0                                                                                  \\
- & \multicolumn{1}{l|}{\textit{edge case}} & 0                                                                                    & 0                                                                    & 0                                                                                  \\
- & \multicolumn{1}{l|}{\textbf{found}}     & 0                                                                                    & 0                                                                    & 0                                                                                  \\
- & \multicolumn{1}{l|}{\textit{MS word}}   & 0                                                                                    & 0                                                                    & 0                                                                                  \\
- & \multicolumn{1}{l|}{\textit{XEP}}       & 0                                                                                    & 0                                                                    & 0                                                                                 
+
+\caption{The results of the redaction experiment where one randomly selected character sequence per page is labelled for redaction. Horizontally, the validation criteria are placed together with the amount of documents and the the document type. Vertically, the results for each category of documents (separated by type) are displayed.}
+\hspace{-25mm}
+\begin{tabular}{llcccccl}
+ & \multicolumn{5}{c}{Redaction of 1 randomly selected character sequence per page} &  \\ \cline{2-7}
+ & \multicolumn{1}{c}{} & \multicolumn{4}{c}{validation criteria} &  \\ \cline{2-7}
+ & \multicolumn{1}{c}{type} & \begin{tabular}[c]{@{}c@{}}Text has been\\ removed\end{tabular} & \begin{tabular}[c]{@{}c@{}}Positional adjustments \\ have been\\ manipulated\end{tabular} & \begin{tabular}[c]{@{}c@{}}Non-redacted text \\ roughly same position\\ as original document\end{tabular} & \begin{tabular}[c]{@{}c@{}}Non-redacted words are\\ easily readable\end{tabular} & \begin{tabular}[c]{@{}c@{}}Amount\end{tabular}  \\ \cline{2-7}
+ & \multicolumn{1}{l|}{\textbf{Custom}} & 0.96 & $0.92^{*}$ & 0.92 & 1.0 & 27 &  \\
+ & \multicolumn{1}{l|}{\textit{simple}} & 1.0 & 1.0 & 1.0 & 1.0 &  8 & \\
+ & \multicolumn{1}{l|}{\textit{medium}} & 1.0 & 1.0 & 1.0 & 1.0 &  6 & \\
+ & \multicolumn{1}{l|}{\textit{hard}} & $0.86^{a}$ & 0.86 & $0.63^{***}$ & $1.0^{***}$ & 7 & \\
+ & \multicolumn{1}{l|}{\textit{edge case}} & $1.0^{*}$ & $0.83^{*}$ & $1.0^{*,***}$ & $1.0^{*,***}$ & 6 & \\
+ & \multicolumn{1}{l|}{\textbf{Found}} & 0.85 & $0.71$ & 0.83 & 0.98 & 48 &  \\
+ & \multicolumn{1}{l|}{\textit{MS Word}} & $0.70^{a}$ & 0.65 & $0.70^{a}$ & 1.0 & 24 &  \\
+ & \multicolumn{1}{l|}{\textit{XEP}} & $0.95^{a}$ & $1.0^{**}$ & 1.0 & 1.0 & 19 &  \\
+ & \multicolumn{1}{l|}{\textit{Aspose.Words}} & 1.0 & 0.0 & 1.0 & 1.0 & 2 &  \\
+ & \multicolumn{1}{l|}{\textit{Acrobat Distiller}} & 1.0 & 0.0 & 1.0 & 0.5 & 2 &  \\
+ & \multicolumn{1}{l|}{\textit{3-Heights(TM)}} & 1.0 & 0.0 & 1.0 & 1.0 & 1 &  \\
+ & \multicolumn{1}{l|}{\textbf{All}} & 0.89 & 0.79 & 0.88 & 0.99 & 75 &
 \end{tabular}
-\caption{The results of the first experiment where text is redacted in custom and decision letter PDF documents and the result is compared with the original file.}
+\label{tab:redaction-res}
 \end{table}
+
+\begin{itemize}
+    \item *: Includes blank pages where no redaction can be taken place. 
+    \item **: XEP PDF files have no positional information to be manipulated. 
+    \item ***: Multi-column pages have differing results based on the redacted word's position and length.
+    \item a: Documents where an error has occurred during the redaction process have been labelled as false.
+\end{itemize}
+\newpage
 \subsection{Metadata}
-\subsection{Look and feel}
-
-
 \begin{table}[h]
 \centering
+\caption{The results of the redaction experiment where a given value (Lennaert Feijtes) has been removed from the metadata in the custom documents. Horizontally, the validation criteria together with the amount and type of documents are displayed. Horizontally, the results for each document type are displayed.}
 \begin{tabular}{llccc}
- & \multicolumn{4}{c}{validation criteria}                                                                                                                                                                                                                                                    \\ \cline{2-5} 
- & \multicolumn{1}{c}{document type}                & \begin{tabular}[c]{@{}c@{}}roughly same position\\ as original document\end{tabular} & \begin{tabular}[c]{@{}c@{}}words are \\ easily readable\end{tabular} & \begin{tabular}[c]{@{}c@{}}clear where \\ redaction has\\ taken place\end{tabular} \\ \cline{2-5} 
- & \multicolumn{1}{l|}{\textbf{custom}}    & 0                                                                                    & 0                                                                    & 0                                                                                  \\
- & \multicolumn{1}{l|}{\textit{simple}}    & 0                                                                                    & 0                                                                    & 0                                                                                  \\
- & \multicolumn{1}{l|}{\textit{medium}}    & 0                                                                                    & 0                                                                    & 0                                                                                  \\
- & \multicolumn{1}{l|}{\textit{hard}}      & 0                                                                                    & 0                                                                    & 0                                                                                  \\
- & \multicolumn{1}{l|}{\textit{edge case}} & 0                                                                                    & 0                                                                    & 0                                                                                  \\
- & \multicolumn{1}{l|}{\textbf{found}}     & 0                                                                                    & 0                                                                    & 0                                                                                  \\
- & \multicolumn{1}{l|}{\textit{MS word}}   & 0                                                                                    & 0                                                                    & 0                                                                                  \\
- & \multicolumn{1}{l|}{\textit{XEP}}       & 0                                                                                    & 0                                                                    & 0                                                                                 
+ & \multicolumn{4}{c}{Redaction of author name in metadata} \\ \cline{2-5} 
+ & \multicolumn{4}{c}{validation criteria} \\ \cline{2-5} 
+ & \multicolumn{1}{c}{type} & \begin{tabular}[c]{@{}c@{}}author name \\ has been removed\\ from standard metadata\end{tabular} & \begin{tabular}[c]{@{}c@{}}author name \\ has been removed\\ from XML metadata\end{tabular} & amount \\ \cline{2-5} 
+ & \multicolumn{1}{l|}{\textbf{all}} & 1.0 & 1.0 & 27 \\
+ & \multicolumn{1}{l|}{\textit{simple}} & 1.0 & 1.0 & 8 \\
+ & \multicolumn{1}{l|}{\textit{medium}} & 1.0 & 1.0 & 6 \\
+ & \multicolumn{1}{l|}{\textit{hard}} & 1.0 & 1.0 & 7 \\
+ & \multicolumn{1}{l|}{\textit{edge case}} & 1.0 & 1.0 & 6
 \end{tabular}
-\caption{The results of the third experiment where text is redacted in custom and decision letter PDF documents and the result is checked for the look and feel of the document}
+\label{tab:metadata-table}
 \end{table}
-

@@ -8,7 +8,7 @@ Redaction is 'the act of removing words or information from a text before it is 
 \caption{Examples of four common types of text redactions which use 'black' boxes. Codes like 5.1.2.e are inserted in the redacted regions to indicate the legal ground used to redact a particular piece of text.}
 \label{fig:redactionExamples}
 \end{figure}\\
-Two essential aspects are demanded of effective redaction. Firstly, redaction has to genuinely eliminate sensitive information from a document, leaving no residual data. Secondly, the non-redacted has to be kept intact and visible for the reader. Striking a balance between these two aspects is challenging, as a focus on safety may compromise the readability of non-redacted text.
+Two essential aspects are demanded of effective redaction. Firstly, redaction has to genuinely eliminate sensitive information from a document, leaving no residual data. Secondly, the non-redacted text has to be kept intact and visible for the reader. Striking a balance between these two aspects is challenging, as a focus on safety may compromise the readability of non-redacted text.
 \begin{figure}[h]
     
     \begin{subfigure}[h]{0.5\linewidth}
@@ -33,17 +33,17 @@ Additionally, text redaction may be broken by using subpixel-sized horizontal sh
 The art is to find a middle ground which is as fast to use, easy to implement and cheap to create, and where sufficient confidentiality of information can be ensured while preserving the accessibility of the document as much as possible. 
 
 \subsubsection{Contribution}
-This project aims to establish a redaction method that strikes a balance between confidentiality and accessibility. Specifically, it presents a PDF redaction method for documents created in Microsoft Word and saved as PDFs using the \textit{save as PDF} functionality. The method ensures sufficient confidentiality of sensitive information and does preserve non-redacted text by directly manipulating the PDF document. 
+This project aims to establish a redaction method that strikes a balance between confidentiality and accessibility. Specifically, it presents a PDF redaction method for documents created in Microsoft Word and saved as PDFs using the '\textit{save as PDF}' functionality. The method ensures sufficient confidentiality of sensitive information and does preserve non-redacted text by directly manipulating the PDF document. 
 \\\\
-When applicable, the method inserts placeholder text in place of the redacted content, and non-redacted text is repositioned to fill white spaces. Additionally, hidden information is either deleted or altered when possible. Finally, following the recommendations of Maxwell Bland (one of the authors of Story Beyond the Eye \cite{bland2022story}), noise is introduced to positional information of glyphs, making it computationally more challenging to determine the redacted text.
+When applicable, the method inserts placeholder text in place of the redacted content, and non-redacted text is repositioned to fill white spaces. Additionally, hidden information is either deleted or altered when possible. Finally, following the recommendations of Maxwell Bland (one of the authors of Story Beyond the Eye \cite{bland2022story}), noise is introduced to positional information of glyphs, making it computationally more challenging to determine the redacted text. Figure \ref{fig:redactionExample} illustrates the final result of a redaction done 'correctly' with our method.
 \\\\
 This contribution is validated using both custom-made documents of varying complexity and real-world examples publicly released by governmental bodies in the Netherlands.
 
 \begin{figure}[h]
 \includegraphics[width=0.9\textwidth]{latex/media/before.png}
 \centering
-\caption{Example of a PDF document where text has been redacted. Each redacted value has been replaced with [ x ] and by manipulating the position of text elements, possible created white spaces have been removed.}
-\label{fig:redactionExamples}
+\caption{Example of a PDF document where text has been redacted using the \textbf{Open Text Redaction Tool (OpenTRT)}. Each redacted value has been replaced with [ x ] and by manipulating the position and/or positional adjustments of text elements, possible created white spaces have been removed.}
+\label{fig:redactionExample}
 \end{figure}
 
 
