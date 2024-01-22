@@ -151,6 +151,10 @@ def _generate_redactions_per_page(redactor: DocumentRedactor, pages, num):
         # Get the text (words) on the page
         words = page.get_text("words", sort=True)
 
+        if len(words) == 0:
+            redactions_per_page[page] = {}
+            continue
+
         # Select a specified number of words for redactions on the page
         redactions = _select_multiple_redactions_example(words, num)
 

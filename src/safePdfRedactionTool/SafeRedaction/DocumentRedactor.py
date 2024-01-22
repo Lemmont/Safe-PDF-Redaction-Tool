@@ -90,6 +90,16 @@ class DocumentRedactor:
         # Return the dictionary containing word occurrences
         return words
 
+    def get_words(self):
+        words_per_page = {}
+        i = 0
+        for page in self.doc.pages():
+            page_words = page.get_text("words", sort=True)
+            words_per_page[i] = page_words
+            i += 1
+
+        return words_per_page
+
     def get_metadata(self):
         """
         Get the metadata of the PDF document.
@@ -210,10 +220,11 @@ class DocumentRedactor:
         Returns:
         - None
         """
+        has_been_changed = {}
+
         # Check if redactions are provided and are not empty
         if self.redactions is None or self.redactions == {}:
-            print("No redactions")
-            return
+            return False
 
         # Iterate through each page in the document
         for page in self.pages:
@@ -234,6 +245,7 @@ class DocumentRedactor:
             # Get redactions and replacements per line on the page
             redaction_per_line, replacements_per_line = _get_redactions_per_line(page_redactions, page_replacements)
 
+
             # Get lines and commands per line on the page
             lines_per_line = _get_command_lines_per_line(page_redactions, lines, page_redacts_to_textblocks, dim)
 
@@ -241,7 +253,8 @@ class DocumentRedactor:
             manipulator = Li.LineManipulator(lines_per_line, redaction_per_line, replacements_per_line, lines)
 
             # Update positions and get the modified lines
-            new = manipulator.update_positions_lines()
+            (new, check) = manipulator.update_positions_lines()
+            has_been_changed[page] = check
 
             # Update the page stream with the modified lines
             self.doc.update_stream(xref, b"\n".join(new))
@@ -262,6 +275,25 @@ class DocumentRedactor:
 
         # Refresh the list of pages after editing positional information
         self.pages = [page for page in self.doc.pages()]
+
+        false_res = 0
+        pos_res = 0
+        for i in has_been_changed:
+            if has_been_changed[i] == False:
+                false_res += 1
+            else:
+                pos_res += 1
+
+
+        if false_res == 0:
+            return "True"
+        elif false_res == 0 and pos_res > 0:
+            return "True"
+        elif false_res > 0 and pos_res == 0:
+            return "False"
+        else:
+            return "True"
+
 
     def add_redaction(self, page: fitz.Page, rect: fitz.Rect):
         """

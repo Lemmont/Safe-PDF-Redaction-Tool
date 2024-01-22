@@ -24,6 +24,8 @@ class LineManipulator:
         Returns:
         - list: List of updated lines.
         """
+        has_been_changed = []
+
         for lines in self.lines_per_line:
             red_cnt = len(self.redactions_per_line[lines])
 
@@ -31,14 +33,19 @@ class LineManipulator:
             for line_data in self.lines_per_line[lines][1:]:
                 # Decode the original line using line_decoder
                 text, res = line_decoder(line_data[0])
-
                 # Encode the line with updated positions using line_encoder
                 new_line = line_encoder(lines, red_cnt, res, text, self.redactions_per_line, self.replacements_per_line)
                 # If the encoding was successful, update the line in the document_lines list
                 if new_line is not None:
+                    if len(res) > 1:
+                        has_been_changed.append(new_line)
                     self.document_lines[line_data[1]] = new_line
 
-        return self.document_lines
+        #print("ok", has_been_changed)
+        if len(has_been_changed) > 0:
+            return (self.document_lines, True)
+        else:
+            return (self.document_lines, False)
 
 
 def line_decoder(line):

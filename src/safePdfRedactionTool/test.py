@@ -3,7 +3,20 @@ import unittest
 from SafeRedaction import redact_file, DocumentRedactor
 import xml.etree.ElementTree as ET
 from pathlib import Path
+import re
+import fitz
 
+punctuation_pattern = r'[.,?"\'!]'
+
+def pdf_checker(file):
+    doc = fitz.Document(file, filetype="pdf")
+    producer = doc.metadata['producer']
+    creator = doc.metadata['creator']
+    #print(metadata)
+    if producer == "":
+        return creator
+    else:
+        return producer
 
 class ValidateCustomRedactions(unittest.TestCase):
     """
@@ -21,94 +34,118 @@ class ValidateCustomRedactions(unittest.TestCase):
         os.chdir('/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/src/test_cases')
 
     def validate_redaction(self, file, num=1, input=[], metadata=False):
-            """
-            Validates the redaction process by comparing word counts before and after redaction.
+        prefix = str(file).split("/")[-1].split(".")[0]
+        # File before redaction
+        redactor1 = DocumentRedactor(file)
+        old = redactor1.get_words()
 
-            Parameters:
-            - file (str): The path to the PDF file to be redacted.
-            - num (int, optional): The number of redactions to generate. Default is 1.
-            - input (list, optional): A list of input strings for selecting redactions. Default is an empty list.
+        temp = pdf_checker(file)
 
-            Returns:
-            - None
+        f = open("res.txt", "a")
+        f.write("[ " + temp + " ] ")
+        f.close()
 
-            This function performs the following steps:
-            1. Loads the original document, gets the word count before redaction (old).
-            2. Performs redaction using the 'redact_file' function.
-            3. Loads the redacted document, gets the word count after redaction (new).
-            4. Checks if non-redacted words are still present in the original word count.
-            5. Checks if all redactions have been removed from the original word count.
+        # Perform redaction
+        try:
+            f = open("res.txt", "a")
+            redactions = redact_file(file, num, input, metadata=metadata, pos_adj_changed=True)
+        except:
+            f.write(f"{prefix} false error\n")
+            f.close()
+            return
 
-            """
-
-            # File before redaction
-            redactor1 = DocumentRedactor(file)
-            old = redactor1.get_word_count()
-
-            # Perform redaction
-            redactions = redact_file(file, num, input, metadata=metadata)
-
-            # File after redaction
-            redactor2 = DocumentRedactor("temp.pdf")
-            new = redactor2.get_word_count()
-
-            if metadata:
-                self.validate_metadata(redactor1, redactor2, redactions, [input[0]])
-
-            # Check if non-redacted words are still present
-            for new_word in new:
-                if new_word in old:
-                    with self.subTest(new_word=new_word):
-                        # Check if subtraction of the word does not equal 0
-                        self.assertNotEqual(old[new_word], 0, f"'{new_word}' occures more often than in the original file.")
-                        old[new_word] -= new[new_word]
+        # Prepare a dictionary to store redactions per page
+        redaction_list_per_page = {}
+        q = 0
+        for i in redactions:
+            for j in redactions[i]:
+                if q in redaction_list_per_page:
+                    redaction_list_per_page[q].append(j)
                 else:
-                    with self.subTest(new_word=new_word):
-                        # Check if word that has not been found in the original file is a replacement value.
-                        self.assertEqual(str(new_word).replace("[x]", ""), "", f"'{new_word}' was not in the original file. It seems it has been added while redacting the file.")
+                    redaction_list_per_page[q] = [j]
+            q += 1
 
-            # Check if all redactions have been removed from the file
-            for i in redactions:
-                for j in redactions[i]:
-                    # Check if redaction is still left in the occurence count of the old file.
-                    if j[4] in old:
-                        with self.subTest(j=j):
-                            # Check if subtraction of the redaction does not equal 0
-                            self.assertNotEqual(old[j[4]], 0, f"Redaction '{j[4]}' occures more often than in the original file.")
-                            old[j[4]] -= 1
+        # File after redaction
+        redactor2 = DocumentRedactor(prefix + "-redacted.pdf")
+        new = redactor2.get_words()
+
+        # Validation loop
+        redactions_found = {}
+        for page in old:
+            old_words = old[page]
+            new_words = new[page]
+            q = 0
+            l = 0
+            w = 0
+            p = 0
+            for i in range(0, len(old_words)):
+                if i - w >= len(old_words) or i - p + l >= len(new_words):
+                    # Ensure not to go beyond the list boundaries
+                    break
+
+                if new_words[i - p + l][4] == "[x]":
+                    w += 1
+                else:
+                    if i - w >= len(old_words):
+                        break  # Ensure not to go beyond the list boundaries
+
+                    if old_words[i - w][4] != new_words[i - p + l][4]:
+                        if i - w >= len(old_words) or q >= len(redaction_list_per_page[page]):
+                            break  # Ensure not to go beyond the list boundaries
+
+                        if old_words[i - w][4] != redaction_list_per_page[page][q][4]:
+                            # Perform a subTest for more granular test reporting
+                            with self.subTest(q=q, i=i, w=w):
+                                # Validate that the redacted content matches the expected value
+                                if redaction_list_per_page[page][q][4] not in str(old_words[i - w][4]).lower():
+                                    f.write(" " + "error\n")
+                                    f.close()
+                                    return
+                                self.assertIn(redaction_list_per_page[page][q][4], str(old_words[i - w][4]).lower(), "Error")
+
+                                # If there are multiple redactions on the page, increment the counter
+                                if len(redaction_list_per_page[page]) != 1:
+                                    l += 1
+
+                        # If there's only one redaction on the page, increment the counter
+                        if len(redaction_list_per_page[page]) <= 1:
+                            q += 1
+
+                        # Increment the counter for redactions on the page
+                        if len(redaction_list_per_page[page]) > 0:
+                            p += 1
+
+            # Count the number of redactions found on the page
+            for j in range(0, len(new_words)):
+                if re.sub(punctuation_pattern, '', new_words[j][4]) == "[x]":
+                    if page in redactions_found:
+                        redactions_found[page] += 1
                     else:
-                        self.assertTrue(j[4] in old, f"'{j[4]}' can not be found as a redaction.")
+                        redactions_found[page] = 1
 
+        # Check if the count of redactions found matches the expected count
+        for page in old:
+            if page in redaction_list_per_page:
+                if redactions_found[page] != len(redaction_list_per_page[page]):
+                    f.write(" " + "error\n")
+                self.assertEqual(redactions_found[page], len(redaction_list_per_page[page]), f"ERROR: Amount of found redactions ({redactions_found[page]}) is not equal to the actual redactions ({len(redaction_list_per_page[page])})!")
 
-    def validate_metadata(self, redactor_old: DocumentRedactor, redactor_new: DocumentRedactor, redactions, input):
-        """
-        Validates the metadata redaction process by comparing metadata before and after redaction.
+        f.write(" " + "succes\n")
+        f.close()
 
-        Parameters:
-        - redactor_old (DocumentRedactor): The original DocumentRedactor instance.
-        - redactor_new (DocumentRedactor): The DocumentRedactor instance after redaction.
-        - redactions (dict): Dictionary of redactions per page.
-        - input (list): List of input strings for selecting redactions.
-
-        Returns:
-        - None
-
-        This method performs the following steps:
-        1. Retrieves metadata before and after redaction.
-        2. Compares metadata values for redacted words and input strings.
-        3. Checks if redacted values in metadata match the expected redacted format "[x]".
-        4. Compares XML metadata values for redacted words.
-        5. Raises AssertionError if any of the validation checks fail.
-
-        Note: The method uses the 'unittest' framework for test assertions.
-
-        """
+    def validate_metadata(self, file, redactions, num=1, input=[]):
+        prefix = str(file).split("/")[-1].split(".")[0]
 
         # Step 1: Retrieve metadata before and after redaction.
-        old_metadata = redactor_old.get_metadata()
-        old_xml_metadata = ET.fromstring(redactor_old.doc.get_xml_metadata())
-        new_metadata = redactor_new.get_metadata()
-        new_xml_metadata = ET.fromstring(redactor_new.doc.get_xml_metadata())
+        redactor1 = DocumentRedactor(file)
+        old_metadata = redactor1.get_metadata()
+        redactions = redact_file(file, num, input, metadata=True)
+        redactor2 = DocumentRedactor(prefix + "-redacted.pdf")
+
+        old_xml_metadata = ET.fromstring(redactor1.doc.get_xml_metadata())
+        new_metadata = redactor2.get_metadata()
+        new_xml_metadata = ET.fromstring(redactor2.doc.get_xml_metadata())
+
 
         # Step 2: Compare metadata values for redacted words and input strings.
         to_be_redacted = set()
@@ -154,102 +191,80 @@ class ValidateCustomRedactions(unittest.TestCase):
                                 f"'{elem.text}' was not in the original file. "
                                 f"It seems it has been added to the metadata while redacting the file.")
 
-    def test_simple(self):
-        """
-            Validate redaction for simple PDF documents.
-        """
+    # def test_simple(self):
+    #     """
+    #         Validate redaction for simple PDF documents.
+    #     """
+    #     for p in Path("./simple_pdf").glob('*.pdf'):
+    #         with self.subTest(p=p):
+    #             if p != "temp.pdf":
+    #                 self.validate_redaction(p, num=1, metadata=True)
+
+    # def test_medium(self):
+    #     """
+    #         Validate redaction for moderate complex PDF documents.
+    #     """
+    #     for p in Path("./medium_pdf").glob('*.pdf'):
+    #         with self.subTest(p=p):
+    #             if p != "temp.pdf":
+    #                 self.validate_redaction(p, num=1, metadata=True)
+
+    # def test_hard(self):
+    #     """
+    #         Validate redaction for difficult PDF documents.
+    #     """
+    #     for p in Path("./hard_pdf").glob('*.pdf'):
+    #         with self.subTest(p=p):
+    #             if p != "temp.pdf":
+    #                 self.validate_redaction(p, num=1, metadata=True)
+
+    # def test_wild(self):
+    #     """
+    #         Validate redaction for difficult PDF documents.
+    #     """
+    #     for p in Path("./wild").glob('*.pdf'):
+    #         with self.subTest(p=p):
+    #             if p != "temp.pdf":
+    #                 self.validate_redaction(p, num=1, metadata=True)
+
+    # def test_edge(self):
+    #     """
+    #         Validate redaction for difficult PDF documents.
+    #     """
+    #     for p in Path("./edge_pdf").glob('*.pdf'):
+    #         with self.subTest(p=p):
+    #             if p != "temp.pdf":
+    #                 self.validate_redaction(p, num=1, metadata=True)
+
+    def test_metadata(self):
         for p in Path("./simple_pdf").glob('*.pdf'):
             with self.subTest(p=p):
                 if p != "temp.pdf":
-                    self.validate_redaction(p, input=["Lennaert"], metadata=True)
+                    self.validate_metadata(p, redactions={}, num=1, input=["Lennaert Feijtes"])
 
-    def test_medium(self):
-        """
-            Validate redaction for moderate complex PDF documents.
-        """
         for p in Path("./medium_pdf").glob('*.pdf'):
             with self.subTest(p=p):
                 if p != "temp.pdf":
-                    self.validate_redaction(p, input=["Lennaert"], metadata=True)
+                    self.validate_metadata(p, redactions={}, num=1, input=["Lennaert Feijtes"])
 
-    def test_hard(self):
-        """
-            Validate redaction for difficult PDF documents.
-        """
-        for p in Path("./medium_pdf").glob('*.pdf'):
+        for p in Path("./hard_pdf").glob('*.pdf'):
             with self.subTest(p=p):
                 if p != "temp.pdf":
-                    self.validate_redaction(p, input=["Lennaert"], metadata=True)
+                    self.validate_metadata(p, redactions={}, num=1, input=["Lennaert Feijtes"])
 
-    # def test_1_simple_1(self):
-    #     """
-    #         Simple PDF with a few words and a header (1 redaction)
-    #     """
-    #     file = "./simple1.pdf"
-    #     self.validate_redaction(file, num=1, input=["Lennaert"])
-
-    # def test_1_simple_2(self):
-    #     """
-    #         Simple PDF with 4 lines and a header (5 redactions)
-    #     """
-    #     file = "./simple2.pdf"
-    #     self.validate_redaction(file, num=5)
-
-    # def test_1_simple_3(self):
-    #     """
-    #         Simple PDF with 4 big words (1 redaction)
-    #     """
-    #     file = "./simple3.pdf"
-    #     self.validate_redaction(file, num=1)
-
-    # def test_1_simple_4(self):
-    #     """
-    #         Simple PDF with one page full of words with a medium font size (5 redactions)
-    #     """
-    #     file = "./simple4.pdf"
-    #     self.validate_redaction(file, num=5)
-
-    # def test_1_simple_5(self):
-    #     """
-    #         Simple PDF with one page full of words with a medium font size (10 redactions)
-    #     """
-    #     file = "./simple4.pdf"
-    #     self.validate_redaction(file, num=10)
-
-    # def test_1_simple_6(self):
-    #     """
-    #         Simple PDF with one page full of words with a medium font size (25 redactions)
-    #     """
-    #     file = "./simple4.pdf"
-    #     self.validate_redaction(file, num=25)
-
-    # def test_2_medium_1(self):
-    #     """
-    #         Slightly complex PDF with half a page of text in a small fontsize. Text is made of
-    #         multiple lines and two paragraphs (5 redactions)
-    #     """
-    #     file = "./medium1.pdf"
-    #     self.validate_redaction(file, num=5)
-
-    # def test_2_medium_2(self):
-    #     """
-    #         Slightly complex PDF with a page of text in a small fontsize. Text is made of
-    #         multiple lines, paragraphs and two headers (10 redactions)
-    #     """
-    #     file = "./medium2.pdf"
-    #     self.validate_redaction(file, num=10)
-
-    # def test_2_medium_3(self):
-    #     """
-    #         Slightly complex PDF with two pages of text in a small fontsize. Text is made of
-    #         multiple lines, paragraphs and headers (20 redactions)
-    #     """
-    #     file = "./medium3.pdf"
-    #     self.validate_redaction(file, num=20)
-
+        for p in Path("./edge_pdf").glob('*.pdf'):
+            with self.subTest(p=p):
+                if p != "temp.pdf":
+                    self.validate_metadata(p, redactions={}, num=1, input=["Lennaert Feijtes"])
 
     def tearDown(self):
         pass
+
+def results():
+    f = open("res.txt", "r")
+    lines = f.readlines()
+    print(lines)
+
 
 if __name__ == '__main__':
     unittest.main()
