@@ -2,7 +2,7 @@ from .DocumentRedactor import DocumentRedactor
 from .RedactionSelector import RedactionSelector
 from .LineInterpreter import LineManipulator
 
-def redact_file(file, num=1, input=[], mode="replace", display=False, metadata=False, save_steps=True, pos_adj_changed=False):
+def redact_file(file, num=0, input=[], mode="replace", display=False, metadata=False, save_steps=True, pos_adj_changed=False):
     """
     Redact a file based on specified parameters.
 
@@ -15,7 +15,7 @@ def redact_file(file, num=1, input=[], mode="replace", display=False, metadata=F
     - metadata: check metadata for possible values that must be redacted. If
     there are, redact them.
     - save_steps: save intermediate steps of the redaction process in PDF format.
-    = pos_adj_changed: output to res.txt if positional adjustments have been changed.
+    - pos_adj_changed: output to res.txt if positional adjustments have been changed.
 
     Returns:
     - redactions: Dictionary containing generated redactions.
@@ -28,8 +28,13 @@ def redact_file(file, num=1, input=[], mode="replace", display=False, metadata=F
     redactor = DocumentRedactor(file)
     redaction_selector = RedactionSelector(redactor)
 
-    # Select redactions based on input or generate them
-    redactions = redaction_selector.select_redactions(num, input)
+    if num == 0 and input == []:
+        redactions = redaction_selector.find_annot_redactions()
+    else:
+        # Select redactions based on input or generate them
+        redactions = redaction_selector.select_redactions(num, input)
+    
+
     # Save the document with added redactions
     redactor.add_redactions(redactions)
 

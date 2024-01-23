@@ -51,11 +51,17 @@ class RedactionSelector:
 
         # Check if specific input is provided for redaction selection
         if input != []:
-            redactions = _select_redaction_based_on_input(pages, input[0])
+            redactions = _select_redaction_based_on_input(pages, input)
         else:
             # Generate redactions per page
             redactions = _generate_redactions_per_page(self.redactor, pages, num)
 
+        self.redactions = redactions
+        return redactions
+
+    def find_annot_redactions(self):
+        pages = self.redactor.pages
+        redactions = find_annotations(pages)
         self.redactions = redactions
         return redactions
 
@@ -76,19 +82,20 @@ def _select_redaction_based_on_input(pages: List[fitz.Page], input):
     # Iterate through each page
     for page in pages:
         selected = []
-        res = page.search_for(input)
+        for token in input:
+            res = page.search_for(token)
 
-        # Iterate through each search result on the page
-        for r in res:
-            # Get the text elements (words) within the specified clip (search result)
-            text = page.get_text("words", clip=r, sort=True)
+            # Iterate through each search result on the page
+            for r in res:
+                # Get the text elements (words) within the specified clip (search result)
+                text = page.get_text("words", clip=r, sort=True)
 
-            # Append the selected words to the list
-            for t in text:
-                selected.append(t)
+                # Append the selected words to the list
+                for t in text:
+                    selected.append(t)
 
-        # Store the selected words for the current page in the dictionary
-        words_selected[page] = selected
+            # Store the selected words for the current page in the dictionary
+        words_selected[page] = sorted(selected, key=lambda x: (x[1], x[0]))
 
     return words_selected
 
@@ -129,7 +136,7 @@ def _select_multiple_redactions_example(words, num):
 
     return words_list
 
-def _generate_redactions_per_page(redactor: DocumentRedactor, pages, num):
+def _generate_redactions_per_page(pages, num):
     """
     Generate redactions for each page by randomly selecting a specified number of words.
 
@@ -162,3 +169,24 @@ def _generate_redactions_per_page(redactor: DocumentRedactor, pages, num):
         redactions_per_page[page] = redactions
 
     return redactions_per_page
+
+
+def find_annotations(pages):
+    annots_per_page = {}
+
+    for page in pages:
+        found = []
+        for annot in page.annots():
+            r = annot.rect
+            text = page.get_text("words", clip=r, sort=True)
+            for t in text:
+                found.append(t)
+
+        annots_per_page[page] = found
+
+    for page in pages:
+        annot = page.first_annot
+        while annot:
+            annot = page.delete_annot(annot)
+
+    return annots_per_page
