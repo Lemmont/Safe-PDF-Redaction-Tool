@@ -2,7 +2,7 @@ import os
 from . import DocumentRedactor, RedactionSelector
 
 
-def redact_file(file, num=0, input=[], mode="replace", display=False, metadata=False, save_steps=True, pos_adj_changed=False, path=None):
+def redact_file(file, num=0, input=[], mode="replace", display=False, metadata=False, save_steps=True):
     """
     Redact a file based on specified parameters.
 
@@ -27,11 +27,6 @@ def redact_file(file, num=0, input=[], mode="replace", display=False, metadata=F
     # Initialize DocumentRedactor and RedactionSelector
     redactor = DocumentRedactor.DocumentInterpreter(file)
     redaction_selector = RedactionSelector.RedactionSelector(redactor)
-
-    original = os.getcwd()
-
-    if path != None:
-        os.chdir(os.getcwd() + path)
 
     if num == 0 and input == []:
         redactions = redaction_selector.find_annot_redactions()
@@ -91,6 +86,4 @@ def redact_file(file, num=0, input=[], mode="replace", display=False, metadata=F
     #         print(prefix, ": No redactions or redactions found, no Pos. Adj. changed")
     #         f.write(prefix + " " + "None")
     #     f.close()
-
-    os.chdir(original)
     return redactions
