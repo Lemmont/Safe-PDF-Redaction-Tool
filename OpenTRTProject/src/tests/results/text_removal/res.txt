@@ -1,0 +1,388 @@
+big-words1 : Pos. Adj. have been changed?   True
+Microsoft Word big-words1
+simple2 : Pos. Adj. have been changed?   True
+Microsoft Word simple2
+simple4 : Pos. Adj. have been changed?   True
+Microsoft Word simple4
+simple1 : Pos. Adj. have been changed?   True
+Microsoft Word simple1
+simple3 : Pos. Adj. have been changed?   True
+Microsoft Word simple3
+simple5 : Pos. Adj. have been changed?   True
+Microsoft Word simple5
+simple6 : Pos. Adj. have been changed?   True
+Microsoft Word simple6
+big-words2 : Pos. Adj. have been changed?   True
+
+Microsoft Word big-words2
+.medium1 : Pos. Adj. have been changed?   True
+Microsoft Word medium1
+medium5 : Pos. Adj. have been changed?   True
+Microsoft® Word voor Microsoft 365 medium5
+medium6 : Pos. Adj. have been changed?   True
+Microsoft® Word voor Microsoft 365 medium6
+medium3 : Pos. Adj. have been changed?   True
+Microsoft Word medium3
+medium2 : Pos. Adj. have been changed?   True
+Microsoft Word medium2
+medium4 : Pos. Adj. have been changed?   True
+Microsoft Word medium4
+
+.empty_pages : No redactions or redactions found, no Pos. Adj. changed
+Microsoft Word empty_pages
+link : Pos. Adj. have been changed?   True
+Microsoft Word link
+columns : Pos. Adj. have been changed?   True
+Microsoft® Word voor Microsoft 365 columns
+empty : No redactions or redactions found, no Pos. Adj. changed
+Microsoft Word empty
+small_table : Pos. Adj. have been changed?   True
+Microsoft Word small_table
+annot : Pos. Adj. have been changed?   True
+Microsoft Word annot
+
+.hard2 : Pos. Adj. have been changed?   True
+Microsoft® Word voor Microsoft 365 hard2
+hard3 : Pos. Adj. have been changed?   True
+Microsoft® Word voor Microsoft 365 hard3
+hard4 : Pos. Adj. have been changed?   True
+Microsoft® Word voor Microsoft 365 hard4
+toc : Pos. Adj. have been changed?   True
+Microsoft® Word voor Microsoft 365 toc
+moretabsinserted : Pos. Adj. have been changed?   True
+Microsoft® Word voor Microsoft 365 moretabsinserted
+hard1 : Pos. Adj. have been changed?   True
+Microsoft® Word voor Microsoft 365 hard1
+tabsinserted : Pos. Adj. have been changed?   True
+Microsoft® Word voor Microsoft 365 tabsinserted
+
+.staatslot3 : Pos. Adj. have been changed?   True x
+staatslot5 : Pos. Adj. have been changed?   True x
+
+politie9 : Pos. Adj. have been changed?   True
+Microsoft® Word 2013 politie9 x
+
+politie6 : Pos. Adj. have been changed?   True x
+staatslot4 : Pos. Adj. have been changed?   True x
+politie8 : Pos. Adj. have been changed?   True x
+
+staatslot : Pos. Adj. have been changed?   True -
+Microsoft® Word 2013 staatslot
+
+denhaag8 : Pos. Adj. have been changed?   False
+XEP 4.30.938; modified using iTextSharp.LGPLv2.Core 1.8.0.0 denhaag8
+pur1 : Pos. Adj. have been changed?   False
+XEP 4.30.938; modified using iTextSharp 4.1.6 by 1T3XT pur1
+staatsblad : Pos. Adj. have been changed?   True
+denhaag1 : Pos. Adj. have been changed?   False
+XEP 4.30.938; modified using iTextSharp.LGPLv2.Core 1.8.0.0 denhaag1
+wobError : Pos. Adj. have been changed?   True
+
+hard3 : Pos. Adj. have been changed?   True
+Microsoft® Word voor Microsoft 365 hard3 x
+
+politie7 : Pos. Adj. have been changed?   True
+Microsoft® Word 2013 politie7 -
+
+denhaag7 : Pos. Adj. have been changed?   False
+XEP 4.30.938; modified using iTextSharp.LGPLv2.Core 1.8.0.0 denhaag7
+bijlage : Pos. Adj. have been changed?   True -
+Microsoft: Print To PDF bijlage
+denhaag4 : Pos. Adj. have been changed?   False
+XEP 4.30.938; modified using iTextSharp.LGPLv2.Core 1.8.0.0 denhaag4
+gemeentschappelijkeregeling : Pos. Adj. have been changed?   False
+XEP 4.30.938; modified using iTextSharp 4.1.6 by 1T3XT gemeentschappelijkeregeling
+staatslot11 : Pos. Adj. have been changed?   True x-
+
+politie5 : Pos. Adj. have been changed?   True
+Microsoft® Word 2013 politie5 x
+denhaag9 : Pos. Adj. have been changed?   False
+XEP 4.30.938; modified using iTextSharp.LGPLv2.Core 1.8.0.0 denhaag9
+denhaag3 : Pos. Adj. have been changed?   False
+XEP 4.30.938; modified using iTextSharp.LGPLv2.Core 1.8.0.0 denhaag3
+staatslot10 : Pos. Adj. have been changed?   True x
+pur3 : Pos. Adj. have been changed?   False
+XEP 4.30.938; modified using iTextSharp 4.1.6 by 1T3XT pur3
+traktaat : Pos. Adj. have been changed?   True x-
+kst : Pos. Adj. have been changed?   True -
+politie4 : Pos. Adj. have been changed?   True x
+staatslot6 : Pos. Adj. have been changed?   True x
+denhaag5 : Pos. Adj. have been changed?   False
+XEP 4.30.938; modified using iTextSharp.LGPLv2.Core 1.8.0.0 denhaag5
+pur2 : Pos. Adj. have been changed?   False
+XEP 4.30.938; modified using iTextSharp 4.1.6 by 1T3XT pur2
+politie1 : Pos. Adj. have been changed?   True x
+adam1 : Pos. Adj. have been changed?   True -
+
+staatslot8 : Pos. Adj. have been changed?   True x
+Microsoft® Word 2013 staatslot8
+brief1 : Pos. Adj. have been changed?   True
+Aspose.Words for .NET 22.12.0 brief1
+
+politie2 : Pos. Adj. have been changed?   True x
+Microsoft® Word 2013 politie2
+
+brabandsdelta1 : Pos. Adj. have been changed?   False
+XEP 4.30.938; modified using iTextSharp 4.1.6 by 1T3XT brabandsdelta1
+denhaag6 : Pos. Adj. have been changed?   False
+XEP 4.30.938; modified using iTextSharp.LGPLv2.Core 1.8.0.0 denhaag6
+nh1 : Pos. Adj. have been changed?   False
+XEP 4.30.938; modified using iTextSharp.LGPLv2.Core 1.8.0.0 nh1
+
+wob1 : Pos. Adj. have been changed?   True x
+Microsoft® Word 2013 wob1
+denhaag10 : Pos. Adj. have been changed?   False
+XEP 4.30.938; modified using iTextSharp.LGPLv2.Core 1.8.0.0 denhaag10
+
+staatslot9 : Pos. Adj. have been changed?   True x
+Microsoft® Word 2013 staatslot9
+
+staatslot2 : Pos. Adj. have been changed?   True x
+pur4 : Pos. Adj. have been changed?   False
+XEP 4.30.938; modified using iTextSharp 4.1.6 by 1T3XT pur4
+denhaag2 : Pos. Adj. have been changed?   False
+XEP 4.30.938; modified using iTextSharp.LGPLv2.Core 1.8.0.0 denhaag2
+stemming : Pos. Adj. have been changed?   False
+XEP 4.30.938; modified using iTextSharp.LGPLv2.Core 1.8.0.0 stemming
+
+politie3 : Pos. Adj. have been changed?   True
+Microsoft® Word 2013 politie3 x
+
+
+wobLarge false
+staatslot7 false -
+staatslot3 Word
+staatslot5 Word
+politie6 Word
+staatslot4 Word
+ploitie8 Word
+staatsblad Acrobat
+wobError Word
+staatslot11 Word
+staatslot10 Word
+traktaat Acrobat
+kst aspose
+politie4 Word
+staatslot6 Word
+politie1 Word
+adam1 Word
+staatslot2
+
+======================================================================
+ERROR: test_wild (tests.test_main.ValidateCustomRedactions) (p=PosixPath('/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/corpus/wild/wobLarge.pdf'))
+Validate redaction for difficult PDF documents.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 211, in test_wild
+    self.validate_redaction(p, num=1, metadata=True)
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 47, in validate_redaction
+    redactions = RedactFile.redact_file(file, num, input, mode="white", metadata=metadata, pos_adj_changed=True, save_steps=False)
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/OpenTRT/RedactFile.py", line 58, in redact_file
+    has_been_changed = redactor.edit_positional_information()
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/OpenTRT/DocumentRedactor.py", line 256, in edit_positional_information
+    (new, check) = manipulator.update_positions_lines()
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/OpenTRT/LineInterpreter.py", line 53, in update_positions_lines
+    new_line = line_encoder((0,0), red_cnt, res, text, self.redactions_per_line, self.replacements_per_line)
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/OpenTRT/LineInterpreter.py", line 162, in line_encoder
+    elif float(q) > 100 or float(q) < -100:
+ValueError: could not convert string to float: ')-35.000009'
+
+======================================================================
+ERROR: test_wild (tests.test_main.ValidateCustomRedactions) (p=PosixPath('/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/corpus/wild/staatslot7.pdf'))
+Validate redaction for difficult PDF documents.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 211, in test_wild
+    self.validate_redaction(p, num=1, metadata=True)
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 47, in validate_redaction
+    redactions = RedactFile.redact_file(file, num, input, mode="white", metadata=metadata, pos_adj_changed=True, save_steps=False)
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/OpenTRT/RedactFile.py", line 58, in redact_file
+    has_been_changed = redactor.edit_positional_information()
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/OpenTRT/DocumentRedactor.py", line 256, in edit_positional_information
+    (new, check) = manipulator.update_positions_lines()
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/OpenTRT/LineInterpreter.py", line 53, in update_positions_lines
+    new_line = line_encoder((0,0), red_cnt, res, text, self.redactions_per_line, self.replacements_per_line)
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/OpenTRT/LineInterpreter.py", line 162, in line_encoder
+    elif float(q) > 100 or float(q) < -100:
+ValueError: could not convert string to float: ' we)-5'
+
+======================================================================
+FAIL: test_wild (tests.test_main.ValidateCustomRedactions) (p=PosixPath('/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/corpus/wild/staatslot3.pdf'))
+Validate redaction for difficult PDF documents.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 211, in test_wild
+    self.validate_redaction(p, num=1, metadata=True)
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 88, in validate_redaction
+    self.assertEqual(total_edit_distance, red_cnt, f"FAILED {origin}, {prefix}: edit distance is not equal to the amount of redactions!")
+AssertionError: 192 != 9 : FAILED Microsoft® Word 2013, staatslot3: edit distance is not equal to the amount of redactions!
+
+======================================================================
+FAIL: test_wild (tests.test_main.ValidateCustomRedactions) (p=PosixPath('/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/corpus/wild/staatslot5.pdf'))
+Validate redaction for difficult PDF documents.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 211, in test_wild
+    self.validate_redaction(p, num=1, metadata=True)
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 88, in validate_redaction
+    self.assertEqual(total_edit_distance, red_cnt, f"FAILED {origin}, {prefix}: edit distance is not equal to the amount of redactions!")
+AssertionError: 8 != 3 : FAILED Microsoft® Word 2013, staatslot5: edit distance is not equal to the amount of redactions!
+
+======================================================================
+FAIL: test_wild (tests.test_main.ValidateCustomRedactions) (p=PosixPath('/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/corpus/wild/politie6.pdf'))
+Validate redaction for difficult PDF documents.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 211, in test_wild
+    self.validate_redaction(p, num=1, metadata=True)
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 88, in validate_redaction
+    self.assertEqual(total_edit_distance, red_cnt, f"FAILED {origin}, {prefix}: edit distance is not equal to the amount of redactions!")
+AssertionError: 368 != 5 : FAILED Microsoft® Word 2013, politie6: edit distance is not equal to the amount of redactions!
+
+======================================================================
+FAIL: test_wild (tests.test_main.ValidateCustomRedactions) (p=PosixPath('/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/corpus/wild/staatslot4.pdf'))
+Validate redaction for difficult PDF documents.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 211, in test_wild
+    self.validate_redaction(p, num=1, metadata=True)
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 88, in validate_redaction
+    self.assertEqual(total_edit_distance, red_cnt, f"FAILED {origin}, {prefix}: edit distance is not equal to the amount of redactions!")
+AssertionError: 130 != 5 : FAILED Microsoft® Word 2013, staatslot4: edit distance is not equal to the amount of redactions!
+
+======================================================================
+FAIL: test_wild (tests.test_main.ValidateCustomRedactions) (p=PosixPath('/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/corpus/wild/politie8.pdf'))
+Validate redaction for difficult PDF documents.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 211, in test_wild
+    self.validate_redaction(p, num=1, metadata=True)
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 88, in validate_redaction
+    self.assertEqual(total_edit_distance, red_cnt, f"FAILED {origin}, {prefix}: edit distance is not equal to the amount of redactions!")
+AssertionError: 353 != 3 : FAILED Microsoft® Word 2013, politie8: edit distance is not equal to the amount of redactions!
+
+======================================================================
+FAIL: test_wild (tests.test_main.ValidateCustomRedactions) (p=PosixPath('/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/corpus/wild/staatsblad.pdf'))
+Validate redaction for difficult PDF documents.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 211, in test_wild
+    self.validate_redaction(p, num=1, metadata=True)
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 88, in validate_redaction
+    self.assertEqual(total_edit_distance, red_cnt, f"FAILED {origin}, {prefix}: edit distance is not equal to the amount of redactions!")
+AssertionError: 47 != 5 : FAILED Acrobat Distiller Server 8.1.0 (Pentium Linux, Built: 2007-09-07), staatsblad: edit distance is not equal to the amount of redactions!
+
+======================================================================
+FAIL: test_wild (tests.test_main.ValidateCustomRedactions) (p=PosixPath('/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/corpus/wild/wobError.pdf'))
+Validate redaction for difficult PDF documents.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 211, in test_wild
+    self.validate_redaction(p, num=1, metadata=True)
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 88, in validate_redaction
+    self.assertEqual(total_edit_distance, red_cnt, f"FAILED {origin}, {prefix}: edit distance is not equal to the amount of redactions!")
+AssertionError: 296 != 1 : FAILED Microsoft® Word 2013, wobError: edit distance is not equal to the amount of redactions!
+
+======================================================================
+FAIL: test_wild (tests.test_main.ValidateCustomRedactions) (p=PosixPath('/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/corpus/wild/staatslot11.pdf'))
+Validate redaction for difficult PDF documents.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 211, in test_wild
+    self.validate_redaction(p, num=1, metadata=True)
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 88, in validate_redaction
+    self.assertEqual(total_edit_distance, red_cnt, f"FAILED {origin}, {prefix}: edit distance is not equal to the amount of redactions!")
+AssertionError: 1763 != 17 : FAILED Microsoft® Word 2013, staatslot11: edit distance is not equal to the amount of redactions!
+
+======================================================================
+FAIL: test_wild (tests.test_main.ValidateCustomRedactions) (p=PosixPath('/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/corpus/wild/staatslot10.pdf'))
+Validate redaction for difficult PDF documents.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 211, in test_wild
+    self.validate_redaction(p, num=1, metadata=True)
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 88, in validate_redaction
+    self.assertEqual(total_edit_distance, red_cnt, f"FAILED {origin}, {prefix}: edit distance is not equal to the amount of redactions!")
+AssertionError: 2869 != 24 : FAILED Microsoft® Word 2013, staatslot10: edit distance is not equal to the amount of redactions!
+
+======================================================================
+FAIL: test_wild (tests.test_main.ValidateCustomRedactions) (p=PosixPath('/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/corpus/wild/traktaat.pdf'))
+Validate redaction for difficult PDF documents.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 211, in test_wild
+    self.validate_redaction(p, num=1, metadata=True)
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 88, in validate_redaction
+    self.assertEqual(total_edit_distance, red_cnt, f"FAILED {origin}, {prefix}: edit distance is not equal to the amount of redactions!")
+AssertionError: 2496 != 7 : FAILED Acrobat Distiller Server 8.1.0 (Pentium Linux, Built: 2007-09-07), traktaat: edit distance is not equal to the amount of redactions!
+
+======================================================================
+FAIL: test_wild (tests.test_main.ValidateCustomRedactions) (p=PosixPath('/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/corpus/wild/kst.pdf'))
+Validate redaction for difficult PDF documents.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 211, in test_wild
+    self.validate_redaction(p, num=1, metadata=True)
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 88, in validate_redaction
+    self.assertEqual(total_edit_distance, red_cnt, f"FAILED {origin}, {prefix}: edit distance is not equal to the amount of redactions!")
+AssertionError: 4 != 3 : FAILED Aspose.Words for .NET 22.12.0, kst: edit distance is not equal to the amount of redactions!
+
+======================================================================
+FAIL: test_wild (tests.test_main.ValidateCustomRedactions) (p=PosixPath('/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/corpus/wild/politie4.pdf'))
+Validate redaction for difficult PDF documents.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 211, in test_wild
+    self.validate_redaction(p, num=1, metadata=True)
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 88, in validate_redaction
+    self.assertEqual(total_edit_distance, red_cnt, f"FAILED {origin}, {prefix}: edit distance is not equal to the amount of redactions!")
+AssertionError: 25 != 13 : FAILED Microsoft® Word 2013, politie4: edit distance is not equal to the amount of redactions!
+
+======================================================================
+FAIL: test_wild (tests.test_main.ValidateCustomRedactions) (p=PosixPath('/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/corpus/wild/staatslot6.pdf'))
+Validate redaction for difficult PDF documents.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 211, in test_wild
+    self.validate_redaction(p, num=1, metadata=True)
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 88, in validate_redaction
+    self.assertEqual(total_edit_distance, red_cnt, f"FAILED {origin}, {prefix}: edit distance is not equal to the amount of redactions!")
+AssertionError: 2380 != 20 : FAILED Microsoft® Word 2013, staatslot6: edit distance is not equal to the amount of redactions!
+
+======================================================================
+FAIL: test_wild (tests.test_main.ValidateCustomRedactions) (p=PosixPath('/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/corpus/wild/politie1.pdf'))
+Validate redaction for difficult PDF documents.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 211, in test_wild
+    self.validate_redaction(p, num=1, metadata=True)
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 88, in validate_redaction
+    self.assertEqual(total_edit_distance, red_cnt, f"FAILED {origin}, {prefix}: edit distance is not equal to the amount of redactions!")
+AssertionError: 191 != 6 : FAILED Microsoft® Word 2013, politie1: edit distance is not equal to the amount of redactions!
+
+======================================================================
+FAIL: test_wild (tests.test_main.ValidateCustomRedactions) (p=PosixPath('/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/corpus/wild/adam1.pdf'))
+Validate redaction for difficult PDF documents.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 211, in test_wild
+    self.validate_redaction(p, num=1, metadata=True)
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 88, in validate_redaction
+    self.assertEqual(total_edit_distance, red_cnt, f"FAILED {origin}, {prefix}: edit distance is not equal to the amount of redactions!")
+AssertionError: 21 != 2 : FAILED 3-Heights(TM) Document Converter 4.8.25.5 (www.pdf-tools.com), adam1: edit distance is not equal to the amount of redactions!
+
+======================================================================
+FAIL: test_wild (tests.test_main.ValidateCustomRedactions) (p=PosixPath('/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/corpus/wild/staatslot2.pdf'))
+Validate redaction for difficult PDF documents.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 211, in test_wild
+    self.validate_redaction(p, num=1, metadata=True)
+  File "/home/lennaert/Thesis-Lennaert-Feijtes-Safe-PDF-Redaction-Tool/OpenTRTProject/src/tests/test_main.py", line 88, in validate_redaction
+    self.assertEqual(total_edit_distance, red_cnt, f"FAILED {origin}, {prefix}: edit distance is not equal to the amount of redactions!")
+AssertionError: 135 != 6 : FAILED Microsoft® Word 2013, staatslot2: edit distance is not equal to the amount of redactions!
+
+----------------------------------------------------------------------
+Ran 5 tests in 11.074s
+
+FAILED (failures=16, errors=2)

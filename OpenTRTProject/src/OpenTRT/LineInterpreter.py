@@ -30,7 +30,7 @@ class LineManipulator:
         document_lines_temp = self.document_lines
 
 
-        special_lines = []
+        special_lines = {}
         red_cnt_map = {}
         red_cnt = 0
 
@@ -38,7 +38,7 @@ class LineManipulator:
             red_cnt = len(self.redactions_per_line[lines]) # amount of redactions on this page
 
             for item in self.lines_per_line[lines][1:]:
-                special_lines.append(item[0])
+                special_lines[item[0]] = lines
                 red_cnt_map[item[0]] = red_cnt
 
         # Loop over all operations on this page.
@@ -48,9 +48,9 @@ class LineManipulator:
                 text, res = line_decoder(document_lines_temp[line])
                 #print(text, res)
                 if document_lines_temp[line] in special_lines:
-                    new_line = line_encoder(lines, red_cnt_map[document_lines_temp[line]], res, text, self.redactions_per_line, self.replacements_per_line)
+                    new_line = line_encoder(special_lines[document_lines_temp[line]], red_cnt_map[document_lines_temp[line]], res, text, self.redactions_per_line, self.replacements_per_line)
                 else:
-                    new_line = line_encoder((0,0), red_cnt, res, text, self.redactions_per_line, self.replacements_per_line)
+                    new_line = line_encoder((0,0), 0, res, text, self.redactions_per_line, self.replacements_per_line)
                 # print("new", new_line)
                 if new_line is not None:
                     if len(res) > 1:
@@ -58,24 +58,8 @@ class LineManipulator:
                     self.document_lines[line] = new_line
 
 
-
-            # # Iterate through each line associated with specific y-coordinates
-            # for line_data in self.lines_per_line[lines][1:]:
-            #     self.document_lines[line_data[1]]
-            #     print("kaas", line_data)
-            #     # Decode the original line using line_decoder
-            #     text, res = line_decoder(line_data[0])
-            #     # Encode the line with updated positions using line_encoder
-            #     new_line = line_encoder(lines, red_cnt, res, text, self.redactions_per_line, self.replacements_per_line)
-            #     # If the encoding was successful, update the line in the document_lines list
-            #     if new_line is not None:
-            #         if len(res) > 1:
-            #             has_been_changed.append(new_line)
-            #         self.document_lines[line_data[1]] = new_line
-
         # Edit all other lines
 
-        #print("ok", has_been_changed)
         if len(has_been_changed) > 0:
             return (self.document_lines, True)
         else:
@@ -183,33 +167,12 @@ def line_encoder(lines, red_cnt, res, text, redaction_per_line, replacements_per
                     b = (m / l)
                     # print(m, l, q)
 
-                    new_posadj.append(float(q) * (b if b != 0 else 1.0))
+                    new_posadj.append(float(q) * (b if b != 0 else ""))
                     red_cnt -= 1
                 else:
                     # If no replacements, append 0 to new_posadj
                     new_posadj.append("")
             else:
-                # Generate a random factor and calculate new positional adjustment
-                # decimals = q.split(".")
-                # if len(decimals) > 1:
-                #     decimals = len(decimals[1])
-                # else:
-                #     decimals = 0
-
-                # rand = random.uniform(1.0, 1.0)
-                # temp =  0.0042 / float(q)
-                # decimals = str(temp).split(".")[1]
-                # cnt = 0
-                # for digit in decimals:
-                #     if digit == "0":
-                #         cnt += 1
-                #     elif digit != "0":
-                #         break
-
-                # print(decimals, cnt, temp, round(temp, cnt + 1), round(temp, cnt + 1))
-
-
-                # newnum = round((0.1 * float(q))/  0.1)
                 new_posadj.append("")
 
         new = b"["

@@ -2,7 +2,7 @@ import os
 from . import DocumentRedactor, RedactionSelector
 
 
-def redact_file(file, num=0, input=[], mode="replace", display=False, metadata=False, save_steps=True):
+def redact_file(file, num=0, input=[], mode="replace", display=False, metadata=False, save_steps=True, pos_adj_changed=False):
     """
     Redact a file based on specified parameters.
 
@@ -62,7 +62,7 @@ def redact_file(file, num=0, input=[], mode="replace", display=False, metadata=F
         redactor.redact_xml_metadata(redactions, inputs=input)
 
     # Remove attached_files, comments, embedded_files, hidden_text, javascript, links, responses, thumbnails and rest form fields.
-    redactor.doc.scrub(metadata=False, xml_metadata=False)
+    redactor.doc.scrub(metadata=False, xml_metadata=False, remove_links=False)
 
     # Save the document after editing positional information
     redactor.doc.save(prefix + "-redacted.pdf", garbage=4, clean=True)
@@ -72,18 +72,13 @@ def redact_file(file, num=0, input=[], mode="replace", display=False, metadata=F
         print(redactor)
         print(redaction_selector)
 
-    # Display
-    # if pos_adj_changed:
-    #     f = open("res.txt", "a")
-    #     temp = False
-    #     for page in redactions:
-    #         if len(redactions[page]) > 0:
-    #             temp = True
-    #     if temp:
-    #         print(prefix, ": Pos. Adj. have been changed?"," ", has_been_changed)
-    #         f.write(prefix + " " + has_been_changed)
-    #     else:
-    #         print(prefix, ": No redactions or redactions found, no Pos. Adj. changed")
-    #         f.write(prefix + " " + "None")
-    #     f.close()
+    if pos_adj_changed:
+        temp = False
+        for page in redactions:
+            if len(redactions[page]) > 0:
+                temp = True
+        if temp:
+            print(prefix, ": Pos. Adj. have been changed?"," ", has_been_changed)
+        else:
+            print(prefix, ": No redactions or redactions found, no Pos. Adj. changed")
     return redactions
