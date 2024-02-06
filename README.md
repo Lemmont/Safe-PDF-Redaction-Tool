@@ -1,3 +1,6 @@
+# BELANGRIJK!!
+Codebase is nog niet opgeschoond sinds het afronden van mijn scriptie. Dit ga ik binnenkort doen (binnen een week tijd)
+
 # Safe-PDF-Redaction-Tool
 
 'A safe PDF redaction tool' Thesis project in which I aim to create a tool which leaves no traces of the redacted text and keeps the other text intact.
