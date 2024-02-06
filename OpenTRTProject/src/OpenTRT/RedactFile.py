@@ -81,4 +81,5 @@ def redact_file(file, num=0, input=[], mode="replace", display=False, metadata=F
             print(prefix, ": Pos. Adj. have been changed?"," ", has_been_changed)
         else:
             print(prefix, ": No redactions or redactions found, no Pos. Adj. changed")
+
     return redactions
