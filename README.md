@@ -1,5 +1,5 @@
 # BELANGRIJK!!
-Codebase is nog niet opgeschoond sinds het afronden van mijn scriptie. Dit ga ik binnenkort doen (binnen een week tijd)
+Codebase is nog niet opgeschoond sinds het afronden van mijn scriptie. Dit ga ik binnenkort doen (binnen een week tijd). Voorbeelden, slides en duidelijk uitleg hoe je dit nou makkelijk zo kan gebruiken zullen nog worden toegevoegd!
 
 # Safe-PDF-Redaction-Tool
 
